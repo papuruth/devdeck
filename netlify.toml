@@ -1,0 +1,11 @@
+[build]
+  publish = "build"
+  command = "yarn build"
+
+[build.processing.html]
+  pretty_urls = false
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

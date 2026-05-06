@@ -8,7 +8,15 @@ import ReactDOM from "react-dom";
 import App from "./App";
 import * as serviceWorkerRegistration from "./serviceWorkerRegistration";
 
-ReactDOM.render(<App />, document.getElementById("root"));
+const rootElement = document.getElementById("root");
 
-// Registers for service worker
-serviceWorkerRegistration.register();
+if (rootElement.hasChildNodes()) {
+    ReactDOM.hydrate(<App />, rootElement);
+} else {
+    ReactDOM.render(<App />, rootElement);
+}
+
+// Skip service worker during react-snap pre-rendering
+if (navigator.userAgent !== "ReactSnap") {
+    serviceWorkerRegistration.register();
+}

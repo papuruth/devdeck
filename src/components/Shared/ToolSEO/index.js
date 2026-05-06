@@ -49,7 +49,7 @@ export default function ToolSEO({ route }) {
     const jsonLd = buildJsonLd(route, meta);
 
     return (
-        <Helmet defer={false}>
+        <Helmet defer={false} prioritizeSeoTags>
             <title>{meta.title}</title>
             <meta name="description" content={meta.description} />
             <link rel="canonical" href={canonicalUrl} />

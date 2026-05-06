@@ -1,5 +1,3 @@
-export const BASE_URL = "https://devdeckio.netlify.app";
-
 export const SEO_META = {
     "/": {
         title: "DevDeck — All Your Dev Tools. One Command Away.",

@@ -1,7 +1,10 @@
 import React from "react";
 import { Helmet } from "react-helmet-async";
 import { string } from "prop-types";
-import { SEO_META, BASE_URL } from "utils/seoMeta";
+import { SEO_META } from "utils/seoMeta";
+import { GLOBAL_CONSTANTS } from "utils/globalConstants";
+
+const { BASE_URL } = GLOBAL_CONSTANTS;
 
 function buildJsonLd(route, meta) {
     const url = `${BASE_URL}${route}`;

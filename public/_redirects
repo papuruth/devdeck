@@ -1,1 +1,29 @@
+# Normalize trailing slashes — prevents duplicate URL issues in Google Search Console
+/json-viewer/      /json-viewer      301
+/jwt-decoder/      /jwt-decoder      301
+/regex-tester/     /regex-tester     301
+/base64-text/      /base64-text      301
+/base64-image/     /base64-image     301
+/uuid-generator/   /uuid-generator   301
+/password-tools/   /password-tools   301
+/hash-generator/   /hash-generator   301
+/qr-generator/     /qr-generator     301
+/url-validator/    /url-validator    301
+/url-shortener/    /url-shortener    301
+/color-converter/  /color-converter  301
+/text-case/        /text-case        301
+/timestamp/        /timestamp        301
+/number-base/      /number-base      301
+/yaml-json/        /yaml-json        301
+/text-diff/        /text-diff        301
+/word-counter/     /word-counter     301
+/csv-json/         /csv-json         301
+/image-resizer/    /image-resizer    301
+/aspect-ratio-calculator/  /aspect-ratio-calculator  301
+/lorem-ipsum/      /lorem-ipsum      301
+/api-builder/      /api-builder      301
+/blog/             /blog             301
+/blog/:slug/       /blog/:slug       301
+
+# SPA fallback — must be last
 /* /index.html 200

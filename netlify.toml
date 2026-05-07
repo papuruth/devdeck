@@ -1,11 +1,33 @@
 [build]
-  publish = "build"
   command = "yarn build"
 
-[build.processing.html]
-  pretty_urls = false
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
 
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
+[build.environment]
+  NODE_VERSION = "24"
+  YARN_VERSION = "1.22.22"
+
+# Long-lived caching for hashed Next.js assets
+[[headers]]
+  for = "/_next/static/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# Service worker must always revalidate so users get updates
+[[headers]]
+  for = "/sw.js"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+    Service-Worker-Allowed = "/"
+
+[[headers]]
+  for = "/workbox-*.js"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+# Manifest revalidate often
+[[headers]]
+  for = "/manifest.webmanifest"
+  [headers.values]
+    Cache-Control = "public, max-age=3600, must-revalidate"

@@ -8,7 +8,7 @@ import ColorModeProvider from "lib/ColorModeProvider";
 import MuiThemeProvider from "lib/MuiThemeProvider";
 import ReduxProvider from "lib/ReduxProvider";
 import ThemeAttributeSetter from "lib/ThemeAttributeSetter";
-import GlobalStyles from "lib/GlobalStyles";
+import "./globals.css";
 import { ToolChainProvider } from "context/ToolChainContext";
 import GlobalLayout from "components/GlobalLayout";
 import NavigationProgress from "components/NavigationProgress";
@@ -41,16 +41,19 @@ export const viewport: Viewport = {
     initialScale: 1
 };
 
+const themeScript = `(function(){try{var s=localStorage.getItem('devdeck-theme');document.documentElement.setAttribute('data-theme',s==='light'||s==='dark'?s:window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches?'light':'dark')}catch(e){}})()`;
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
     return (
         <html lang="en" suppressHydrationWarning className={`${inter.variable} ${jetbrainsMono.variable}`}>
             <body>
+                {/* eslint-disable-next-line react/no-danger */}
+                <script dangerouslySetInnerHTML={{ __html: themeScript }} />
                 <StyledComponentsRegistry>
                     <ColorModeProvider>
                         <ReduxProvider>
                             <MuiThemeProvider>
                                 <ToolChainProvider>
-                                    <GlobalStyles />
                                     <ThemeAttributeSetter />
                                     <NavigationProgress />
                                     <PWAUpdateWatcher />

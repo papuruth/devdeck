@@ -12,6 +12,7 @@ const withPWA = withPWAInit({
     reloadOnOnline: true,
     workboxOptions: {
         disableDevLogs: true,
+        importScripts: ["/assets/sw-helpers.js"],
         runtimeCaching: [
             {
                 urlPattern: /^https:\/\/fonts\.(?:gstatic|googleapis)\.com\/.*/i,
@@ -43,28 +44,52 @@ const withPWA = withPWAInit({
     }
 });
 
+const webpackAliases = {
+    "@mui/styled-engine": path.resolve(__dirname, "node_modules/@mui/styled-engine-sc"),
+    components: path.resolve(__dirname, "src/components"),
+    views: path.resolve(__dirname, "src/views"),
+    utils: path.resolve(__dirname, "src/utils"),
+    styles: path.resolve(__dirname, "src/styles"),
+    routes: path.resolve(__dirname, "src/routes"),
+    localization: path.resolve(__dirname, "src/localization"),
+    assets: path.resolve(__dirname, "src/assets"),
+    services: path.resolve(__dirname, "src/services"),
+    context: path.resolve(__dirname, "src/context"),
+    data: path.resolve(__dirname, "src/data"),
+    lib: path.resolve(__dirname, "src/lib"),
+    store: path.resolve(__dirname, "src/store"),
+    types: path.resolve(__dirname, "src/types")
+};
+
+const srcAliases = Object.fromEntries(
+    Object.entries(webpackAliases).filter(([k]) => k !== "@mui/styled-engine")
+);
+
 const nextConfig: NextConfig = {
     compiler: {
         styledComponents: true
     },
-    webpack(config) {
-        config.resolve.alias = {
-            ...config.resolve.alias,
-            "@mui/styled-engine": "@mui/styled-engine-sc",
-            components: path.resolve(__dirname, "src/components"),
-            views: path.resolve(__dirname, "src/views"),
-            utils: path.resolve(__dirname, "src/utils"),
-            styles: path.resolve(__dirname, "src/styles"),
-            routes: path.resolve(__dirname, "src/routes"),
-            localization: path.resolve(__dirname, "src/localization"),
-            assets: path.resolve(__dirname, "src/assets"),
-            services: path.resolve(__dirname, "src/services"),
-            context: path.resolve(__dirname, "src/context"),
-            data: path.resolve(__dirname, "src/data"),
-            lib: path.resolve(__dirname, "src/lib"),
-            store: path.resolve(__dirname, "src/store"),
-            types: path.resolve(__dirname, "src/types")
-        };
+    webpack(config, { webpack }) {
+        // Redirect @mui/styled-engine → @mui/styled-engine-sc at module resolution stage
+        config.plugins.push(
+            new webpack.NormalModuleReplacementPlugin(
+                /^@mui\/styled-engine(?!-sc)(\/.*)?$/,
+                (resource: { request: string }) => {
+                    resource.request = resource.request.replace(
+                        "@mui/styled-engine",
+                        "@mui/styled-engine-sc"
+                    );
+                }
+            )
+        );
+
+        if (Array.isArray(config.resolve.alias)) {
+            config.resolve.alias.push(
+                ...Object.entries(srcAliases).map(([alias, name]) => ({ alias, name }))
+            );
+        } else {
+            config.resolve.alias = { ...(config.resolve.alias ?? {}), ...srcAliases };
+        }
         return config;
     },
     async redirects() {

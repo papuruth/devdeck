@@ -37,8 +37,7 @@
         "prebuild": "yarn run generate-build-meta",
         "generate-build-meta": "./node_modules/react-clear-cache/bin/cli.js",
         "build": "craco build",
-        "postbuild": "node scripts/prerender.js",
-        "test": "craco test",
+"test": "craco test",
         "prettier": "prettier --write \"**/*.{js,jsx,json}\"",
         "lint": "eslint --cache \"**/*.{js,jsx}\"",
         "format": "yarn prettier && yarn lint --fix"
@@ -138,7 +137,6 @@
         "eslint-plugin-react-hooks": "^4.6.0",
         "husky": "^8.0.3",
         "lint-staged": "^13.2.0",
-        "prettier": "^2.8.7",
-        "react-snap": "^1.23.0"
+        "prettier": "^2.8.7"
     }
 }

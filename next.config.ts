@@ -10,10 +10,10 @@ const withPWA = withPWAInit({
     workboxOptions: {
         disableDevLogs: true,
         importScripts: ["/assets/sw-helpers.js"],
-        // skipWaiting(default true) + clientsClaim(default true) cause in-flight
-        // requests to go "pending" on reload. Disable clientsClaim so the new SW
-        // doesn't seize existing clients mid-load; it takes over on next navigation.
-        clientsClaim: false,
+        // Precaching 100+ JS chunks during SW install saturates HTTP/1.1's 6-connection
+        // limit, causing all page requests to hang as "pending". Content-hashed filenames
+        // make CacheFirst runtime caching the correct strategy anyway.
+        exclude: [/static\/chunks\/.*\.js$/],
         runtimeCaching: [
             {
                 urlPattern: /^https:\/\/fonts\.(?:gstatic|googleapis)\.com\/.*/i,
@@ -29,6 +29,14 @@ const withPWA = withPWAInit({
                 options: {
                     cacheName: "static-images",
                     expiration: { maxEntries: 64, maxAgeSeconds: 60 * 60 * 24 * 30 }
+                }
+            },
+            {
+                urlPattern: /\/_next\/static\/chunks\/.+\.js$/i,
+                handler: "CacheFirst",
+                options: {
+                    cacheName: "next-js-chunks",
+                    expiration: { maxEntries: 128, maxAgeSeconds: 60 * 60 * 24 * 30 }
                 }
             }
         ]

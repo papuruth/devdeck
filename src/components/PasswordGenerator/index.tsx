@@ -15,6 +15,40 @@ const { passwordGen: L } = localization;
 
 const { PASSWORD_GEN_LIST } = GLOBAL_CONSTANTS;
 
+type CompositionRule = {
+    upperCase: { min: number; forbidden: boolean };
+    lowerCase: { min: number; forbidden: boolean };
+    numbers: { min: number; forbidden: boolean };
+    symbols: { min: number; forbidden: boolean };
+};
+
+function getUpdatedCompositionRules(value: number, rules: CompositionRule): CompositionRule {
+    const updatedCompositionRules = { ...rules };
+    type RuleKey = keyof CompositionRule;
+    const compositionKeys = filter(keys(updatedCompositionRules) as RuleKey[], (key) => !updatedCompositionRules[key].forbidden);
+    const flagEnabledLen = reduce(
+        compositionKeys,
+        (acc, curr) => {
+            if (!updatedCompositionRules[curr].forbidden) {
+                // eslint-disable-next-line no-param-reassign
+                acc += 1;
+            }
+            return acc;
+        },
+        0
+    );
+    const factor = value / flagEnabledLen;
+    const randomIndex = getRandomNumbers(0, 3);
+    for (let i = 0; i < flagEnabledLen; i += 1) {
+        if (value % flagEnabledLen !== 0 && randomIndex === i) {
+            updatedCompositionRules[compositionKeys[i]].min = Math.floor(factor) + (value % flagEnabledLen);
+        } else {
+            updatedCompositionRules[compositionKeys[i]].min = Math.floor(factor);
+        }
+    }
+    return updatedCompositionRules;
+}
+
 const CHAR_TYPES = [
     { key: "upperCase", label: L.uppercaseLabel },
     { key: "lowerCase", label: L.lowercaseLabel },
@@ -179,65 +213,39 @@ export default function PasswordGenerator() {
     const [passwordLength, setPasswordLength] = useState(8);
     const [passwordScore, setPasswordScore] = useState<number>(0);
     const [copied, setCopied] = useState(false);
-    const [compositionRule, setCompositionRule] = useState({
+    const [compositionRule, setCompositionRule] = useState<CompositionRule>({
         upperCase: { min: 2, forbidden: false },
         lowerCase: { min: 2, forbidden: false },
         numbers: { min: 2, forbidden: false },
         symbols: { min: 2, forbidden: false }
     });
 
-    const getUpdatedCompositionRules = (value: number, rules: typeof compositionRule) => {
-        const updatedCompositionRules = { ...rules };
-        type RuleKey = keyof typeof updatedCompositionRules;
-        const compositionKeys = filter(keys(updatedCompositionRules) as RuleKey[], (key) => !updatedCompositionRules[key].forbidden);
-        const flagEnabledLen = reduce(
-            compositionKeys,
-            (acc, curr) => {
-                if (!updatedCompositionRules[curr].forbidden) {
-                    // eslint-disable-next-line no-param-reassign
-                    acc += 1;
-                }
-                return acc;
-            },
-            0
-        );
-        const factor = value / flagEnabledLen;
-        const randomIndex = getRandomNumbers(0, 3);
-        for (let i = 0; i < flagEnabledLen; i += 1) {
-            if (value % flagEnabledLen !== 0 && randomIndex === i) {
-                updatedCompositionRules[compositionKeys[i]].min = Math.floor(factor) + (value % flagEnabledLen);
-            } else {
-                updatedCompositionRules[compositionKeys[i]].min = Math.floor(factor);
-            }
-        }
-        return updatedCompositionRules;
-    };
-
     const handlePasswordLength = useCallback<(e: React.ChangeEvent<HTMLInputElement>) => void>(
         (e: React.ChangeEvent<HTMLInputElement>) => {
             const value = Math.max(8, Math.min(32, Number(e.target.value) || 8));
-            const updatedCompositionRules = getUpdatedCompositionRules(value, compositionRule);
-            setCompositionRule(updatedCompositionRules);
             setPasswordLength(value);
+            setCompositionRule((prev) => getUpdatedCompositionRules(value, prev));
         },
-        [compositionRule]
+        []
     );
 
     const handleCompositionChange = useCallback<(e: React.ChangeEvent<HTMLInputElement>) => void>(
         ({ target: { name, checked } }: React.ChangeEvent<HTMLInputElement>): void => {
-            setCompositionRule((prevState) => {
-                prevState[name as keyof typeof prevState].forbidden = !checked;
-                const updatedCompositionRules = getUpdatedCompositionRules(passwordLength, prevState);
-                return { ...updatedCompositionRules };
+            setPasswordLength((len) => {
+                setCompositionRule((prev) => {
+                    const key = name as keyof CompositionRule;
+                    return getUpdatedCompositionRules(len, { ...prev, [key]: { ...prev[key], forbidden: !checked } });
+                });
+                return len;
             });
         },
-        [passwordLength]
+        []
     );
 
     const handleCompositionLength = useCallback<(e: React.ChangeEvent<HTMLSelectElement>) => void>(({ target: { name, value } }: React.ChangeEvent<HTMLSelectElement>): void => {
-        setCompositionRule((prevState) => {
-            prevState[name as keyof typeof prevState].min = Number(value);
-            return { ...prevState };
+        setCompositionRule((prev) => {
+            const key = name as keyof CompositionRule;
+            return { ...prev, [key]: { ...prev[key], min: Number(value) } };
         });
     }, []);
 

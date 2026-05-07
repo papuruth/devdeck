@@ -12,6 +12,7 @@ import GlobalStyles from "lib/GlobalStyles";
 import { ToolChainProvider } from "context/ToolChainContext";
 import GlobalLayout from "components/GlobalLayout";
 import NavigationProgress from "components/NavigationProgress";
+import PWAUpdateWatcher from "components/PWAUpdateWatcher";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "swap" });
 const jetbrainsMono = JetBrains_Mono({ subsets: ["latin"], variable: "--font-jetbrains-mono", display: "swap" });
@@ -52,6 +53,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                                     <GlobalStyles />
                                     <ThemeAttributeSetter />
                                     <NavigationProgress />
+                                    <PWAUpdateWatcher />
                                     <GlobalLayout>{children}</GlobalLayout>
                                     <ToastContainer
                                         position="top-center"

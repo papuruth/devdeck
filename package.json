@@ -36,6 +36,7 @@
     "scripts": {
         "dev": "next dev",
         "build": "next build",
+        "prebuild": "node node_modules/react-clear-cache/cl",
         "start": "next start",
         "lint": "next lint",
         "prettier": "prettier --write \"**/*.{ts,tsx,js,jsx,json}\"",

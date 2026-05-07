@@ -83,6 +83,7 @@ function HeroSearch({ onOpenPalette }: HeroSearchProps) {
     const [focused, setFocused] = useState(false);
     const [smartHint, setSmartHint] = useState<DetectedInput | null>(null);
     const [pastedText, setPastedText] = useState("");
+    const [macKbd, setMacKbd] = useState(false);
     const inputRef = useRef<HTMLInputElement>(null);
     const wrapperRef = useRef<HTMLDivElement>(null);
 
@@ -144,6 +145,10 @@ function HeroSearch({ onOpenPalette }: HeroSearchProps) {
     };
 
     useEffect(() => {
+        setMacKbd(isMac);
+    }, []);
+
+    useEffect(() => {
         const handler = (e: MouseEvent) => {
             if (wrapperRef.current && !wrapperRef.current.contains(e.target as Node)) setFocused(false);
         };
@@ -170,7 +175,7 @@ function HeroSearch({ onOpenPalette }: HeroSearchProps) {
                     autoFocus
                 />
                 <HeroInputHints>
-                    <HeroInputKbd>{isMac ? "Cmd + K" : "Ctrl + K"}</HeroInputKbd>
+                    <HeroInputKbd>{macKbd ? "Cmd + K" : "Ctrl + K"}</HeroInputKbd>
                     <HeroEnterHint>or ↵</HeroEnterHint>
                 </HeroInputHints>
             </HeroSearchBox>
@@ -271,8 +276,11 @@ function Home() {
     const { noSearchDataMessage } = localization;
     const totalTools = OPERATIONS_ITEMS.length;
 
-    const recentRoutes = storage.getRecentTools();
     type OpsItem = (typeof OPERATIONS_ITEMS)[number];
+    const [recentRoutes, setRecentRoutes] = useState<string[]>([]);
+    useEffect(() => {
+        setRecentRoutes(storage.getRecentTools());
+    }, []);
     const recentItems: OpsItem[] = useMemo(
         () => recentRoutes.map((route) => OPERATIONS_ITEMS.find((item) => item.route === route)).filter((i): i is OpsItem => Boolean(i)),
         [recentRoutes, OPERATIONS_ITEMS]

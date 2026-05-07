@@ -67,7 +67,12 @@ const srcAliases = Object.fromEntries(
 
 const nextConfig: NextConfig = {
     compiler: {
-        styledComponents: true
+        styledComponents: {
+            displayName: true,
+            ssr: true,
+            fileName: true,
+            topLevelImportPaths: ["@mui/material/styles", "@mui/styled-engine-sc"]
+        }
     },
     webpack(config, { webpack }) {
         // Redirect @mui/styled-engine → @mui/styled-engine-sc at module resolution stage

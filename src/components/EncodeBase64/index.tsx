@@ -112,7 +112,7 @@ export default function EncodeBase64() {
                             rows={7}
                             sx={{ width: { xs: "100%", sm: "100%", md: "90%" }, mb: 3 }}
                             value={encodeStrings}
-                            InputProps={{ readOnly: true }}
+                            slotProps={{ input: { readOnly: true } }}
                         />
                     </StyledBoxCenter>
                 </StyledBoxCenter>

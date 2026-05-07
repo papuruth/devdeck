@@ -1,7 +1,8 @@
 "use client";
 
 import { Box, Chip, CircularProgress, Typography } from "@mui/material";
-import React, { Suspense, lazy, useEffect } from "react";
+import React, { Suspense, useEffect } from "react";
+import dynamic from "next/dynamic";
 import { usePathname, useRouter } from "next/navigation";
 import StepperNavigation from "components/StepperNavigation";
 import localization from "localization";
@@ -38,29 +39,30 @@ const TOOL_BLOG_SLUG: Record<string, string> = {
     "/api-builder": "api-request-builder"
 };
 
-const AspectRatioCalculator = lazy(() => import("components/AspectRatioCalculator"));
-const Base64Image = lazy(() => import("components/Base64Image"));
-const Base64Text = lazy(() => import("components/Base64Text"));
-const ColorConverter = lazy(() => import("components/ColorConverter"));
-const CSVToJSON = lazy(() => import("components/CSVToJSON"));
-const HashGenerator = lazy(() => import("components/HashGenerator"));
-const ImageResizer = lazy(() => import("components/ImageResizer"));
-const JWTDecoder = lazy(() => import("components/JWTDecoder"));
-const JSONViewer = lazy(() => import("components/JSONViewer"));
-const LoremIpsum = lazy(() => import("components/LoremIpsum"));
-const NumberBaseConverter = lazy(() => import("components/NumberBaseConverter"));
-const PasswordTools = lazy(() => import("components/PasswordTools"));
-const QRGenerator = lazy(() => import("components/QRGenerator"));
-const RegexTester = lazy(() => import("components/RegexTester"));
-const TextCaseConverter = lazy(() => import("components/TextCaseConverter"));
-const TextDiff = lazy(() => import("components/TextDiff"));
-const TimestampConverter = lazy(() => import("components/TimestampConverter"));
-const URLShortner = lazy(() => import("components/URLShortner"));
-const UrlValidator = lazy(() => import("components/UrlValidator"));
-const UUIDGenerator = lazy(() => import("components/UUIDGenerator"));
-const WordCounter = lazy(() => import("components/WordCounter"));
-const YAMLJSONConverter = lazy(() => import("components/YAMLJSONConverter"));
-const APIRequestBuilder = lazy(() => import("components/APIRequestBuilder"));
+const loading = () => <ToolFallback />;
+const AspectRatioCalculator = dynamic(() => import("components/AspectRatioCalculator"), { loading, ssr: false });
+const Base64Image = dynamic(() => import("components/Base64Image"), { loading, ssr: false });
+const Base64Text = dynamic(() => import("components/Base64Text"), { loading, ssr: false });
+const ColorConverter = dynamic(() => import("components/ColorConverter"), { loading, ssr: false });
+const CSVToJSON = dynamic(() => import("components/CSVToJSON"), { loading, ssr: false });
+const HashGenerator = dynamic(() => import("components/HashGenerator"), { loading, ssr: false });
+const ImageResizer = dynamic(() => import("components/ImageResizer"), { loading, ssr: false });
+const JWTDecoder = dynamic(() => import("components/JWTDecoder"), { loading, ssr: false });
+const JSONViewer = dynamic(() => import("components/JSONViewer"), { loading, ssr: false });
+const LoremIpsum = dynamic(() => import("components/LoremIpsum"), { loading, ssr: false });
+const NumberBaseConverter = dynamic(() => import("components/NumberBaseConverter"), { loading, ssr: false });
+const PasswordTools = dynamic(() => import("components/PasswordTools"), { loading, ssr: false });
+const QRGenerator = dynamic(() => import("components/QRGenerator"), { loading, ssr: false });
+const RegexTester = dynamic(() => import("components/RegexTester"), { loading, ssr: false });
+const TextCaseConverter = dynamic(() => import("components/TextCaseConverter"), { loading, ssr: false });
+const TextDiff = dynamic(() => import("components/TextDiff"), { loading, ssr: false });
+const TimestampConverter = dynamic(() => import("components/TimestampConverter"), { loading, ssr: false });
+const URLShortner = dynamic(() => import("components/URLShortner"), { loading, ssr: false });
+const UrlValidator = dynamic(() => import("components/UrlValidator"), { loading, ssr: false });
+const UUIDGenerator = dynamic(() => import("components/UUIDGenerator"), { loading, ssr: false });
+const WordCounter = dynamic(() => import("components/WordCounter"), { loading, ssr: false });
+const YAMLJSONConverter = dynamic(() => import("components/YAMLJSONConverter"), { loading, ssr: false });
+const APIRequestBuilder = dynamic(() => import("components/APIRequestBuilder"), { loading, ssr: false });
 
 function ToolFallback() {
     return (

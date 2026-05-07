@@ -21,6 +21,7 @@ export default function Header() {
     const { mode, toggleColorMode } = useColorMode();
     const dispatch = useAppDispatch();
     const [scrolled, setScrolled] = useState(false);
+    const [macKbd, setMacKbd] = useState(false);
     const pathname = usePathname();
     const router = useRouter();
     const isBlogActive = pathname?.startsWith("/blog") ?? false;
@@ -31,6 +32,10 @@ export default function Header() {
         const onScroll = () => setScrolled(window.scrollY > 10);
         window.addEventListener("scroll", onScroll, { passive: true });
         return () => window.removeEventListener("scroll", onScroll);
+    }, []);
+
+    useEffect(() => {
+        setMacKbd(isMac);
     }, []);
 
     return (
@@ -67,7 +72,7 @@ export default function Header() {
                                 <SearchIcon sx={{ fontSize: "1rem", color: "rgba(255,255,255,0.45)", flexShrink: 0 }} />
                                 <TriggerPlaceholder>{localization.commandPalette.placeholder}</TriggerPlaceholder>
                                 <TriggerKbdGroup aria-hidden>
-                                    <TriggerKbd>{isMac ? "⌘" : "Ctrl"}</TriggerKbd>
+                                    <TriggerKbd>{macKbd ? "⌘" : "Ctrl"}</TriggerKbd>
                                     <TriggerKbd>K</TriggerKbd>
                                 </TriggerKbdGroup>
                             </PaletteTrigger>

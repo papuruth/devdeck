@@ -244,4 +244,4 @@ export function getFixedNumber(x: number): number | string {
     return num;
 }
 
-export const isMac = /Mac|iPhone|iPod|iPad/i.test(navigator.userAgent);
+export const isMac = typeof navigator !== "undefined" && /Mac|iPhone|iPod|iPad/i.test(navigator.userAgent);

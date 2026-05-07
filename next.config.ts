@@ -71,7 +71,7 @@ const nextConfig: NextConfig = {
             displayName: true,
             ssr: true,
             fileName: true,
-            topLevelImportPaths: ["@mui/material/styles", "@mui/styled-engine-sc"]
+            topLevelImportPaths: ["styled-components", "styled-components/macro", "@mui/material/styles", "@mui/styled-engine-sc"]
         }
     },
     webpack(config, { webpack }) {

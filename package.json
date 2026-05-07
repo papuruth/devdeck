@@ -28,6 +28,9 @@
         "yarn": ">=1.22.0"
     },
     "packageManager": "yarn@1.22.22",
+    "resolutions": {
+        "@mui/styled-engine": "npm:@mui/styled-engine-sc@latest"
+    },
     "author": {
         "name": "Papu Kumar",
         "email": "papuruth@gmail.com",

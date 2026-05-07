@@ -7,12 +7,13 @@ const withPWA = withPWAInit({
     dest: "public",
     register: true,
     disable: process.env.NODE_ENV === "development",
-    cacheOnFrontEndNav: true,
-    aggressiveFrontEndNavCaching: true,
-    reloadOnOnline: true,
     workboxOptions: {
         disableDevLogs: true,
         importScripts: ["/assets/sw-helpers.js"],
+        // skipWaiting(default true) + clientsClaim(default true) cause in-flight
+        // requests to go "pending" on reload. Disable clientsClaim so the new SW
+        // doesn't seize existing clients mid-load; it takes over on next navigation.
+        clientsClaim: false,
         runtimeCaching: [
             {
                 urlPattern: /^https:\/\/fonts\.(?:gstatic|googleapis)\.com\/.*/i,
@@ -29,16 +30,6 @@ const withPWA = withPWAInit({
                     cacheName: "static-images",
                     expiration: { maxEntries: 64, maxAgeSeconds: 60 * 60 * 24 * 30 }
                 }
-            },
-            {
-                urlPattern: /\.(?:js|css|woff2?)$/i,
-                handler: "StaleWhileRevalidate",
-                options: { cacheName: "static-assets" }
-            },
-            {
-                urlPattern: /\/_next\/data\/.+\/.+\.json$/i,
-                handler: "StaleWhileRevalidate",
-                options: { cacheName: "next-data" }
             }
         ]
     }

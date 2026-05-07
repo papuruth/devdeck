@@ -22,6 +22,7 @@ export default function StyledComponentsRegistry({ children }: { children: React
         return styles;
     });
 
+    // eslint-disable-next-line react/jsx-no-useless-fragment
     if (typeof window !== "undefined") return <>{children}</>;
 
     return (

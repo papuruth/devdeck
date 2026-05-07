@@ -39,6 +39,14 @@ const TOOL_BLOG_SLUG: Record<string, string> = {
     "/api-builder": "api-request-builder"
 };
 
+function ToolFallback() {
+    return (
+        <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: 200 }}>
+            <CircularProgress size={32} sx={{ color: "var(--color-primary, #22c55e)" }} />
+        </Box>
+    );
+}
+
 const loading = () => <ToolFallback />;
 const AspectRatioCalculator = dynamic(() => import("components/AspectRatioCalculator"), { loading, ssr: false });
 const Base64Image = dynamic(() => import("components/Base64Image"), { loading, ssr: false });
@@ -63,14 +71,6 @@ const UUIDGenerator = dynamic(() => import("components/UUIDGenerator"), { loadin
 const WordCounter = dynamic(() => import("components/WordCounter"), { loading, ssr: false });
 const YAMLJSONConverter = dynamic(() => import("components/YAMLJSONConverter"), { loading, ssr: false });
 const APIRequestBuilder = dynamic(() => import("components/APIRequestBuilder"), { loading, ssr: false });
-
-function ToolFallback() {
-    return (
-        <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: 200 }}>
-            <CircularProgress size={32} sx={{ color: "var(--color-primary, #22c55e)" }} />
-        </Box>
-    );
-}
 
 export default function Operations() {
     const pathname = usePathname();

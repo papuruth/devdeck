@@ -7,10 +7,16 @@
 .yarn
 
 # production
-/build
 /.next
 /out
 next-env.d.ts
+
+# next-pwa generated (public/dest)
+/public/sw.js
+/public/swe-worker-*.js
+/public/workbox-*.js
+/public/worker-*.js
+/public/fallback-*.js
 
 # misc
 .DS_Store

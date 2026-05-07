@@ -20,5 +20,6 @@ export default function ToolJsonLd({ name, description, path }: ToolJsonLdProps)
         operatingSystem: "Web",
         offers: { "@type": "Offer", price: "0", priceCurrency: "USD" }
     };
+    // eslint-disable-next-line react/no-danger
     return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }} />;
 }

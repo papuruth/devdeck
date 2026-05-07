@@ -103,7 +103,7 @@ export default function DecodeBase64() {
                             rows={7}
                             sx={{ width: { xs: "100%", sm: "100%", md: "90%" }, mb: 3 }}
                             value={decodedStrings}
-                            InputProps={{ readOnly: true }}
+                            slotProps={{ input: { readOnly: true } }}
                         />
                     </StyledBoxCenter>
                 </StyledBoxCenter>

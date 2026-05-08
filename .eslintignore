@@ -3,3 +3,4 @@ node_modules/
 public/
 docs/
 .cache/
+src/sw.ts

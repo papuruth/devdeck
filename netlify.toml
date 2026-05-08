@@ -21,11 +21,6 @@
     Cache-Control = "public, max-age=0, must-revalidate"
     Service-Worker-Allowed = "/"
 
-[[headers]]
-  for = "/workbox-*.js"
-  [headers.values]
-    Cache-Control = "public, max-age=0, must-revalidate"
-
 # Manifest revalidate often
 [[headers]]
   for = "/manifest.webmanifest"

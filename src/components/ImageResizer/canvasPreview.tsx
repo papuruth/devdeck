@@ -1,0 +1,62 @@
+const TO_RADIANS = Math.PI / 180;
+
+interface Crop {
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+}
+
+export async function canvasPreview(
+    image: HTMLImageElement,
+    canvas: HTMLCanvasElement,
+    crop: Crop,
+    scale: number = 1,
+    rotate: number = 0,
+    targetW: number | null = null,
+    targetH: number | null = null
+) {
+    const ctx = canvas.getContext("2d");
+
+    if (!ctx) {
+        throw new Error("No 2d context");
+    }
+
+    const scaleX = image.naturalWidth / image.width;
+    const scaleY = image.naturalHeight / image.height;
+
+    const naturalCropW = crop.width * scaleX;
+    const naturalCropH = crop.height * scaleY;
+    const finalW = targetW || naturalCropW;
+    const finalH = targetH || naturalCropH;
+
+    canvas.width = Math.floor(finalW);
+    canvas.height = Math.floor(finalH);
+    ctx.imageSmoothingQuality = "high";
+
+    // Map natural crop space to the requested output dimensions
+    ctx.scale(finalW / naturalCropW, finalH / naturalCropH);
+
+    const cropX = crop.x * scaleX;
+    const cropY = crop.y * scaleY;
+
+    const rotateRads = rotate * TO_RADIANS;
+    const centerX = image.naturalWidth / 2;
+    const centerY = image.naturalHeight / 2;
+
+    ctx.save();
+
+    // 5) Move the crop origin to the canvas origin (0,0)
+    ctx.translate(-cropX, -cropY);
+    // 4) Move the origin to the center of the original position
+    ctx.translate(centerX, centerY);
+    // 3) Rotate around the origin
+    ctx.rotate(rotateRads);
+    // 2) Scale the image
+    ctx.scale(scale, scale);
+    // 1) Move the center of the image to the origin (0,0)
+    ctx.translate(-centerX, -centerY);
+    ctx.drawImage(image, 0, 0, image.naturalWidth, image.naturalHeight, 0, 0, image.naturalWidth, image.naturalHeight);
+
+    ctx.restore();
+}

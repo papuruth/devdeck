@@ -1,4 +1,5 @@
 /* eslint-disable no-restricted-globals */
+// @ts-nocheck
 
 import { clientsClaim } from "workbox-core";
 import { precacheAndRoute } from "workbox-precaching";

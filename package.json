@@ -43,7 +43,8 @@
         "lint": "next lint",
         "prettier": "prettier --write \"**/*.{ts,tsx,js,jsx,json}\"",
         "format": "yarn prettier && yarn lint --fix",
-        "analyze": "ANALYZE=true yarn build"
+        "analyze": "ANALYZE=true yarn build",
+        "typecheck": "tsc --noEmit"
     },
     "browserslist": {
         "production": [

@@ -23,8 +23,7 @@ export const metadata: Metadata = {
         default: "DevDeck — Developer Toolbox",
         template: "%s | DevDeck"
     },
-    description:
-        "A collection of 25+ free online developer tools. Base64, QR codes, image resizer, JWT decoder, regex tester, and more.",
+    description: "A collection of 25+ free online developer tools. Base64, QR codes, image resizer, JWT decoder, regex tester, and more.",
     authors: [{ name: "Papu Kumar" }],
     creator: "Papu Kumar",
     robots: { index: true, follow: true },
@@ -41,7 +40,24 @@ export const metadata: Metadata = {
     openGraph: {
         siteName: "DevDeck",
         type: "website",
-        locale: "en_US"
+        locale: "en_US",
+        images: [
+            {
+                url: `${GLOBAL_CONSTANTS.BASE_URL}/assets/images/og-preview.png`,
+                width: 1200,
+                height: 630,
+                alt: "DevDeck - Developer Toolbox"
+            }
+        ]
+    },
+    twitter: {
+        card: "summary_large_image",
+        site: "@papu_kumar",
+        creator: "@papu_kumar",
+        images: [`${GLOBAL_CONSTANTS.BASE_URL}/assets/images/og-preview.png`]
+    },
+    verification: {
+        google: "google-site-verification=d9X2uV7QOAgl6y0GrAk5ijW1ufkps8N9azwPvUAwKzQ"
     }
 };
 

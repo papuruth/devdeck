@@ -1,47 +1,7 @@
 import type { NextConfig } from "next";
 import path from "path";
-import withPWAInit from "@ducanh2912/next-pwa";
+import { InjectManifest } from "workbox-webpack-plugin";
 import withBundleAnalyzer from "@next/bundle-analyzer";
-
-const withPWA = withPWAInit({
-    dest: "public",
-    register: true,
-    disable: process.env.NODE_ENV === "development",
-    workboxOptions: {
-        disableDevLogs: true,
-        importScripts: ["/assets/sw-helpers.js"],
-        // Precaching 100+ JS chunks during SW install saturates HTTP/1.1's 6-connection
-        // limit, causing all page requests to hang as "pending". Content-hashed filenames
-        // make CacheFirst runtime caching the correct strategy anyway.
-        exclude: [/static\/chunks\/.*\.js$/],
-        runtimeCaching: [
-            {
-                urlPattern: /^https:\/\/fonts\.(?:gstatic|googleapis)\.com\/.*/i,
-                handler: "CacheFirst",
-                options: {
-                    cacheName: "google-fonts",
-                    expiration: { maxEntries: 32, maxAgeSeconds: 60 * 60 * 24 * 365 }
-                }
-            },
-            {
-                urlPattern: /\.(?:png|jpg|jpeg|svg|gif|webp|ico)$/i,
-                handler: "CacheFirst",
-                options: {
-                    cacheName: "static-images",
-                    expiration: { maxEntries: 64, maxAgeSeconds: 60 * 60 * 24 * 30 }
-                }
-            },
-            {
-                urlPattern: /\/_next\/static\/chunks\/.+\.js$/i,
-                handler: "CacheFirst",
-                options: {
-                    cacheName: "next-js-chunks",
-                    expiration: { maxEntries: 128, maxAgeSeconds: 60 * 60 * 24 * 30 }
-                }
-            }
-        ]
-    }
-});
 
 const webpackAliases = {
     "@mui/styled-engine": path.resolve(__dirname, "node_modules/@mui/styled-engine-sc"),
@@ -73,7 +33,7 @@ const nextConfig: NextConfig = {
             topLevelImportPaths: ["styled-components", "styled-components/macro", "@mui/material/styles", "@mui/styled-engine-sc"]
         }
     },
-    webpack(config, { webpack }) {
+    webpack(config, { webpack, isServer, dev }) {
         // Redirect @mui/styled-engine → @mui/styled-engine-sc at module resolution stage
         config.plugins.push(
             new webpack.NormalModuleReplacementPlugin(
@@ -94,11 +54,37 @@ const nextConfig: NextConfig = {
         } else {
             config.resolve.alias = { ...(config.resolve.alias ?? {}), ...srcAliases };
         }
+
+        // Build the service worker only for the client-side production bundle.
+        // InjectManifest compiles sw.ts through its own webpack child compiler and
+        // bundles workbox directly into the output — no importScripts, no blocking
+        // network round-trip when the SW wakes up.
+        if (!isServer && !dev) {
+            config.plugins.push(
+                new InjectManifest({
+                    swSrc: path.resolve(__dirname, "src/sw.ts"),
+                    // Output relative to webpack's output dir (.next) — traverse up to public/
+                    swDest: "../public/sw.js",
+                    // Exclude all webpack assets so __WB_MANIFEST is [] at runtime.
+                    // We don't precache Next.js chunks; runtime caching handles them.
+                    exclude: [/./]
+                })
+            );
+        }
+
         return config;
+    },
+    async headers() {
+        return [
+            {
+                source: "/sw.js",
+                headers: [{ key: "Cache-Control", value: "public, max-age=0, must-revalidate" }]
+            }
+        ];
     },
     async redirects() {
         return [];
     }
 };
 
-export default withPWA(withBundleAnalyzer({ enabled: process.env.ANALYZE === "true" })(nextConfig));
+export default withBundleAnalyzer({ enabled: process.env.ANALYZE === "true" })(nextConfig);

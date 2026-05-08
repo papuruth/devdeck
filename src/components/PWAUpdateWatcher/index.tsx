@@ -9,6 +9,10 @@ export default function PWAUpdateWatcher() {
     useEffect(() => {
         if (typeof window === "undefined" || !("serviceWorker" in navigator)) return;
 
+        navigator.serviceWorker.register("/sw.js", { scope: "/" }).catch(() => {
+            // Registration failure is non-fatal; app still works without SW
+        });
+
         navigator.serviceWorker.ready.then((reg) => {
             if (reg.waiting) {
                 setWaitingSW(reg.waiting);

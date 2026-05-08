@@ -28,6 +28,16 @@ export const metadata: Metadata = {
     authors: [{ name: "Papu Kumar" }],
     creator: "Papu Kumar",
     robots: { index: true, follow: true },
+    icons: {
+        icon: [
+            { rel: "icon", type: "image/x-icon", url: "/assets/images/favicon.ico" },
+            { rel: "icon", type: "image/svg+xml", url: "/assets/images/favicon.svg" },
+            { rel: "icon", type: "image/png", sizes: "32x32", url: "/assets/images/icon-32x32.png" },
+            { rel: "icon", type: "image/png", sizes: "16x16", url: "/assets/images/icon-16x16.png" }
+        ],
+        apple: "/assets/images/apple-touch-icon.png",
+        shortcut: "/assets/images/icon-32x32.png"
+    },
     openGraph: {
         siteName: "DevDeck",
         type: "website",

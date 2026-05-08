@@ -14,7 +14,23 @@ export const metadata: Metadata = {
         title: meta?.title,
         description: meta?.description,
         url: BASE_URL,
-        type: "website"
+        type: "website",
+        images: [
+            {
+                url: `${BASE_URL}/assets/images/og-preview.png`,
+                width: 1200,
+                height: 630,
+                alt: "DevDeck - Developer Toolbox"
+            }
+        ]
+    },
+    twitter: {
+        card: "summary_large_image",
+        title: meta?.title,
+        description: meta?.description,
+        site: "@papu_kumar",
+        creator: "@papu_kumar",
+        images: [`${BASE_URL}/assets/images/og-preview.png`]
     },
     alternates: {
         canonical: BASE_URL

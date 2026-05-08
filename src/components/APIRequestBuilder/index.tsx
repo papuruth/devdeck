@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { Add, Close, Code, ContentCopy, Delete } from "@mui/icons-material";
+import { Add, Close, Code, ContentCopy, Delete, Shield } from "@mui/icons-material";
 import { Box, IconButton, Tooltip, Typography } from "@mui/material";
 import localization from "localization";
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -38,14 +38,14 @@ function tokenizeCurl(str) {
             if (ch === "'") inSingle = false;
             else current += ch;
         } else if (inDouble) {
-            if (ch === "\"") inDouble = false;
+            if (ch === `"`) inDouble = false;
             else if (ch === "\\" && i + 1 < str.length) {
                 i += 1;
                 current += str[i];
             } else current += ch;
         } else if (ch === "'") {
             inSingle = true;
-        } else if (ch === "\"") {
+        } else if (ch === `"`) {
             inDouble = true;
         } else if (ch === "\\" && i + 1 < str.length && str[i + 1] === "\n") {
             i += 2;
@@ -208,7 +208,9 @@ const UrlRow = styled.div`
         border-color: rgba(34, 204, 153, 0.5);
         box-shadow: 0 0 0 3px rgba(34, 204, 153, 0.08);
     }
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    transition:
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
 `;
 
 const UrlInput = styled.input`
@@ -394,7 +396,6 @@ const CorsNotice = styled.div`
     font-family: "Inter", sans-serif;
 `;
 
-
 const ResponseHeadersTable = styled.div`
     background: var(--bg-input);
     padding: 8px 0;
@@ -443,7 +444,7 @@ function colorValue(v) {
     if (s === "true" || s === "true,") return <span style={{ color: "#22cc99" }}>{v}</span>;
     if (s === "false" || s === "false,") return <span style={{ color: "#fb923c" }}>{v}</span>;
     if (/^-?\d/.test(s)) return <span style={{ color: "#fbbf24" }}>{v}</span>;
-    if (s.startsWith("\"")) return <span style={{ color: "#86efac" }}>{v}</span>;
+    if (s.startsWith(`"'`)) return <span style={{ color: "#86efac" }}>{v}</span>;
     return <span style={{ color: "var(--text-primary)" }}>{v}</span>;
 }
 
@@ -522,18 +523,39 @@ function generateSnippet(type, { method, url, headers, body }) {
             return lines.join(" \\\n");
         }
         case "fetch": {
-            const headersObj = h.reduce((acc, hdr) => { acc[hdr.key] = hdr.value; return acc; }, {});
+            const headersObj = h.reduce((acc, hdr) => {
+                acc[hdr.key] = hdr.value;
+                return acc;
+            }, {});
             const opts = { method };
             if (h.length) opts.headers = headersObj;
             if (body) opts.body = body;
-            return [`const response = await fetch('${url}', ${JSON.stringify(opts, null, 2)});`, `const data = await response.json();`, `console.log(data);`].join("\n");
+            return [
+                `const response = await fetch('${url}', ${JSON.stringify(opts, null, 2)});`,
+                `const data = await response.json();`,
+                `console.log(data);`
+            ].join("\n");
         }
         case "axios": {
-            const headersObj = h.reduce((acc, hdr) => { acc[hdr.key] = hdr.value; return acc; }, {});
+            const headersObj = h.reduce((acc, hdr) => {
+                acc[hdr.key] = hdr.value;
+                return acc;
+            }, {});
             const cfg = { method: method.toLowerCase(), url };
             if (h.length) cfg.headers = headersObj;
-            if (body) { try { cfg.data = JSON.parse(body); } catch { cfg.data = body; } }
-            return [`import axios from 'axios';`, ``, `const response = await axios(${JSON.stringify(cfg, null, 2)});`, `console.log(response.data);`].join("\n");
+            if (body) {
+                try {
+                    cfg.data = JSON.parse(body);
+                } catch {
+                    cfg.data = body;
+                }
+            }
+            return [
+                `import axios from 'axios';`,
+                ``,
+                `const response = await axios(${JSON.stringify(cfg, null, 2)});`,
+                `console.log(response.data);`
+            ].join("\n");
         }
         case "xhr": {
             const lines = [`const xhr = new XMLHttpRequest();`, `xhr.open('${method}', '${url}');`];
@@ -550,13 +572,18 @@ function generateSnippet(type, { method, url, headers, body }) {
             const defaultPort = isHttps ? 443 : 80;
             const port = portStr ? parseInt(portStr, 10) : defaultPort;
             const path = `/${pathParts.join("/")}` || "/";
-            const headersObj = h.reduce((acc, hdr) => { acc[hdr.key] = hdr.value; return acc; }, {});
+            const headersObj = h.reduce((acc, hdr) => {
+                acc[hdr.key] = hdr.value;
+                return acc;
+            }, {});
             const optsObj = { hostname: host, port, path, method };
             if (h.length) optsObj.headers = headersObj;
             const mod = isHttps ? "https" : "http";
             const lines = [
-                `const ${mod} = require('${mod}');`, ``,
-                `const options = ${JSON.stringify(optsObj, null, 2)};`, ``,
+                `const ${mod} = require('${mod}');`,
+                ``,
+                `const options = ${JSON.stringify(optsObj, null, 2)};`,
+                ``,
                 `const req = ${mod}.request(options, (res) => {`,
                 `  let data = '';`,
                 `  res.on('data', chunk => { data += chunk; });`,
@@ -568,13 +595,21 @@ function generateSnippet(type, { method, url, headers, body }) {
             return lines.join("\n");
         }
         case "python": {
-            const headersObj = h.reduce((acc, hdr) => { acc[hdr.key] = hdr.value; return acc; }, {});
+            const headersObj = h.reduce((acc, hdr) => {
+                acc[hdr.key] = hdr.value;
+                return acc;
+            }, {});
             const lines = [`import requests`, ``];
             if (h.length) lines.push(`headers = ${JSON.stringify(headersObj, null, 4)}`, ``);
             const bodyLines = [];
             if (body) {
-                try { lines.push(`payload = ${JSON.stringify(JSON.parse(body), null, 4)}`, ``); bodyLines.push(`    json=payload,`); }
-                catch { lines.push(`payload = '${body.replace(/'/g, "\\'")}'`, ``); bodyLines.push(`    data=payload,`); }
+                try {
+                    lines.push(`payload = ${JSON.stringify(JSON.parse(body), null, 4)}`, ``);
+                    bodyLines.push(`    json=payload,`);
+                } catch {
+                    lines.push(`payload = '${body.replace(/'/g, "\\'")}'`, ``);
+                    bodyLines.push(`    data=payload,`);
+                }
             }
             lines.push(
                 `response = requests.${method.toLowerCase()}(`,
@@ -582,27 +617,57 @@ function generateSnippet(type, { method, url, headers, body }) {
                 ...(h.length ? [`    headers=headers,`] : []),
                 ...bodyLines,
                 `)`,
-                ``, `print(response.json())`
+                ``,
+                `print(response.json())`
             );
             return lines.join("\n");
         }
         case "go": {
             const hasBody = !!body;
             const lines = [
-                `package main`, ``,
-                `import (`, `\t"fmt"`, `\t"io"`, `\t"net/http"`,
+                `package main`,
+                ``,
+                `import (`,
+                `\t"fmt"`,
+                `\t"io"`,
+                `\t"net/http"`,
                 ...(hasBody ? [`\t"strings"`] : []),
-                `)`, ``, `func main() {`
+                `)`,
+                ``,
+                `func main() {`
             ];
-            if (hasBody) { lines.push(`\tbody := strings.NewReader(\`${body}\`)`); lines.push(`\treq, _ := http.NewRequest("${method}", "${url}", body)`); }
-            else lines.push(`\treq, _ := http.NewRequest("${method}", "${url}", nil)`);
+            if (hasBody) {
+                lines.push(`\tbody := strings.NewReader(\`${body}\`)`);
+                lines.push(`\treq, _ := http.NewRequest("${method}", "${url}", body)`);
+            } else lines.push(`\treq, _ := http.NewRequest("${method}", "${url}", nil)`);
             h.forEach((hdr) => lines.push(`\treq.Header.Set("${hdr.key}", "${hdr.value}")`));
-            lines.push(``, `\tclient := &http.Client{}`, `\tresp, _ := client.Do(req)`, `\tdefer resp.Body.Close()`, `\tbody2, _ := io.ReadAll(resp.Body)`, `\tfmt.Println(string(body2))`, `}`);
+            lines.push(
+                ``,
+                `\tclient := &http.Client{}`,
+                `\tresp, _ := client.Do(req)`,
+                `\tdefer resp.Body.Close()`,
+                `\tbody2, _ := io.ReadAll(resp.Body)`,
+                `\tfmt.Println(string(body2))`,
+                `}`
+            );
             return lines.join("\n");
         }
         case "php": {
-            const lines = [`<?php`, ``, `$curl = curl_init();`, ``, `curl_setopt_array($curl, [`, `  CURLOPT_URL => '${url}',`, `  CURLOPT_RETURNTRANSFER => true,`, `  CURLOPT_CUSTOMREQUEST => '${method}',`];
-            if (h.length) { lines.push(`  CURLOPT_HTTPHEADER => [`); h.forEach((hdr) => lines.push(`    '${hdr.key}: ${hdr.value}',`)); lines.push(`  ],`); }
+            const lines = [
+                `<?php`,
+                ``,
+                `$curl = curl_init();`,
+                ``,
+                `curl_setopt_array($curl, [`,
+                `  CURLOPT_URL => '${url}',`,
+                `  CURLOPT_RETURNTRANSFER => true,`,
+                `  CURLOPT_CUSTOMREQUEST => '${method}',`
+            ];
+            if (h.length) {
+                lines.push(`  CURLOPT_HTTPHEADER => [`);
+                h.forEach((hdr) => lines.push(`    '${hdr.key}: ${hdr.value}',`));
+                lines.push(`  ],`);
+            }
             if (body) lines.push(`  CURLOPT_POSTFIELDS => '${body.replace(/'/g, "\\'")}',`);
             lines.push(`]);`, ``, `$response = curl_exec($curl);`, `curl_close($curl);`, ``, `echo $response;`, `?>`);
             return lines.join("\n");
@@ -619,26 +684,75 @@ function generateSnippet(type, { method, url, headers, body }) {
             return lines.join("\n");
         }
         case "swift": {
-            const lines = [`import Foundation`, ``, `let url = URL(string: "${url}")!`, `var request = URLRequest(url: url)`, `request.httpMethod = "${method}"`];
+            const lines = [
+                `import Foundation`,
+                ``,
+                `let url = URL(string: "${url}")!`,
+                `var request = URLRequest(url: url)`,
+                `request.httpMethod = "${method}"`
+            ];
             h.forEach((hdr) => lines.push(`request.setValue("${hdr.value}", forHTTPHeaderField: "${hdr.key}")`));
             if (body) lines.push(`request.httpBody = Data("""\n${body}\n""".utf8)`);
-            lines.push(``, `let task = URLSession.shared.dataTask(with: request) { data, response, error in`, `    if let data = data {`, `        print(String(data: data, encoding: .utf8) ?? "")`, `    }`, `}`, `task.resume()`);
+            lines.push(
+                ``,
+                `let task = URLSession.shared.dataTask(with: request) { data, response, error in`,
+                `    if let data = data {`,
+                `        print(String(data: data, encoding: .utf8) ?? "")`,
+                `    }`,
+                `}`,
+                `task.resume()`
+            );
             return lines.join("\n");
         }
         case "csharp": {
             const methodPascal = method.charAt(0).toUpperCase() + method.slice(1).toLowerCase();
-            const lines = [`using System.Net.Http;`, ``, `var client = new HttpClient();`, `var request = new HttpRequestMessage(HttpMethod.${methodPascal}, "${url}");`];
+            const lines = [
+                `using System.Net.Http;`,
+                ``,
+                `var client = new HttpClient();`,
+                `var request = new HttpRequestMessage(HttpMethod.${methodPascal}, "${url}");`
+            ];
             h.forEach((hdr) => lines.push(`request.Headers.TryAddWithoutValidation("${hdr.key}", "${hdr.value}");`));
-            if (body) lines.push(`request.Content = new StringContent(`, `    ${JSON.stringify(body)},`, `    System.Text.Encoding.UTF8,`, `    "application/json");`);
-            lines.push(``, `var response = await client.SendAsync(request);`, `var content = await response.Content.ReadAsStringAsync();`, `Console.WriteLine(content);`);
+            if (body)
+                lines.push(
+                    `request.Content = new StringContent(`,
+                    `    ${JSON.stringify(body)},`,
+                    `    System.Text.Encoding.UTF8,`,
+                    `    "application/json");`
+                );
+            lines.push(
+                ``,
+                `var response = await client.SendAsync(request);`,
+                `var content = await response.Content.ReadAsStringAsync();`,
+                `Console.WriteLine(content);`
+            );
             return lines.join("\n");
         }
         case "java": {
-            const lines = [`// Requires OkHttp: implementation("com.squareup.okhttp3:okhttp:4.12.0")`, `import okhttp3.*;`, ``, `OkHttpClient client = new OkHttpClient();`, ``, `Request request = new Request.Builder()`, `    .url("${url}")`];
+            const lines = [
+                `// Requires OkHttp: implementation("com.squareup.okhttp3:okhttp:4.12.0")`,
+                `import okhttp3.*;`,
+                ``,
+                `OkHttpClient client = new OkHttpClient();`,
+                ``,
+                `Request request = new Request.Builder()`,
+                `    .url("${url}")`
+            ];
             h.forEach((hdr) => lines.push(`    .header("${hdr.key}", "${hdr.value}")`));
-            if (body) lines.push(`    .method("${method}", RequestBody.create(`, `        ${JSON.stringify(body)},`, `        MediaType.parse("application/json")))`);
+            if (body)
+                lines.push(
+                    `    .method("${method}", RequestBody.create(`,
+                    `        ${JSON.stringify(body)},`,
+                    `        MediaType.parse("application/json")))`
+                );
             else lines.push(`    .${method.toLowerCase()}()`);
-            lines.push(`    .build();`, ``, `try (Response response = client.newCall(request).execute()) {`, `    System.out.println(response.body().string());`, `}`);
+            lines.push(
+                `    .build();`,
+                ``,
+                `try (Response response = client.newCall(request).execute()) {`,
+                `    System.out.println(response.body().string());`,
+                `}`
+            );
             return lines.join("\n");
         }
         default:
@@ -665,6 +779,26 @@ const CodeIconBtn = styled.button<{ $active?: boolean }>`
         background: rgba(34, 204, 153, 0.1);
         border-color: rgba(34, 204, 153, 0.4);
         color: #22cc99;
+    }
+`;
+
+const ProxyIconBtn = styled.button<{ $active?: boolean }>`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    flex-shrink: 0;
+    border-radius: 8px;
+    border: 1px solid ${(p) => (p.$active ? "rgba(255,193,7,0.5)" : "var(--border-color)")};
+    background: ${(p) => (p.$active ? "rgba(255,193,7,0.12)" : "transparent")};
+    color: ${(p) => (p.$active ? "#ffc107" : "var(--text-secondary)")};
+    cursor: pointer;
+    transition: all 0.15s ease;
+    &:hover {
+        background: rgba(255, 193, 7, 0.1);
+        border-color: rgba(255, 193, 7, 0.4);
+        color: #ffc107;
     }
 `;
 
@@ -706,6 +840,7 @@ export default function APIRequestBuilder() {
     const [showSnippet, setShowSnippet] = useState(false);
     const [snippetType, setSnippetType] = useState("curl");
     const [snippetCopied, setSnippetCopied] = useState(false);
+    const [useProxy, setUseProxy] = useState(false);
     const abortRef = useRef(null);
 
     // Consume a curl chain sent from the command palette
@@ -717,7 +852,10 @@ export default function APIRequestBuilder() {
             setMethod(parsed.method);
             setUrl(parsed.url);
             if (parsed.headers.length) setHeaders(parsed.headers);
-            if (parsed.body) { setJsonBody(parsed.body); setBodyTab("json"); }
+            if (parsed.body) {
+                setJsonBody(parsed.body);
+                setBodyTab("json");
+            }
             setCurlParsed(true);
             setTimeout(() => setCurlParsed(false), 2500);
         }
@@ -785,7 +923,37 @@ export default function APIRequestBuilder() {
                 opts.body = activeBody;
             }
 
-            const res = await fetch(url.trim(), opts);
+            let res;
+            if (useProxy) {
+                // Use proxy to avoid CORS
+                const proxyOpts = {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        method,
+                        url: url.trim(),
+                        headers: reqHeaders,
+                        body: opts.body ? opts.body : undefined
+                    }),
+                    signal: abortRef.current.signal
+                };
+                const proxyRes = await fetch("/api/runner", proxyOpts);
+                if (!proxyRes.ok) {
+                    throw new Error(`Proxy error: ${proxyRes.status}`);
+                }
+                const proxyData = await proxyRes.json();
+                // Create a mock Response object from proxy data
+                res = {
+                    status: proxyData.status,
+                    statusText: proxyData.statusText,
+                    headers: new Headers(proxyData.headers),
+                    text: () => Promise.resolve(proxyData.body)
+                };
+            } else {
+                res = await fetch(url.trim(), opts);
+            }
             const elapsed = Date.now() - startTime;
 
             const respHeaders = {};
@@ -830,7 +998,7 @@ export default function APIRequestBuilder() {
             clearTimeout(timeoutId);
             setSending(false);
         }
-    }, [url, method, headers, jsonBody, formBody, bodyTab, showBody, addHistory]);
+    }, [url, method, headers, jsonBody, formBody, bodyTab, showBody, useProxy, addHistory]);
 
     const handleCopy = () => {
         if (!response?.body) return;
@@ -932,6 +1100,11 @@ export default function APIRequestBuilder() {
                             <Code style={{ fontSize: 15 }} />
                         </CodeIconBtn>
                     </Tooltip>
+                    <Tooltip title="Use proxy to bypass CORS" placement="top" arrow>
+                        <ProxyIconBtn $active={useProxy} onClick={() => setUseProxy((v) => !v)}>
+                            <Shield style={{ fontSize: 15 }} />
+                        </ProxyIconBtn>
+                    </Tooltip>
                 </Box>
                 {curlParsed && <CurlBadge>✓ cURL parsed — method, headers &amp; body applied</CurlBadge>}
 
@@ -965,8 +1138,18 @@ export default function APIRequestBuilder() {
                     <Box sx={{ pb: 1, minHeight: 80, maxHeight: 220, overflowY: "auto" }}>
                         {headers.map((h) => (
                             <HeaderRow key={h.id}>
-                                <HeaderInput placeholder="Key" value={h.key} onChange={(e) => updateHeader(h.id, "key", e.target.value)} autoComplete="off" />
-                                <HeaderInput placeholder="Value" value={h.value} onChange={(e) => updateHeader(h.id, "value", e.target.value)} autoComplete="off" />
+                                <HeaderInput
+                                    placeholder="Key"
+                                    value={h.key}
+                                    onChange={(e) => updateHeader(h.id, "key", e.target.value)}
+                                    autoComplete="off"
+                                />
+                                <HeaderInput
+                                    placeholder="Value"
+                                    value={h.value}
+                                    onChange={(e) => updateHeader(h.id, "value", e.target.value)}
+                                    autoComplete="off"
+                                />
                                 <Tooltip title="Remove" arrow>
                                     <IconButton
                                         size="small"
@@ -1035,11 +1218,17 @@ export default function APIRequestBuilder() {
                         <Box sx={{ display: "flex", gap: "4px", alignItems: "center", ml: "auto" }}>
                             <SnippetSelect value={snippetType} onChange={(e) => setSnippetType(e.target.value)}>
                                 {SNIPPET_TYPES.map((t) => (
-                                    <option key={t.value} value={t.value}>{t.label}</option>
+                                    <option key={t.value} value={t.value}>
+                                        {t.label}
+                                    </option>
                                 ))}
                             </SnippetSelect>
                             <Tooltip title={snippetCopied ? "Copied!" : "Copy"} placement="top" arrow>
-                                <IconButton size="small" onClick={handleCopySnippet} sx={{ color: snippetCopied ? "#22cc99" : "var(--text-secondary)" }}>
+                                <IconButton
+                                    size="small"
+                                    onClick={handleCopySnippet}
+                                    sx={{ color: snippetCopied ? "#22cc99" : "var(--text-secondary)" }}
+                                >
                                     <ContentCopy style={{ fontSize: 14 }} />
                                 </IconButton>
                             </Tooltip>
@@ -1060,97 +1249,105 @@ export default function APIRequestBuilder() {
             )}
 
             {/* ── RESPONSE PANEL ────────────────────────────────── */}
-            {!showSnippet && <Panel style={{ maxHeight: "calc(100vh - 400px)", overflowY: "auto" }}>
-                <PanelHeader>
-                    <PanelLabel>{L.responseLabel}</PanelLabel>
-                </PanelHeader>
+            {!showSnippet && (
+                <Panel style={{ maxHeight: "calc(100vh - 400px)", overflowY: "auto" }}>
+                    <PanelHeader>
+                        <PanelLabel>{L.responseLabel}</PanelLabel>
+                    </PanelHeader>
 
-                {response ? (
-                    <>
-                        {/* Status row */}
-                        {response.status && (
-                            <StatusRow>
-                                <StatusBadge $bg={statusStyle.bg} $color={statusStyle.color}>
-                                    {response.status} {response.statusText}
-                                </StatusBadge>
-                                {response.elapsed !== undefined && <TimeBadge>{response.elapsed}ms</TimeBadge>}
-                            </StatusRow>
-                        )}
+                    {response ? (
+                        <>
+                            {/* Status row */}
+                            {response.status && (
+                                <StatusRow>
+                                    <StatusBadge $bg={statusStyle.bg} $color={statusStyle.color}>
+                                        {response.status} {response.statusText}
+                                    </StatusBadge>
+                                    {response.elapsed !== undefined && <TimeBadge>{response.elapsed}ms</TimeBadge>}
+                                </StatusRow>
+                            )}
 
-                        {/* Error */}
-                        {response.error && (
-                            <>
-                                <ErrorBox>{response.error}</ErrorBox>
-                                {response.corsHint && <CorsNotice>⚠ {L.corsNotice}</CorsNotice>}
-                            </>
-                        )}
+                            {/* Error */}
+                            {response.error && (
+                                <>
+                                    <ErrorBox>{response.error}</ErrorBox>
+                                    {response.corsHint && <CorsNotice>⚠ {L.corsNotice}</CorsNotice>}
+                                </>
+                            )}
 
-                        {/* Body | Headers tab strip */}
-                        {!response.error && (
-                            <RequestTabRow>
-                                <TabStrip style={{ border: "none", borderBottom: "none" }}>
-                                    <TabBtn $active={responseTab === "body"} onClick={() => setResponseTab("body")}>
-                                        {L.bodyLabel}
-                                    </TabBtn>
-                                    <TabBtn $active={responseTab === "headers"} onClick={() => setResponseTab("headers")}>
-                                        {L.headersLabel}
-                                        {response.headers && Object.keys(response.headers).length > 0 && (
-                                            <CountBadge>{Object.keys(response.headers).length}</CountBadge>
-                                        )}
-                                    </TabBtn>
-                                </TabStrip>
-                                {responseTab === "body" && response.body && (
-                                    <PrettifyBtn onClick={handlePrettifyResponse}>{L.prettifyBtn}</PrettifyBtn>
-                                )}
-                            </RequestTabRow>
-                        )}
-
-                        {/* Body tab */}
-                        {!response.error && responseTab === "body" && response.body &&
-                            (response.isJson ? (
-                                <JsonTokenizer json={response.body} />
-                            ) : (
-                                <CodeArea value={response.body} readOnly style={{ minHeight: 260, maxHeight: "calc(100vh - 400px)", overflowY: "auto" }} />
-                            ))}
-
-                        {/* Headers tab */}
-                        {!response.error && responseTab === "headers" && response.headers && (
-                            <ResponseHeadersTable style={{ maxHeight: "calc(100vh - 400px)", overflowY: "auto" }}>
-                                {Object.entries(response.headers).map(([k, v]) => (
-                                    <ResponseHeaderEntry key={k}>
-                                        <RHKey>{k}</RHKey>
-                                        <RHVal>{v}</RHVal>
-                                    </ResponseHeaderEntry>
-                                ))}
-                            </ResponseHeadersTable>
-                        )}
-
-                        {/* Actions */}
-                        {responseTab === "body" && (response.body || response.raw) && (
-                            <ActionBar>
-                                <ActionBtnGroup>
-                                    <ActionBtn $success={copied} onClick={handleCopy}>
-                                        <ContentCopy style={{ fontSize: 12 }} />
-                                        {copied ? C.copiedLabel : L.copyResponseBtn}
-                                    </ActionBtn>
-                                    {response.isJson && response.body && (
-                                        <SendToButton value={response.body} targets={[{ label: "JSON Viewer", route: "/json-viewer" }]} />
+                            {/* Body | Headers tab strip */}
+                            {!response.error && (
+                                <RequestTabRow>
+                                    <TabStrip style={{ border: "none", borderBottom: "none" }}>
+                                        <TabBtn $active={responseTab === "body"} onClick={() => setResponseTab("body")}>
+                                            {L.bodyLabel}
+                                        </TabBtn>
+                                        <TabBtn $active={responseTab === "headers"} onClick={() => setResponseTab("headers")}>
+                                            {L.headersLabel}
+                                            {response.headers && Object.keys(response.headers).length > 0 && (
+                                                <CountBadge>{Object.keys(response.headers).length}</CountBadge>
+                                            )}
+                                        </TabBtn>
+                                    </TabStrip>
+                                    {responseTab === "body" && response.body && (
+                                        <PrettifyBtn onClick={handlePrettifyResponse}>{L.prettifyBtn}</PrettifyBtn>
                                     )}
-                                </ActionBtnGroup>
-                            </ActionBar>
-                        )}
-                    </>
-                ) : (
-                    <EmptyState>
-                        <Typography variant="caption" sx={{ fontFamily: "var(--font-mono)", opacity: 0.6 }}>
-                            {sending ? L.sendingLabel : L.emptyStateMessage}
-                        </Typography>
-                    </EmptyState>
-                )}
+                                </RequestTabRow>
+                            )}
 
-                {/* Always-visible CORS notice at bottom */}
-                {!response && <CorsNotice style={{ marginTop: "auto" }}>ⓘ {L.corsNotice}</CorsNotice>}
-            </Panel>}
+                            {/* Body tab */}
+                            {!response.error &&
+                                responseTab === "body" &&
+                                response.body &&
+                                (response.isJson ? (
+                                    <JsonTokenizer json={response.body} />
+                                ) : (
+                                    <CodeArea
+                                        value={response.body}
+                                        readOnly
+                                        style={{ minHeight: 260, maxHeight: "calc(100vh - 400px)", overflowY: "auto" }}
+                                    />
+                                ))}
+
+                            {/* Headers tab */}
+                            {!response.error && responseTab === "headers" && response.headers && (
+                                <ResponseHeadersTable style={{ maxHeight: "calc(100vh - 400px)", overflowY: "auto" }}>
+                                    {Object.entries(response.headers).map(([k, v]) => (
+                                        <ResponseHeaderEntry key={k}>
+                                            <RHKey>{k}</RHKey>
+                                            <RHVal>{v}</RHVal>
+                                        </ResponseHeaderEntry>
+                                    ))}
+                                </ResponseHeadersTable>
+                            )}
+
+                            {/* Actions */}
+                            {responseTab === "body" && (response.body || response.raw) && (
+                                <ActionBar>
+                                    <ActionBtnGroup>
+                                        <ActionBtn $success={copied} onClick={handleCopy}>
+                                            <ContentCopy style={{ fontSize: 12 }} />
+                                            {copied ? C.copiedLabel : L.copyResponseBtn}
+                                        </ActionBtn>
+                                        {response.isJson && response.body && (
+                                            <SendToButton value={response.body} targets={[{ label: "JSON Viewer", route: "/json-viewer" }]} />
+                                        )}
+                                    </ActionBtnGroup>
+                                </ActionBar>
+                            )}
+                        </>
+                    ) : (
+                        <EmptyState>
+                            <Typography variant="caption" sx={{ fontFamily: "var(--font-mono)", opacity: 0.6 }}>
+                                {sending ? L.sendingLabel : L.emptyStateMessage}
+                            </Typography>
+                        </EmptyState>
+                    )}
+
+                    {/* Always-visible CORS notice at bottom */}
+                    {!response && <CorsNotice style={{ marginTop: "auto" }}>ⓘ {L.corsNotice}</CorsNotice>}
+                </Panel>
+            )}
         </ToolLayout>
     );
 }

@@ -1,11 +1,6 @@
-WorkStation.js
-# app
-build/
 node_modules/
+.next/
 public/
-serviceWorkerRegistration.js
-service-worker.js
-jsconfig.json
-# documentation
 docs/
 .cache/
+src/sw.ts

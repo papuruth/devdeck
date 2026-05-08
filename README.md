@@ -2,7 +2,7 @@
 
 # DevDeck
 
-A free, open-source, all-in-one developer toolbox — 22 utilities available in a single progressive web app, with dark mode, search, and offline support.
+A free, open-source, all-in-one developer toolbox — 23 utilities available in a single progressive web app, with dark mode, search, offline support, and server-side rendering.
 
 ---
 
@@ -33,10 +33,11 @@ A free, open-source, all-in-one developer toolbox — 22 utilities available in 
 
 ### URL & Web
 
-| Tool          | Route            | Description                                                     |
-| ------------- | ---------------- | --------------------------------------------------------------- |
-| URL Validator | `/url-validator` | Check HTTP status codes and strip tracking parameters from URLs |
-| URL Shortener | `/url-shortener` | Shorten any long URL to a compact shareable link (via Short.io)  |
+| Tool                | Route            | Description                                                                        |
+| ------------------- | ---------------- | ---------------------------------------------------------------------------------- |
+| URL Validator       | `/url-validator` | Check HTTP status codes and strip tracking parameters from URLs                    |
+| URL Shortener       | `/url-shortener` | Shorten any long URL to a compact shareable link (via Short.io)                    |
+| API Request Builder | `/api-builder`   | Construct and send HTTP requests with custom headers and body, inspect JSON output |
 
 ### Utilities
 
@@ -56,7 +57,10 @@ A free, open-source, all-in-one developer toolbox — 22 utilities available in 
 
 -   **Dark mode** — system-aware toggle persisted across sessions
 -   **Global search** — filter tools from the header in real time
--   **PWA / offline support** — installable as a progressive web app via `manifest.webmanifest` and a service worker
+-   **PWA / offline support** — installable as a progressive web app via `@ducanh2912/next-pwa` (service worker + manifest)
+-   **Server-side rendering** — Next.js 15 App Router with static generation for all tool pages
+-   **SEO** — per-page `metadata` exports, JSON-LD `WebApplication` schema on every tool page, dynamic `sitemap.xml` and `robots.txt`
+-   **Blog** — `/blog` index and `/blog/[slug]` post pages with per-post metadata
 -   **Localization-ready** — all user-visible strings centralised in `src/localization/languages/english.js`
 -   **Responsive** — mobile, tablet, and desktop layouts
 
@@ -64,19 +68,22 @@ A free, open-source, all-in-one developer toolbox — 22 utilities available in 
 
 ## Tech Stack
 
-| Layer            | Library                                                  |
-| ---------------- | -------------------------------------------------------- |
-| UI framework     | React 17, MUI (Material UI) v5                           |
-| Styling          | Styled Components + MUI `sx` prop, CSS custom properties |
-| State management | Redux + Redux Saga                                       |
-| Routing          | React Router v5 + connected-react-router                 |
-| Build            | craco (Create React App + custom config)                 |
-| Crypto / hashing | crypto-js 4                                              |
-| YAML parsing     | js-yaml 4                                                |
-| Text diff        | diff 9                                                   |
-| CSV parsing      | papaparse 5                                              |
-| QR codes         | qrcode                                                   |
-| HTTP             | axios                                                    |
+| Layer            | Library                                                             |
+| ---------------- | ------------------------------------------------------------------- |
+| Framework        | Next.js 15 (App Router)                                             |
+| UI library       | React 18                                                            |
+| Language         | TypeScript 5                                                        |
+| Component lib    | MUI (Material UI) latest — engine: `@mui/styled-engine-sc`          |
+| Styling          | Styled Components 6 + MUI `sx` prop, CSS custom properties          |
+| State management | Redux 5 + Redux Saga                                                |
+| Crypto / hashing | crypto-js 4                                                         |
+| YAML parsing     | js-yaml 4                                                           |
+| Text diff        | diff 9                                                              |
+| CSV parsing      | papaparse 5                                                         |
+| QR codes         | qrcode                                                              |
+| HTTP             | axios                                                               |
+| PWA              | @ducanh2912/next-pwa                                                |
+| Bundle analysis  | @next/bundle-analyzer (`yarn analyze`)                              |
 
 ---
 
@@ -87,16 +94,22 @@ A free, open-source, all-in-one developer toolbox — 22 utilities available in 
 yarn
 
 # Start development server
-yarn start
+yarn dev
 
 # Production build
 yarn build
+
+# Start production server
+yarn start
 
 # Lint
 yarn lint
 
 # Format (Prettier + ESLint --fix)
 yarn format
+
+# Analyze bundle sizes
+yarn analyze
 ```
 
 Requires **Node ≥ 22** and **Yarn ≥ 1.22**.
@@ -107,15 +120,33 @@ Requires **Node ≥ 22** and **Yarn ≥ 1.22**.
 
 ```
 src/
-├── components/       # One folder per tool + shared UI primitives
-├── pages/            # Home and Operations listing pages
-├── routes/           # React Router config and redirect map
+├── app/              # Next.js App Router — one folder per route
+│   ├── layout.tsx    # Root layout (providers, fonts, global styles)
+│   ├── page.tsx      # Home page
+│   ├── sitemap.ts    # Dynamic sitemap route handler
+│   ├── robots.ts     # Dynamic robots.txt route handler
+│   ├── blog/         # Blog index + [slug] post pages
+│   └── <tool>/       # One folder per tool (page.tsx + client-wrapper.tsx)
+├── views/            # Tool UI — one folder per tool
+├── components/       # Shared UI primitives (GlobalLayout, ToolJsonLd, etc.)
 ├── store/            # Redux store, root reducer, root sagas
 ├── localization/     # react-localization strings (english.js)
-├── utils/            # globalConstants (tool registry), helper functions
+├── utils/            # globalConstants (tool registry, BASE_URL), helpers
 ├── styles/           # Global CSS, color tokens
-└── services/         # axios API helpers
+├── services/         # axios API helpers
+├── context/          # React context providers (ToolChainContext)
+├── lib/              # Next.js integration layers (StyledComponentsRegistry, providers)
+└── types/            # Shared TypeScript type definitions
 ```
+
+---
+
+## Environment Variables
+
+| Variable               | Required | Description                                   |
+| ---------------------- | -------- | --------------------------------------------- |
+| `SHORT_URL_API_PK`     | For URL shortener | Short.io API key (server-only)       |
+| `SHORT_URL_DOMAIN`     | For URL shortener | Short.io domain (server-only)        |
 
 ---
 

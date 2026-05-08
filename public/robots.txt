@@ -1,4 +1,0 @@
-User-agent: *
-Allow: /
-
-Sitemap: https://devdeckio.netlify.app/sitemap.xml

@@ -1,57 +1,41 @@
 {
-    "parser": "@babel/eslint-parser",
-    "extends": ["airbnb", "prettier", "plugin:jsx-a11y/recommended"],
+    "extends": ["next/core-web-vitals", "airbnb", "airbnb-typescript", "prettier"],
+    "parser": "@typescript-eslint/parser",
+    "parserOptions": {
+        "project": "./tsconfig.json"
+    },
+    "plugins": ["@typescript-eslint", "react", "jsx-a11y", "import"],
     "env": {
         "browser": true,
-        "jest": true
+        "es2022": true
     },
-    "plugins": ["react", "jsx-a11y", "import", "react-hooks"],
     "rules": {
+        "react/react-in-jsx-scope": "off",
+        "react/prop-types": "off",
+        "import/extensions": "off",
         "camelcase": "off",
-        "global-require": "off",
         "no-console": "off",
         "no-shadow": "off",
+        "@typescript-eslint/no-shadow": "off",
         "import/no-cycle": [2, { "maxDepth": 1 }],
         "max-len": ["error", { "code": 500 }],
-        "implicit-arrow-linebreak": "off",
         "no-param-reassign": ["error", { "props": false }],
-        "no-use-before-define": "off",
-        "jsx-a11y/label-has-associated-control": "off",
         "react/jsx-props-no-spreading": "off",
         "import/prefer-default-export": "off",
         "no-underscore-dangle": "off",
-        "no-unused-vars": [
-            "error",
-            {
-                "argsIgnorePattern": "^_"
-            }
-        ],
         "react/jsx-filename-extension": [
             "error",
-            {
-                "extensions": [".js", ".jsx"]
-            }
+            { "extensions": [".js", ".jsx", ".ts", ".tsx"] }
         ],
         "quotes": ["error", "double", { "allowTemplateLiterals": true }],
-        "react-hooks/rules-of-hooks": "error",
-        "react-hooks/exhaustive-deps": "warn",
-        "comma-dangle": ["error", "never"]
+        "comma-dangle": ["error", "never"],
+        "react/require-default-props": "off"
     },
     "settings": {
         "import/resolver": {
-            "alias": {
-                "map": [
-                    ["components", "./src/components"],
-                    ["pages", "./src/pages"],
-                    ["utils", "./src/utils"],
-                    ["styles", "./src/styles"],
-                    ["routes", "./src/routes"],
-                    ["localization", "./src/localization"],
-                    ["assets", "./src/assets"],
-                    ["services", "./src/services"],
-                    ["hooks", "./src/hooks"],
-                    ["context", "./src/context"]
-                ]
+            "typescript": {
+                "alwaysTryTypes": true,
+                "project": "./tsconfig.json"
             }
         }
     }

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Operations from "views/Operations";
 import { SEO_META } from "utils/seoMeta";
 import ToolJsonLd from "components/ToolJsonLd";
+import { GLOBAL_CONSTANTS } from "utils/globalConstants";
 
 const meta = SEO_META["/color-converter"];
 

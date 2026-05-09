@@ -52,8 +52,9 @@ export const metadata: Metadata = {
     },
     twitter: {
         card: "summary_large_image",
-        site: "@papu_kumar",
-        creator: "@papu_kumar",
+        // TODO: Update with actual Twitter handle if available
+        // site: "",
+        // creator: "",
         images: [`${GLOBAL_CONSTANTS.BASE_URL}/assets/images/og-preview.png`]
     },
     verification: {

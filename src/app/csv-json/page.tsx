@@ -2,13 +2,17 @@ import type { Metadata } from "next";
 import Operations from "views/Operations";
 import { SEO_META } from "utils/seoMeta";
 import ToolJsonLd from "components/ToolJsonLd";
+import { GLOBAL_CONSTANTS } from "utils/globalConstants";
 
 const meta = SEO_META["/csv-json"];
 
 export const metadata: Metadata = {
     title: meta?.title,
     description: meta?.description,
-    keywords: meta?.keywords
+    keywords: meta?.keywords,
+    alternates: {
+        canonical: `${GLOBAL_CONSTANTS.BASE_URL}/csv-json`
+    }
 };
 
 export default function Page() {

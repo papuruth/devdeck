@@ -1,6 +1,8 @@
 import type { NextConfig } from "next";
 import path from "path";
+// eslint-disable-next-line import/no-extraneous-dependencies
 import { InjectManifest } from "workbox-webpack-plugin";
+// eslint-disable-next-line import/no-extraneous-dependencies
 import withBundleAnalyzer from "@next/bundle-analyzer";
 
 const webpackAliases = {
@@ -20,9 +22,7 @@ const webpackAliases = {
     types: path.resolve(__dirname, "src/types")
 };
 
-const srcAliases = Object.fromEntries(
-    Object.entries(webpackAliases).filter(([k]) => k !== "@mui/styled-engine")
-);
+const srcAliases = Object.fromEntries(Object.entries(webpackAliases).filter(([k]) => k !== "@mui/styled-engine"));
 
 const nextConfig: NextConfig = {
     compiler: {
@@ -36,21 +36,13 @@ const nextConfig: NextConfig = {
     webpack(config, { webpack, isServer, dev }) {
         // Redirect @mui/styled-engine → @mui/styled-engine-sc at module resolution stage
         config.plugins.push(
-            new webpack.NormalModuleReplacementPlugin(
-                /^@mui\/styled-engine(?!-sc)(\/.*)?$/,
-                (resource: { request: string }) => {
-                    resource.request = resource.request.replace(
-                        "@mui/styled-engine",
-                        "@mui/styled-engine-sc"
-                    );
-                }
-            )
+            new webpack.NormalModuleReplacementPlugin(/^@mui\/styled-engine(?!-sc)(\/.*)?$/, (resource: { request: string }) => {
+                resource.request = resource.request.replace("@mui/styled-engine", "@mui/styled-engine-sc");
+            })
         );
 
         if (Array.isArray(config.resolve.alias)) {
-            config.resolve.alias.push(
-                ...Object.entries(srcAliases).map(([alias, name]) => ({ alias, name }))
-            );
+            config.resolve.alias.push(...Object.entries(srcAliases).map(([alias, name]) => ({ alias, name })));
         } else {
             config.resolve.alias = { ...(config.resolve.alias ?? {}), ...srcAliases };
         }
@@ -60,6 +52,14 @@ const nextConfig: NextConfig = {
         // bundles workbox directly into the output — no importScripts, no blocking
         // network round-trip when the SW wakes up.
         if (!isServer && !dev) {
+            const swBuildId = process.env.SW_BUILD_ID ?? process.env.COMMIT_REF ?? process.env.BUILD_ID ?? String(Date.now());
+
+            config.plugins.push(
+                new webpack.DefinePlugin({
+                    "process.env.SW_BUILD_ID": JSON.stringify(swBuildId)
+                })
+            );
+
             config.plugins.push(
                 new InjectManifest({
                     swSrc: path.resolve(__dirname, "src/sw.ts"),

@@ -7,7 +7,8 @@ import { registerRoute, setDefaultHandler } from "workbox-routing";
 import { CacheFirst, NetworkFirst, NetworkOnly } from "workbox-strategies";
 import { ExpirationPlugin } from "workbox-expiration";
 
-(self as unknown as ServiceWorkerGlobalScope).skipWaiting();
+const SW_BUILD_ID = process.env.SW_BUILD_ID ?? "unknown";
+console.log("🚀 ~ process.env:", process.env);
 clientsClaim();
 
 // Allow the client to trigger a SW update via postMessage
@@ -23,10 +24,7 @@ self.addEventListener("message", (event) => {
 precacheAndRoute(self.__WB_MANIFEST);
 
 // HTML navigation — NetworkFirst so users always get fresh pages
-registerRoute(
-    ({ request }) => request.mode === "navigate",
-    new NetworkFirst({ cacheName: "pages", networkTimeoutSeconds: 3 })
-);
+registerRoute(({ request }) => request.mode === "navigate", new NetworkFirst({ cacheName: "pages", networkTimeoutSeconds: 3 }));
 
 // Google Fonts stylesheets + webfonts
 registerRoute(

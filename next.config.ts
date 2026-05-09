@@ -53,7 +53,8 @@ const nextConfig: NextConfig = {
         // network round-trip when the SW wakes up.
         if (!isServer && !dev) {
             const swBuildId = process.env.SW_BUILD_ID ?? process.env.COMMIT_REF ?? process.env.BUILD_ID ?? String(Date.now());
-
+            console.log("🚀 ~ process.env:", process.env);
+            console.log("🚀 ~ Injecting SW build ID into client bundle:", swBuildId);
             config.plugins.push(
                 new webpack.DefinePlugin({
                     "process.env.SW_BUILD_ID": JSON.stringify(swBuildId)

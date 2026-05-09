@@ -8,9 +8,7 @@ import { CacheFirst, NetworkFirst, NetworkOnly } from "workbox-strategies";
 import { ExpirationPlugin } from "workbox-expiration";
 
 const SW_BUILD_ID = process.env.SW_BUILD_ID ?? "unknown";
-const envs = process.env;
 console.log("🚀 ~ Service Worker initialized with build ID:", SW_BUILD_ID);
-console.log("🚀 ~ Environment variables available to SW:", envs);
 clientsClaim();
 
 // Allow the client to trigger a SW update via postMessage

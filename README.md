@@ -82,7 +82,7 @@ A free, open-source, all-in-one developer toolbox — 23 utilities available in 
 | CSV parsing      | papaparse 5                                                         |
 | QR codes         | qrcode                                                              |
 | HTTP             | axios                                                               |
-| PWA              | @ducanh2912/next-pwa                                                |
+| PWA              | workbox-core                                                        |
 | Bundle analysis  | @next/bundle-analyzer (`yarn analyze`)                              |
 
 ---
@@ -110,6 +110,9 @@ yarn format
 
 # Analyze bundle sizes
 yarn analyze
+
+# TS Typecheck
+yarn typecheck
 ```
 
 Requires **Node ≥ 22** and **Yarn ≥ 1.22**.

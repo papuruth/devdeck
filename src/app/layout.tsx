@@ -21,7 +21,7 @@ export const metadata: Metadata = {
     metadataBase: new URL(GLOBAL_CONSTANTS.BASE_URL),
     title: {
         default: "DevDeck — Developer Toolbox",
-        template: "%s | DevDeck"
+        template: "%s"
     },
     description: "A collection of 25+ free online developer tools. Base64, QR codes, image resizer, JWT decoder, regex tester, and more.",
     authors: [{ name: "Papu Kumar" }],

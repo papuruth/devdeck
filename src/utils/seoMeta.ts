@@ -151,7 +151,7 @@ export const SEO_META: Record<string, SeoMeta> = {
 
     // ── Blog index ───────────────────────────────────────────────────────────
     "/blog": {
-        title: "DevDeck Blog — Developer Tools Explained",
+        title: "DevDeck Blog — Developer Tools Explained | DevDeck",
         description: "Guides, tutorials and tips for every DevDeck tool. Learn JSON, Base64, JWT, UUID, regex, timestamps and more.",
         keywords: "developer tools blog, json guide, base64 tutorial, jwt decoder guide, devdeck blog, developer guides"
     },

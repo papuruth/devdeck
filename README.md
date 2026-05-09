@@ -110,6 +110,9 @@ yarn format
 
 # Analyze bundle sizes
 yarn analyze
+
+# TS Typecheck
+yarn typecheck
 ```
 
 Requires **Node ≥ 22** and **Yarn ≥ 1.22**.

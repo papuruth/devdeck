@@ -10,7 +10,6 @@ const { BASE_URL } = GLOBAL_CONSTANTS;
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
     const { slug } = await params;
     const route = `/blog/${slug}`;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const meta = (SEO_META as any)[route] as (typeof SEO_META)["/"] | undefined;
     return {
         title: meta?.title ?? `${slug} — DevDeck Guides`,

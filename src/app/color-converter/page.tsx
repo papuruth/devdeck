@@ -8,7 +8,10 @@ const meta = SEO_META["/color-converter"];
 export const metadata: Metadata = {
     title: meta?.title,
     description: meta?.description,
-    keywords: meta?.keywords
+    keywords: meta?.keywords,
+      alternates: {
+        canonical: `${GLOBAL_CONSTANTS.BASE_URL}/color-converter`
+    }
 };
 
 export default function Page() {

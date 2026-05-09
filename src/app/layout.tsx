@@ -13,6 +13,7 @@ import { ToolChainProvider } from "context/ToolChainContext";
 import GlobalLayout from "components/GlobalLayout";
 import NavigationProgress from "components/NavigationProgress";
 import PWAUpdateWatcher from "components/PWAUpdateWatcher";
+import { Analytics } from "@vercel/analytics/next";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "swap" });
 const jetbrainsMono = JetBrains_Mono({ subsets: ["latin"], variable: "--font-jetbrains-mono", display: "swap" });
@@ -103,6 +104,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                         </ReduxProvider>
                     </ColorModeProvider>
                 </StyledComponentsRegistry>
+                <Analytics />
             </body>
         </html>
     );

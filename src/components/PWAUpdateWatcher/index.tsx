@@ -11,30 +11,39 @@ export default function PWAUpdateWatcher() {
             return () => {};
         }
 
-        navigator.serviceWorker.register("/sw.js", { scope: "/" }).catch(() => {
-            // Registration failure is non-fatal; app still works without SW
-        });
-
-        navigator.serviceWorker.ready.then((reg) => {
-            if (reg.waiting) {
-                setWaitingSW(reg.waiting);
-            }
-
-            reg.addEventListener("updatefound", () => {
-                const newSW = reg.installing;
-                if (!newSW) return;
-                newSW.addEventListener("statechange", () => {
-                    if (newSW.state === "installed" && navigator.serviceWorker.controller) {
-                        setWaitingSW(newSW);
-                    }
-                });
+        const trackInstalling = (worker: ServiceWorker | null) => {
+            if (!worker) return;
+            worker.addEventListener("statechange", () => {
+                if (worker.state === "installed" && navigator.serviceWorker.controller) {
+                    setWaitingSW(worker);
+                }
             });
-        });
+        };
 
-        // Add this inside the useEffect
+        navigator.serviceWorker
+            .register("/sw.js", { scope: "/" })
+            .then((reg) => {
+                if (reg.waiting) {
+                    setWaitingSW(reg.waiting);
+                }
+
+                if (reg.installing) {
+                    trackInstalling(reg.installing);
+                }
+
+                reg.addEventListener("updatefound", () => {
+                    trackInstalling(reg.installing);
+                });
+
+                reg.update();
+            })
+            .catch(() => {
+                // Registration failure is non-fatal; app still works without SW
+            });
+
         const checkInterval = setInterval(() => {
-            navigator.serviceWorker.ready.then((reg) => {
-                reg.update(); // Manually check for updates
+            navigator.serviceWorker.getRegistration("/sw.js").then((reg) => {
+                reg?.update();
             });
         }, 60000); // Check every 60 seconds
 

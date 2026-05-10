@@ -87,10 +87,11 @@ export const SEO_META: Record<string, SeoMeta> = {
         keywords: "regex tester, regular expression tester, regex online, test regex, regexp validator"
     },
     "/jwt-decoder": {
-        title: "JWT Decoder — Decode JSON Web Tokens Online | DevDeck",
-        description: "Decode and inspect JWT token header and payload instantly. No server-side processing — decoding runs in your browser.",
-        about: "JWT Decoder splits a JSON Web Token into its header, payload, and signature parts, then formats them as readable JSON. Useful for debugging auth flows without sharing tokens with external services.",
-        keywords: "jwt decoder, json web token decoder, decode jwt, jwt inspector, jwt online"
+        title: "JWT Toolkit — Decode & Generate JSON Web Tokens | DevDeck",
+        description:
+            "Decode, inspect, and generate JWT tokens. Sign with HS256, HS384, HS512, or RS256. All in-browser — no server required.",
+        about: "JWT Toolkit is a complete JWT workbench. Decode any JWT into header, payload, and signature with claim descriptions. Generate signed tokens with configurable algorithm, header, payload, and secret key.",
+        keywords: "jwt decoder, jwt generator, json web token, sign jwt, jwt online, jwt toolkit, hs256, rs256"
     },
     "/uuid-generator": {
         title: "UUID Generator — Generate UUID v4 Online | DevDeck",

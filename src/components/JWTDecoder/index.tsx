@@ -1,10 +1,10 @@
 "use client";
 
-import { Close, OpenInFull, Visibility, VisibilityOff } from "@mui/icons-material";
+import { Close, ContentCopy, OpenInFull, Visibility, VisibilityOff } from "@mui/icons-material";
 import { Dialog, DialogContent, IconButton } from "@mui/material";
 import localization from "localization";
 
-import React, { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { useToolChain } from "context/ToolChainContext";
 import styled from "styled-components";
 import {
@@ -12,6 +12,8 @@ import {
     ActionBtn,
     ActionBtnGroup,
     EmptyState,
+    ModeBtn,
+    ModeToggle,
     Panel,
     PanelHeader,
     PanelLabel,
@@ -20,6 +22,7 @@ import {
     ToolLayout
 } from "components/Shared/ToolKit";
 import LocalBadge from "components/Shared/LocalBadge";
+import { SignJWT } from "jose";
 
 const { jwtDecoder: L, common: C } = localization;
 
@@ -41,6 +44,24 @@ const EXAMPLE_TOKEN =
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9" +
     ".eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ" +
     ".SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
+
+const DEFAULT_HEADER = JSON.stringify({ alg: "HS256", typ: "JWT" }, null, 2);
+const DEFAULT_PAYLOAD = JSON.stringify(
+    {
+        sub: "user_123",
+        name: "John Doe",
+        iat: Math.floor(Date.now() / 1000),
+        exp: Math.floor(Date.now() / 1000) + 3600
+    },
+    null,
+    2
+);
+
+const ALGORITHMS = [
+    { value: "HS256", label: "HS256" },
+    { value: "HS384", label: "HS384" },
+    { value: "HS512", label: "HS512" }
+];
 
 function safeDecodeSegment(str: string): Record<string, unknown> | null {
     try {
@@ -391,6 +412,183 @@ const SigStatusBadge = styled.span<{ $s?: string }>`
     }};
 `;
 
+// ─── Generate tab styled components ───────────────────────────────────────────
+
+const GenFormWrapper = styled.div`
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    width: 100%;
+`;
+
+const GenSection = styled.div`
+    border-bottom: 1px solid var(--border-color);
+    &:last-child {
+        border-bottom: none;
+    }
+`;
+
+const GenLabel = styled.div`
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    padding: 10px 16px 6px;
+    background: rgba(0, 0, 0, 0.04);
+    border-bottom: 1px solid var(--border-color);
+`;
+
+const GenAlgoStrip = styled.div`
+    display: flex;
+    gap: 4px;
+    padding: 10px 16px;
+    flex-wrap: wrap;
+`;
+
+const GenAlgoBtn = styled.button<{ $active?: boolean }>`
+    background: ${(p) => (p.$active ? "#22cc99" : "transparent")};
+    color: ${(p) => (p.$active ? "#0b1220" : "var(--text-secondary)")};
+    border: 1px solid ${(p) => (p.$active ? "#22cc99" : "var(--border-color)")};
+    border-radius: 6px;
+    padding: 4px 14px;
+    font-size: 11px;
+    font-weight: 600;
+    font-family: "Inter", sans-serif;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    &:hover {
+        border-color: #22cc99;
+        color: ${(p) => (p.$active ? "#0b1220" : "#22cc99")};
+    }
+`;
+
+const GenFieldArea = styled.div`
+    padding: 12px 16px;
+    background: var(--bg-input);
+    min-height: 160px;
+`;
+
+const GenTextarea = styled.textarea`
+    width: 100%;
+    min-height: 130px;
+    background: transparent;
+    color: var(--text-primary);
+    border: none;
+    outline: none;
+    resize: none;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    line-height: 1.75;
+    letter-spacing: 0.02em;
+    display: block;
+    &::placeholder {
+        color: var(--text-secondary);
+        opacity: 0.4;
+    }
+`;
+
+const GenSecretRow = styled.div`
+    display: flex;
+    align-items: center;
+    gap: 0;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    margin: 0 16px 12px;
+    overflow: hidden;
+    &:focus-within {
+        border-color: #818cf8;
+    }
+`;
+
+const GenSecretField = styled.input`
+    flex: 1;
+    background: var(--bg-input);
+    border: none;
+    color: var(--text-primary);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    padding: 8px 10px;
+    outline: none;
+    &::placeholder {
+        color: var(--text-secondary);
+        opacity: 0.5;
+    }
+`;
+
+const GenToggleBtn = styled.button`
+    flex-shrink: 0;
+    background: rgba(0, 0, 0, 0.04);
+    color: var(--text-secondary);
+    border: none;
+    border-left: 1px solid var(--border-color);
+    padding: 0 10px;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.15s;
+    &:hover {
+        background: rgba(129, 140, 248, 0.1);
+        color: #818cf8;
+    }
+`;
+
+const GenOutputSection = styled.div`
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+`;
+
+const GenOutputHeader = styled.div`
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    padding: 10px 16px;
+    background: rgba(0, 0, 0, 0.04);
+    border-bottom: 1px solid var(--border-color);
+`;
+
+const GenOutputContent = styled.div`
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg-input);
+    padding: 24px 16px;
+    min-height: 200px;
+    overflow: auto;
+`;
+
+const GenTokenOutput = styled.div`
+    width: 100%;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    line-height: 1.75;
+    word-break: break-all;
+    color: var(--text-primary);
+    white-space: pre-wrap;
+    user-select: all;
+`;
+
+const GenErrorBadge = styled.div`
+    font-size: 12px;
+    color: #ef4444;
+    padding: 4px 0;
+    font-family: "Inter", sans-serif;
+`;
+
+const GenBadgeRow = styled.div`
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 10px 16px;
+`;
+
 // ─── ClaimsCard ───────────────────────────────────────────────────────────────
 
 interface ClaimsCardProps {
@@ -483,7 +681,6 @@ function ClaimsCard({ title, data, showDetails, onToggleDetails }: ClaimsCardPro
     );
 }
 
-
 // ─── SigVerify ────────────────────────────────────────────────────────────────
 
 interface SigVerifyProps {
@@ -540,11 +737,200 @@ function SigVerify({ token, alg, signature }: SigVerifyProps) {
     );
 }
 
+// ─── GenerateTab ──────────────────────────────────────────────────────────────
 
+function GenerateTab() {
+    const [algorithm, setAlgorithm] = useState("HS256");
+    const [headerJson, setHeaderJson] = useState(DEFAULT_HEADER);
+    const [payloadJson, setPayloadJson] = useState(DEFAULT_PAYLOAD);
+    const [secret, setSecret] = useState("my-secret-key");
+    const [showSecret, setShowSecret] = useState(false);
+    const [generatedToken, setGeneratedToken] = useState("");
+    const [error, setError] = useState("");
+    const { sendTo } = useToolChain();
+
+    // Debounced token generation
+    useEffect(() => {
+        const timer = setTimeout(async () => {
+            try {
+                // Validate JSON
+                let headerObj: Record<string, unknown>;
+                let payloadObj: Record<string, unknown>;
+                try {
+                    headerObj = JSON.parse(headerJson);
+                } catch {
+                    setError(L.invalidHeaderJson);
+                    setGeneratedToken("");
+                    return;
+                }
+                try {
+                    payloadObj = JSON.parse(payloadJson);
+                } catch {
+                    setError(L.invalidPayloadJson);
+                    setGeneratedToken("");
+                    return;
+                }
+
+                if (!secret.trim()) {
+                    setError("Secret / key is required");
+                    setGeneratedToken("");
+                    return;
+                }
+
+                // Ensure alg in header matches selected algorithm
+                headerObj = { ...headerObj, alg: algorithm, typ: "JWT" };
+
+                // Sign using jose
+                const enc = new TextEncoder();
+                const keyBytes = enc.encode(secret);
+                const key = await crypto.subtle.importKey("raw", keyBytes, { name: "HMAC", hash: { name: `SHA-${algorithm.slice(2)}` } }, false, ["sign"]);
+
+                const jwt = await new SignJWT(payloadObj as Record<string, unknown>)
+                    .setProtectedHeader(headerObj as { alg: string; [key: string]: unknown })
+                    .sign(key);
+
+                setGeneratedToken(jwt);
+                setError("");
+            } catch (e) {
+                setError(e instanceof Error ? e.message : "Token generation failed");
+                setGeneratedToken("");
+            }
+        }, 300);
+        return () => clearTimeout(timer);
+    }, [algorithm, headerJson, payloadJson, secret]);
+
+    const handleCopyToken = useCallback(async () => {
+        if (generatedToken) {
+            try {
+                await navigator.clipboard.writeText(generatedToken);
+            } catch {
+                // fallback
+            }
+        }
+    }, [generatedToken]);
+
+    const handleSendToDecoder = useCallback(() => {
+        if (generatedToken) {
+            sendTo(generatedToken, "/jwt-decoder");
+        }
+    }, [generatedToken, sendTo]);
+
+    return (
+        <ToolLayout>
+            <Panel>
+                <PanelHeader>
+                    <PanelLabel>{L.jwtTokenLabel}</PanelLabel>
+                    <LocalBadge />
+                </PanelHeader>
+                <GenFormWrapper>
+                    {/* Algorithm selector */}
+                    <GenSection>
+                        <GenLabel>{L.algorithmLabel}</GenLabel>
+                        <GenAlgoStrip>
+                            {ALGORITHMS.map((a) => (
+                                <GenAlgoBtn key={a.value} $active={algorithm === a.value} onClick={() => setAlgorithm(a.value)}>
+                                    {a.label}
+                                </GenAlgoBtn>
+                            ))}
+                        </GenAlgoStrip>
+                    </GenSection>
+
+                    {/* Header (JSON) */}
+                    <GenSection>
+                        <GenLabel>{L.headerJsonLabel}</GenLabel>
+                        <GenFieldArea>
+                            <GenTextarea value={headerJson} onChange={(e) => setHeaderJson(e.target.value)} spellCheck={false} />
+                        </GenFieldArea>
+                    </GenSection>
+
+                    {/* Payload (JSON) */}
+                    <GenSection>
+                        <GenLabel>{L.payloadJsonLabel}</GenLabel>
+                        <GenFieldArea>
+                            <GenTextarea value={payloadJson} onChange={(e) => setPayloadJson(e.target.value)} spellCheck={false} />
+                        </GenFieldArea>
+                    </GenSection>
+
+                    {/* Secret / Key */}
+                    <GenSection>
+                        <GenLabel>{L.secretLabel}</GenLabel>
+                        <div style={{ padding: "8px 16px 12px", background: "var(--bg-surface)" }}>
+                            <GenSecretRow>
+                                <GenSecretField
+                                    type={showSecret ? "text" : "password"}
+                                    value={secret}
+                                    onChange={(e) => setSecret(e.target.value)}
+                                    placeholder="Enter secret or key..."
+                                />
+                                <GenToggleBtn onClick={() => setShowSecret((v) => !v)}>
+                                    {showSecret ? L.hideSecretLabel : L.showSecretLabel}
+                                </GenToggleBtn>
+                            </GenSecretRow>
+                        </div>
+                    </GenSection>
+                </GenFormWrapper>
+
+                {error && (
+                    <ActionBar>
+                        <GenErrorBadge>{error}</GenErrorBadge>
+                    </ActionBar>
+                )}
+
+                {generatedToken && !error && (
+                    <GenBadgeRow>
+                        <Badge $type="info">{algorithm}</Badge>
+                        {(() => {
+                            try {
+                                const p = JSON.parse(payloadJson);
+                                if (p.exp) {
+                                    const now = Math.floor(Date.now() / 1000);
+                                    return <Badge $type={now > p.exp ? "error" : "success"}>{formatRelative(p.exp)}</Badge>;
+                                }
+                                return <Badge $type="warning">No expiry</Badge>;
+                            } catch {
+                                return null;
+                            }
+                        })()}
+                    </GenBadgeRow>
+                )}
+            </Panel>
+
+            <Panel>
+                <PanelHeader>
+                    <PanelLabel>{L.tokenOutputLabel}</PanelLabel>
+                </PanelHeader>
+                <GenOutputSection>
+                    <GenOutputHeader>{L.tokenOutputLabel}</GenOutputHeader>
+                    <GenOutputContent>
+                        {generatedToken ? (
+                            <GenTokenOutput>{generatedToken}</GenTokenOutput>
+                        ) : (
+                            <EmptyState>
+                                <span style={{ fontSize: 12, fontFamily: "Inter, sans-serif" }}>{L.generateEmptyState}</span>
+                            </EmptyState>
+                        )}
+                    </GenOutputContent>
+                    {generatedToken && !error && (
+                        <ActionBar>
+                            <ActionBtnGroup>
+                                <ActionBtn $success onClick={handleCopyToken}>
+                                    <ContentCopy fontSize="small" />
+                                    {C.copyBtn}
+                                </ActionBtn>
+                                <ActionBtn onClick={handleSendToDecoder}>{L.sendToDecoderBtn}</ActionBtn>
+                            </ActionBtnGroup>
+                        </ActionBar>
+                    )}
+                </GenOutputSection>
+            </Panel>
+        </ToolLayout>
+    );
+}
 
 // ─── Main ─────────────────────────────────────────────────────────────────────
 
 export default function JWTDecoder() {
+    const [tab, setTab] = useState<"decode" | "generate">("decode");
     const [token, setToken] = useState("");
     const [showDetails, setShowDetails] = useState(true);
     const { consumeChain } = useToolChain();
@@ -604,11 +990,15 @@ export default function JWTDecoder() {
 
     useEffect(() => {
         const chained = consumeChain("/jwt-decoder");
-        if (chained) setTokenEnd(chained);
+        if (chained) {
+            // If a token is chained in, switch to decode tab
+            setTab("decode");
+            setTokenEnd(chained);
+        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [consumeChain]);
 
-    const { header, payload, signature, badges, error } = useMemo(() => {
+    const { header, payload, signature, badges, error: decodeError } = useMemo(() => {
         if (!token.trim()) return { header: null, payload: null, signature: null, badges: [], error: "" };
         const parts = token.trim().split(".");
         if (parts.length !== 3) return { header: null, payload: null, signature: null, badges: [], error: L.invalidJwtError };
@@ -645,74 +1035,101 @@ export default function JWTDecoder() {
         );
     };
 
-    const isValid = !!header && !error;
+    const isValid = !!header && !decodeError;
+
+    // If in generate mode, render the GenerateTab
+    if (tab === "generate") {
+        return (
+            <>
+                <ModeToggle style={{ marginBottom: 8 }}>
+                    <ModeBtn $active={false} onClick={() => setTab("decode")}>
+                        {L.decodeTab}
+                    </ModeBtn>
+                    <ModeBtn $active onClick={() => setTab("generate")}>
+                        {L.generateTab}
+                    </ModeBtn>
+                </ModeToggle>
+                <GenerateTab />
+            </>
+        );
+    }
 
     return (
-        <ToolLayout>
-            <Panel>
-                <PanelHeader>
-                    <PanelLabel>{L.jwtTokenLabel}</PanelLabel>
-                    <BtnGroup>
-                        <ActionBtn onClick={() => setTokenEnd(EXAMPLE_TOKEN)}>{L.generateExampleBtn}</ActionBtn>
-                        <LocalBadge />
-                    </BtnGroup>
-                </PanelHeader>
-                <TokenWrapper>
-                    <TokenHighlight aria-hidden="true">
-                        {token ? renderHighlight(token) : <span style={{ color: "var(--text-secondary)", opacity: 0.4 }}>{L.placeholder}</span>}
-                    </TokenHighlight>
-                    <TokenTextarea
-                        ref={textareaRef}
-                        value={token}
-                        onChange={handleTokenChange}
-                        onDoubleClick={handleTokenDoubleClick}
-                        spellCheck={false}
-                        autoFocus
-                    />
-                </TokenWrapper>
-                {token && (
-                    <ActionBar>
-                        <ActionBtn $danger onClick={() => setToken("")}>
-                            {C.clearBtn}
-                        </ActionBtn>
-                        {isValid ? <StatusBadge $valid>{L.validJwtLabel}</StatusBadge> : error && <StatusBadge>{error}</StatusBadge>}
-                    </ActionBar>
-                )}
-                {badges.length > 0 && (
-                    <BadgeRow>
-                        {badges.map((b) => (
-                            <Badge key={b.label} $type={b.type}>
-                                {b.label}
-                            </Badge>
-                        ))}
-                    </BadgeRow>
-                )}
-            </Panel>
+        <>
+            <ModeToggle style={{ marginBottom: 8 }}>
+                <ModeBtn $active onClick={() => setTab("decode")}>
+                    {L.decodeTab}
+                </ModeBtn>
+                <ModeBtn $active={false} onClick={() => setTab("generate")}>
+                    {L.generateTab}
+                </ModeBtn>
+            </ModeToggle>
+            <ToolLayout>
+                <Panel>
+                    <PanelHeader>
+                        <PanelLabel>{L.jwtTokenLabel}</PanelLabel>
+                        <BtnGroup>
+                            <ActionBtn onClick={() => setTokenEnd(EXAMPLE_TOKEN)}>{L.generateExampleBtn}</ActionBtn>
+                            <LocalBadge />
+                        </BtnGroup>
+                    </PanelHeader>
+                    <TokenWrapper>
+                        <TokenHighlight aria-hidden="true">
+                            {token ? renderHighlight(token) : <span style={{ color: "var(--text-secondary)", opacity: 0.4 }}>{L.placeholder}</span>}
+                        </TokenHighlight>
+                        <TokenTextarea
+                            ref={textareaRef}
+                            value={token}
+                            onChange={handleTokenChange}
+                            onDoubleClick={handleTokenDoubleClick}
+                            spellCheck={false}
+                            autoFocus
+                        />
+                    </TokenWrapper>
+                    {token && (
+                        <ActionBar>
+                            <ActionBtn $danger onClick={() => setToken("")}>
+                                {C.clearBtn}
+                            </ActionBtn>
+                            {isValid ? <StatusBadge $valid>{L.validJwtLabel}</StatusBadge> : decodeError && <StatusBadge>{decodeError}</StatusBadge>}
+                        </ActionBar>
+                    )}
+                    {badges.length > 0 && (
+                        <BadgeRow>
+                            {badges.map((b) => (
+                                <Badge key={b.label} $type={b.type}>
+                                    {b.label}
+                                </Badge>
+                            ))}
+                        </BadgeRow>
+                    )}
+                </Panel>
 
-            <Panel style={{ maxHeight: "calc(100vh - 180px)", overflowY: "auto" }}>
-                {header ? (
-                    <>
-                        <ClaimsCard
-                            title={L.decodedHeaderLabel}
-                            data={header}
-                            showDetails={showDetails}
-                            onToggleDetails={() => setShowDetails((v) => !v)}
-                        />
-                        <ClaimsCard
-                            title={L.decodedPayloadLabel}
-                            data={payload}
-                            showDetails={showDetails}
-                            onToggleDetails={() => setShowDetails((v) => !v)}
-                        />
-                        <SigVerify token={token.trim()} alg={typeof header?.alg === "string" ? header.alg : ""} signature={signature} />
-                    </>
-                ) : (
-                    <EmptyState>
-                        <span style={{ fontSize: 22, fontFamily: "var(--font-mono)" }}>{}</span>
-                        <span style={{ fontSize: 12, fontFamily: "Inter, sans-serif" }}>{L.emptyStateMessage}</span>
-                    </EmptyState>
-                )}
-            </Panel>
-        </ToolLayout>
+                <Panel style={{ maxHeight: "calc(100vh - 180px)", overflowY: "auto" }}>
+                    {header ? (
+                        <>
+                            <ClaimsCard
+                                title={L.decodedHeaderLabel}
+                                data={header}
+                                showDetails={showDetails}
+                                onToggleDetails={() => setShowDetails((v) => !v)}
+                            />
+                            <ClaimsCard
+                                title={L.decodedPayloadLabel}
+                                data={payload}
+                                showDetails={showDetails}
+                                onToggleDetails={() => setShowDetails((v) => !v)}
+                            />
+                            <SigVerify token={token.trim()} alg={typeof header?.alg === "string" ? header.alg : ""} signature={signature} />
+                        </>
+                    ) : (
+                        <EmptyState>
+                            <span style={{ fontSize: 22, fontFamily: "var(--font-mono)" }}>{}</span>
+                            <span style={{ fontSize: 12, fontFamily: "Inter, sans-serif" }}>{L.emptyStateMessage}</span>
+                        </EmptyState>
+                    )}
+                </Panel>
+            </ToolLayout>
+        </>
     );
 }

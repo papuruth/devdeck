@@ -272,7 +272,7 @@ export default {
         emptyStateMessage: "Enter a pattern and test string to find matches"
     },
     jwtDecoder: {
-        pageTitle: "JWT Decoder",
+        pageTitle: "JWT Toolkit",
         placeholder: "Paste JWT token here...",
         invalidJwtError: "Invalid JWT: expected 3 parts separated by '.'",
         decodeError: "Failed to decode JWT segments — ensure it is a valid JWT",
@@ -301,7 +301,20 @@ export default {
         claimCol: "Claim",
         valueCol: "Value",
         descriptionCol: "Description",
-        numericDateNote: "This value must be a NumericDate type, representing seconds."
+        numericDateNote: "This value must be a NumericDate type, representing seconds.",
+        decodeTab: "Decode",
+        generateTab: "Generate",
+        algorithmLabel: "Algorithm",
+        headerJsonLabel: "Header (JSON)",
+        payloadJsonLabel: "Payload (JSON)",
+        secretLabel: "Secret / Key",
+        showSecretLabel: "Show",
+        hideSecretLabel: "Hide",
+        tokenOutputLabel: "Token Output",
+        sendToDecoderBtn: "Test in Decoder",
+        invalidHeaderJson: "Invalid JSON in header",
+        invalidPayloadJson: "Invalid JSON in payload",
+        generateEmptyState: "Fill in the form to generate a token"
     },
     uuidGenerator: {
         pageTitle: "UUID Generator",

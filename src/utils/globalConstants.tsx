@@ -234,9 +234,9 @@ export const GLOBAL_CONSTANTS = {
         {
             label: jwtDecoder.pageTitle,
             route: "/jwt-decoder",
-            description: "Decode and inspect JWT token header and payload without verification",
+            description: "Decode, inspect, and generate JWT tokens — sign with HS256/HS384/HS512/RS256",
             category: "encoding",
-            badge: null,
+            badge: "popular",
             icon: (
                 <VpnKey
                     fontSize="large"

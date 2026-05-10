@@ -20,4 +20,6 @@ declare global {
 }
 
 // Allow CSS imports
-declare module '*.css';
+declare module "*.css" {
+  export {};
+}

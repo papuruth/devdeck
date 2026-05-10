@@ -200,9 +200,9 @@ export const SEO_META: Record<string, SeoMeta> = {
         keywords: "json viewer, json formatter, json validator, pretty print json, json tree viewer, format json online"
     },
     "/blog/jwt-decoder": {
-        title: "JWT Decoder — Decode JSON Web Tokens Online | DevDeck",
-        description: "Decode and inspect JWT token header and payload instantly. Learn what JWTs are and how to read them.",
-        keywords: "jwt decoder, json web token decoder, decode jwt, jwt inspector, jwt online, jwt debugger"
+        title: "JWT Toolkit — Decode & Generate JSON Web Tokens | DevDeck",
+        description: "Decode, inspect, and generate signed JWT tokens in your browser. Supports HMAC (HS256/384/512), RSA, RSA-PSS, ECDSA, and EdDSA. No server required.",
+        keywords: "jwt toolkit, jwt decoder, jwt generator, sign jwt online, json web token, hs256, rs256, es256, ecdsa jwt, ed25519 jwt, jwt debugger"
     },
     "/blog/lorem-ipsum-generator": {
         title: "Lorem Ipsum Generator — Placeholder Text Guide | DevDeck",

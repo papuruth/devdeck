@@ -25,7 +25,7 @@ A free, open-source, all-in-one developer toolbox — 23 utilities available in 
 | Text Case Converter | `/text-case`      | Transform text to UPPER, lower, Title, camelCase, snake_case, and more  |
 | Hash Generator      | `/hash-generator` | Generate MD5, SHA-1, SHA-256, and SHA-512 hashes from any text          |
 | Regex Tester        | `/regex-tester`   | Test regular expressions with live match highlighting and group capture |
-| JWT Decoder         | `/jwt-decoder`    | Decode and inspect JWT token header and payload without verification    |
+| JWT Toolkit         | `/jwt-decoder`    | Decode, inspect, and generate JWT tokens — sign with HMAC, RSA, ECDSA, and EdDSA |
 | YAML ↔ JSON         | `/yaml-json`      | Convert YAML to JSON and JSON to YAML with error feedback               |
 | Text Diff           | `/text-diff`      | Compare two text blocks and highlight added and removed words           |
 | Word Counter        | `/word-counter`   | Count words, characters, lines, sentences, paragraphs, and reading time |

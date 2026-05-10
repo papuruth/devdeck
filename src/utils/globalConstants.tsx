@@ -234,7 +234,7 @@ export const GLOBAL_CONSTANTS = {
         {
             label: jwtDecoder.pageTitle,
             route: "/jwt-decoder",
-            description: "Decode, inspect, and generate JWT tokens — sign with HS256/HS384/HS512/RS256",
+            description: "Decode, inspect, and generate JWT tokens — sign with HMAC, RSA, ECDSA, and EdDSA",
             category: "encoding",
             badge: "popular",
             icon: (

@@ -9,8 +9,8 @@ interface ChainData {
 
 interface ContextValue {
     chain: ChainData | null;
-    sendTo: (value: string, targetRoute: string) => void;
-    consumeChain: (currentRoute: string) => string | null;
+    sendTo: (value: string | Record<string, unknown>, targetRoute: string) => void;
+    consumeChain: (currentRoute: string) => string | Record<string, unknown> | null;
     clearChain: () => void;
 }
 
@@ -28,8 +28,8 @@ export function ToolChainProvider({ children }: { children: React.ReactNode }) {
     const chainRef = useRef<ChainData | null>(chain);
     chainRef.current = chain;
 
-    const sendTo = useCallback((value: string, targetRoute: string) => {
-        setChain({ value, targetRoute });
+    const sendTo = useCallback((value: string | Record<string, unknown>, targetRoute: string) => {
+        setChain({ value: typeof value === "string" ? value : JSON.stringify(value), targetRoute });
     }, []);
 
     /**
@@ -40,6 +40,12 @@ export function ToolChainProvider({ children }: { children: React.ReactNode }) {
         if (chainRef.current && chainRef.current.targetRoute === currentRoute) {
             const { value } = chainRef.current;
             setChain(null);
+            try {
+              const parsed = JSON.parse(value);
+              if (typeof parsed === "object") return parsed;
+            } catch {
+              // not JSON, return as string
+            }
             return value;
         }
         return null;

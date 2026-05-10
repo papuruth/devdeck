@@ -84,7 +84,7 @@ export default function Base64Text() {
 
     useEffect(() => {
         const chained = consumeChain ? consumeChain("/base64-text") : null;
-        if (chained) {
+        if (chained && typeof chained === "string") {
             setMode("decode");
             setInput(chained);
         }

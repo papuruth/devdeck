@@ -203,7 +203,7 @@ function URLShortner() {
 
     useEffect(() => {
         const chained = consumeChain ? consumeChain("/url-shortener") : null;
-        if (chained) setURL(chained);
+        if (chained && typeof chained === "string") setURL(chained);
     }, [consumeChain]);
 
     useEffect(() => {

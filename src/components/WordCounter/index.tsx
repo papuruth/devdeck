@@ -266,7 +266,7 @@ export default function WordCounter() {
 
     useEffect(() => {
         const chained = consumeChain("/word-counter");
-        if (chained) setText(chained);
+        if (chained && typeof chained === "string") setText(chained);
         else if (initialValue) setText(initialValue);
     }, [consumeChain, initialValue]);
 

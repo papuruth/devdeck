@@ -1474,7 +1474,7 @@ export default function JWTDecoder() {
         if (chained) {
             setTab("decode");
             if (typeof chained === "string") {
-                setTokenEnd(chained);
+                setTokenEnd(chained as string);
             } else if (typeof chained === "object") {
                 if (chained.generatedToken) {
                     setToken(chained.generatedToken as string);

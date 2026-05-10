@@ -475,60 +475,64 @@ const blogData = {
 
     "jwt-decoder": {
         slug: "jwt-decoder",
-        title: "JWT Decoder — Decode JSON Web Tokens Online",
-        metaDescription: "Decode and inspect JWT token header and payload instantly. No server-side processing. Free on DevDeck.",
-        metaKeywords: "jwt decoder, json web token decoder, decode jwt, jwt inspector, jwt online, jwt debugger",
-        intro: "JWTs (JSON Web Tokens) are the standard for auth in modern apps. But reading them is tricky — they're Base64URL-encoded and split into three parts. JWT Decoder splits, decodes, and formats all three sections instantly.",
+        title: "JWT Toolkit — Decode & Generate JSON Web Tokens Online",
+        metaDescription: "Decode, inspect, and generate signed JWT tokens in your browser. Supports HMAC (HS256/384/512), RSA, RSA-PSS, ECDSA, and EdDSA. No server required.",
+        metaKeywords: "jwt toolkit, jwt decoder, jwt generator, sign jwt online, json web token, hs256, rs256, es256, ecdsa jwt, ed25519 jwt, jwt debugger",
+        intro: "JWT Toolkit is a complete JWT workbench. Decode any token to inspect its claims, and generate cryptographically signed JWTs using five algorithm families — all in-browser with zero server calls.",
         sections: [
             {
                 heading: "What is a JWT?",
-                body: "A JSON Web Token is a compact, URL-safe token used for authentication and authorization. It has three parts separated by dots: Header (algorithm), Payload (claims like user ID and expiry), and Signature (used for verification). Format: `xxxxx.yyyyy.zzzzz`"
+                body: "A JSON Web Token is a compact, URL-safe token used for authentication and authorization. It has three dot-separated parts: Header (algorithm + type), Payload (claims like user ID and expiry), and Signature (cryptographic proof). Format: `xxxxx.yyyyy.zzzzz`"
             },
             {
-                heading: "Why Decode JWTs?",
-                body: "During development, you often need to inspect what's inside a JWT — check the expiry (exp), see the user ID (sub), verify the issuer (iss), or debug unexpected claims. JWT Decoder shows all of this formatted as readable JSON without any server-side calls."
+                heading: "Decode: Inspect Any JWT",
+                body: "Paste any JWT into the Decode tab and the toolkit instantly splits, Base64URL-decodes, and formats all three sections. The `exp` claim is shown as a human-readable date with an expiry countdown. Expired tokens are highlighted. All 18 standard JWT claim names are documented inline."
             },
             {
-                heading: "Key Benefits",
+                heading: "Generate: Sign Tokens In-Browser",
+                body: "The Generate tab lets you create real, cryptographically signed JWTs. Choose your algorithm, edit the header and payload JSON, provide a secret or key, and a live token is produced with a 300ms debounce. Use 'Test in Decoder' to immediately verify what you just signed."
+            },
+            {
+                heading: "Supported Algorithms",
                 list: [
-                    "Decodes header and payload to readable JSON",
-                    "Shows expiry time in human-readable format",
-                    "Highlights expired tokens",
-                    "100% client-side — your token never leaves your browser",
-                    "Copy decoded sections individually"
+                    "HMAC — HS256, HS384, HS512 (shared secret, Base64 or plain text)",
+                    "RSA — RS256, RS384, RS512 (RSASSA-PKCS1-v1_5, PEM private key)",
+                    "RSA-PSS — PS256, PS384, PS512 (probabilistic signature scheme)",
+                    "ECDSA — ES256 (P-256), ES384 (P-384), ES512 (P-521)",
+                    "EdDSA — Ed25519 (fast, modern elliptic curve)"
                 ]
             },
             {
-                heading: "How to Use JWT Decoder",
-                steps: [
-                    "Paste the full JWT (three dot-separated parts)",
-                    "Header and payload decode automatically",
-                    "Check expiry and claims",
-                    "Note: signature is shown but NOT verified — you need the secret for that"
-                ]
+                heading: "Key Pair Generation",
+                body: "For asymmetric algorithms (RSA, RSA-PSS, ECDSA, EdDSA), click 'Generate Key Pair' to create a browser-native cryptographic key pair via the Web Crypto API. The private key is used for signing and the public key is shown with a copy button — ready to paste into your verification config."
             },
             {
-                heading: "Example Use Case",
-                body: "A user reports being logged out unexpectedly. You grab their JWT from browser DevTools → Network tab → Authorization header. Paste it into JWT Decoder: the `exp` claim shows the token expired 2 hours ago. The session timeout is confirmed — not a bug."
+                heading: "Example: Debug an Expired Session",
+                body: "A user reports being logged out unexpectedly. Grab their JWT from DevTools → Network → Authorization header. Paste it into the Decode tab: the `exp` claim shows the token expired 2 hours ago. Confirmed — not a bug, just an expired session."
             },
             {
                 heading: "Tips",
                 list: [
-                    "Never paste production JWTs into external tools — this tool is local only",
-                    "The 'exp' claim is a Unix timestamp — decoder shows it as a readable date",
-                    "JWT Decoder cannot verify the signature without the secret",
+                    "Never paste production JWTs into external tools — this toolkit is 100% local",
+                    "The 'exp' claim is a Unix timestamp — the toolkit converts it to a readable date automatically",
+                    "Algorithm change resets the key pair and syncs the header's `alg` field",
+                    "Use EdDSA (Ed25519) for new systems — it's faster and more secure than RSA",
                     "Use JWT for stateless auth, not for storing sensitive data in the payload"
                 ]
             }
         ],
-        cta: { label: "Try JWT Decoder →", toolRoute: "/jwt-decoder" },
+        cta: { label: "Open JWT Toolkit →", toolRoute: "/jwt-decoder" },
         relatedSlugs: ["hash-generator", "json-viewer", "base64-text-encoder"],
         faq: [
-            { q: "Is JWT Decoder free?", a: "Yes, completely free." },
-            { q: "Does it send my token to a server?", a: "No. All decoding happens locally in your browser. Your token is never sent anywhere." },
+            { q: "Is JWT Toolkit free?", a: "Yes, completely free." },
+            { q: "Does it send my token to a server?", a: "No. All decoding and signing happens locally in your browser. Nothing is ever sent to a server." },
             {
                 q: "Can it verify the JWT signature?",
-                a: "No. Signature verification requires the secret key. This tool only decodes the header and payload."
+                a: "Yes. In the Decode tab, provide your secret (HMAC) or public key PEM (RSA/ECDSA/EdDSA) and the signature is verified in-browser using the Web Crypto API."
+            },
+            {
+                q: "Which algorithms are supported for generation?",
+                a: "HS256/384/512 (HMAC), RS256/384/512 (RSA), PS256/384/512 (RSA-PSS), ES256/384/512 (ECDSA), and Ed25519 (EdDSA)."
             }
         ]
     },

@@ -73,9 +73,9 @@ export const BLOG_GUIDES: PaletteEntry[] = ([
     },
     {
         slug: "jwt-decoder",
-        label: "JWT Decoded Guide",
-        description: "How JSON Web Tokens work",
-        keywords: ["jwt", "token", "auth", "guide", "blog", "decode"]
+        label: "JWT Toolkit Guide",
+        description: "Decode, inspect, and generate JSON Web Tokens",
+        keywords: ["jwt", "token", "auth", "guide", "blog", "decode", "generate", "sign", "hmac", "rsa", "ecdsa"]
     },
     {
         slug: "password-generator",

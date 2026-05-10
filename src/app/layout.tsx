@@ -106,9 +106,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                         </ReduxProvider>
                     </ColorModeProvider>
                 </StyledComponentsRegistry>
-                <SpeedInsights />
-                <Analytics />
-                <GoogleAnalytics gaId="G-HCS4THL5ZL" />
+                {process.env.NODE_ENV === "production" && (
+                    <>
+                        <SpeedInsights />
+                        <Analytics />
+                        <GoogleAnalytics gaId="G-HCS4THL5ZL" />
+                    </>
+                )}
             </body>
         </html>
     );

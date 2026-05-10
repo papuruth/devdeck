@@ -5,6 +5,7 @@ import UpdateBanner from "components/Shared/UpdateBanner";
 
 export default function PWAUpdateWatcher() {
     const [waitingSW, setWaitingSW] = useState<ServiceWorker | null>(null);
+    const [isUpdating, setIsUpdating] = useState(false);
 
     useEffect(() => {
         if (typeof window === "undefined" || !("serviceWorker" in navigator)) {
@@ -19,6 +20,18 @@ export default function PWAUpdateWatcher() {
                 }
             });
         };
+
+        const onControllerChange = () => {
+            if (!isUpdating) {
+                setWaitingSW(null);
+                return;
+            }
+
+            setWaitingSW(null);
+            window.location.reload();
+        };
+
+        navigator.serviceWorker.addEventListener("controllerchange", onControllerChange);
 
         navigator.serviceWorker
             .register("/sw.js", { scope: "/" })
@@ -48,15 +61,17 @@ export default function PWAUpdateWatcher() {
         }, 60000); // Check every 60 seconds
 
         return () => {
+            navigator.serviceWorker.removeEventListener("controllerchange", onControllerChange);
             clearInterval(checkInterval);
         };
-    }, []);
+    }, [isUpdating]);
 
     if (!waitingSW) return null;
 
     const handleUpdate = () => {
+        if (!waitingSW) return;
+        setIsUpdating(true);
         waitingSW.postMessage({ type: "SKIP_WAITING" });
-        window.location.reload();
     };
 
     return <UpdateBanner onUpdate={handleUpdate} />;

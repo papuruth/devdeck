@@ -18,3 +18,6 @@ declare global {
         }
     }
 }
+
+// Allow CSS imports
+declare module '*.css';

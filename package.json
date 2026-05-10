@@ -34,7 +34,7 @@
     "author": {
         "name": "Papu Kumar",
         "email": "papuruth@gmail.com",
-        "url": "https://p-folio.netlify.app"
+        "url": "https://papulabs.netlify.app"
     },
     "scripts": {
         "dev": "next dev",

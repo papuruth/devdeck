@@ -113,7 +113,7 @@ export default function JSONViewer() {
 
     useEffect(() => {
         const chained = consumeChain("/json-viewer");
-        if (chained) setJSONInput(chained);
+        if (chained && typeof chained === "string") setJSONInput(chained);
     }, [consumeChain]);
 
     const handleJSONInput = ({ target: { value } }: React.ChangeEvent<HTMLTextAreaElement>): void => {

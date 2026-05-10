@@ -207,7 +207,7 @@ export default function RegexTester() {
 
     useEffect(() => {
         const chained = consumeChain ? consumeChain("/regex-tester") : null;
-        if (chained) setTestStr(chained);
+        if (chained && typeof chained === "string") setTestStr(chained);
         else if (initialTestStr) setTestStr(initialTestStr);
     }, [consumeChain, initialTestStr]);
 

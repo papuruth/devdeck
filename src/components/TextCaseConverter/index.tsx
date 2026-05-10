@@ -77,7 +77,7 @@ export default function TextCaseConverter() {
 
     useEffect(() => {
         const chained = consumeChain("/text-case");
-        if (chained) setInput(chained);
+        if (chained && typeof chained === "string") setInput(chained);
         else if (initialValue) setInput(initialValue);
     }, [consumeChain, initialValue]);
 

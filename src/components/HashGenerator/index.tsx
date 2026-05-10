@@ -118,7 +118,7 @@ export default function HashGenerator() {
 
     useEffect(() => {
         const chained = consumeChain("/hash-generator");
-        if (chained) setInput(chained);
+        if (chained && typeof chained === "string") setInput(chained);
         else if (initialValue) setInput(initialValue);
     }, [consumeChain, initialValue]);
 

@@ -230,7 +230,7 @@ export default function UrlValidator() {
 
     useEffect(() => {
         const chained = consumeChain("/url-validator");
-        if (chained) setUrl(chained);
+        if (chained && typeof chained === "string") setUrl(chained);
     }, [consumeChain]);
 
     const { isQueryAvailable, isHashAvailable } = useMemo(() => {

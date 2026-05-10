@@ -15,6 +15,7 @@ import NavigationProgress from "components/NavigationProgress";
 import PWAUpdateWatcher from "components/PWAUpdateWatcher";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Analytics } from "@vercel/analytics/next";
+import { GoogleAnalytics } from '@next/third-parties/google'
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "swap" });
 const jetbrainsMono = JetBrains_Mono({ subsets: ["latin"], variable: "--font-jetbrains-mono", display: "swap" });
@@ -107,6 +108,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 </StyledComponentsRegistry>
                 <SpeedInsights />
                 <Analytics />
+                <GoogleAnalytics gaId="G-HCS4THL5ZL" />
             </body>
         </html>
     );

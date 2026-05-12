@@ -18,7 +18,7 @@ import { useColorMode } from "context/ColorModeContext";
 import { toggleCommandPaletteAction } from "./HeaderAction";
 import { BlogNavLink, NavDivider, PaletteTrigger, StyledContainer, TriggerKbd, TriggerKbdGroup, TriggerPlaceholder } from "./styles";
 
-export default function Header() {
+export default function Header({ themeMode }: { themeMode: string }) {
     const { mode } = useColorMode();
     const dispatch = useAppDispatch();
     const [scrolled, setScrolled] = useState(false);
@@ -90,7 +90,7 @@ export default function Header() {
 
                         <NavDivider aria-hidden />
 
-                        <ThemeSwitcher />
+                        <ThemeSwitcher themeMode={themeMode} />
 
                         <Tooltip title="View source on GitHub">
                             <IconButton
@@ -115,4 +115,3 @@ export default function Header() {
         </StyledContainer>
     );
 }
-

@@ -16,6 +16,7 @@ import PWAUpdateWatcher from "components/PWAUpdateWatcher";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Analytics } from "@vercel/analytics/next";
 import { GoogleAnalytics } from "@next/third-parties/google";
+import { cookies } from "next/headers";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter", display: "swap" });
 const jetbrainsMono = JetBrains_Mono({ subsets: ["latin"], variable: "--font-jetbrains-mono", display: "swap" });
@@ -74,7 +75,13 @@ export const viewport: Viewport = {
 
 const themeScript = `(function(){try{var s=localStorage.getItem('devdeck-theme');document.documentElement.setAttribute('data-theme',s==='light'||s==='dark'?s:window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches?'light':'dark')}catch(e){}})()`;
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+const getCookieValue = async (cookieName: string) => {
+    const cookieStore = await cookies();
+    const cookieValue = cookieStore.get(cookieName)?.value || "";
+    return cookieValue;
+};
+
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
     return (
         <html lang="en" suppressHydrationWarning className={`${inter.variable} ${jetbrainsMono.variable}`}>
             <body>
@@ -88,7 +95,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                                     <ThemeAttributeSetter />
                                     <NavigationProgress />
                                     <PWAUpdateWatcher />
-                                    <GlobalLayout>{children}</GlobalLayout>
+                                    <GlobalLayout themeMode={await getCookieValue("devdeck-theme")}>{children}</GlobalLayout>
                                     <ToastContainer
                                         position="top-center"
                                         autoClose={3000}

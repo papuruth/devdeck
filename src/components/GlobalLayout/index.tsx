@@ -28,9 +28,10 @@ function useProtocolHandler() {
 
 interface GlobalLayoutProps {
     children: React.ReactNode;
+    themeMode: string;
 }
 
-export default function GlobalLayout({ children }: GlobalLayoutProps) {
+export default function GlobalLayout({ children, themeMode }: GlobalLayoutProps) {
     useProtocolHandler();
     const dispatch = useAppDispatch();
     const paletteOpen = useAppSelector((state) => state.headerReducer.commandPaletteOpen);
@@ -53,7 +54,7 @@ export default function GlobalLayout({ children }: GlobalLayoutProps) {
     return (
         <StyledContainer>
             <StyledMainViewContainer>
-                <Header />
+                <Header themeMode={themeMode} />
                 {children}
                 <Footer />
             </StyledMainViewContainer>

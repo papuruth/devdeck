@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Tooltip } from "@mui/material";
 import { DarkMode, LightMode, SettingsBrightness } from "@mui/icons-material";
 import { useColorMode } from "context/ColorModeContext";
@@ -8,27 +8,29 @@ import { SwitcherContainer, ModeButton } from "./styles";
 
 type ThemeMode = "auto" | "light" | "dark";
 
-export default function ThemeSwitcher() {
+export default function ThemeSwitcher({ themeMode }: { themeMode: string }) {
     const { mode, setThemeMode } = useColorMode();
     const [systemMode, setSystemMode] = useState<"light" | "dark">("dark");
-    const [currentMode, setCurrentMode] = useState<ThemeMode>(localStorage.getItem("devdeck-theme") as "auto" | "light" | "dark");
+    const [currentMode, setCurrentMode] = useState<ThemeMode>((themeMode || "auto") as "auto" | "light" | "dark");
+    const isMounted = useRef(false);
 
     useEffect(() => {
         const mediaQuery = window.matchMedia("(prefers-color-scheme: light)");
         setSystemMode(mediaQuery.matches ? "light" : "dark");
         const handler = (e: MediaQueryListEvent) => setSystemMode(e.matches ? "light" : "dark");
         mediaQuery.addEventListener("change", handler);
+        isMounted.current = true;
         return () => mediaQuery.removeEventListener("change", handler);
     }, []);
 
     useEffect(() => {
-        const saved = localStorage.getItem("devdeck-theme");
-        if (saved === "light" || saved === "dark") {
-            setCurrentMode(saved);
+        if (isMounted.current) return;
+        if (themeMode === "light" || themeMode === "dark") {
+            setCurrentMode(themeMode);
         } else {
             setCurrentMode("auto");
         }
-    }, [mode]);
+    }, [mode, themeMode]);
 
     const modes: Array<{ value: ThemeMode; icon: React.ReactNode; label: string }> = [
         { value: "auto", icon: <SettingsBrightness sx={{ fontSize: "18px" }} />, label: "Auto" },
@@ -39,9 +41,9 @@ export default function ThemeSwitcher() {
     const handleModeChange = (newMode: ThemeMode) => {
         setCurrentMode(newMode);
         if (newMode === "auto") {
-            localStorage.removeItem("devdeck-theme");
+            document.cookie = "devdeck-theme=; path=/; max-age=0;";
         } else {
-            localStorage.setItem("devdeck-theme", newMode);
+            document.cookie = `devdeck-theme=${newMode}; path=/; max-age=34560000; SameSite=Strict`;
         }
         setThemeMode?.(newMode === "auto" ? systemMode : newMode);
     };

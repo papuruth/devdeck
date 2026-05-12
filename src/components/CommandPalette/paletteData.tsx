@@ -191,6 +191,12 @@ export const BLOG_GUIDES: PaletteEntry[] = (
             label: "API Request Builder Guide",
             description: "Test HTTP endpoints directly in your browser",
             keywords: ["api", "http", "rest", "request", "builder", "guide", "blog", "curl", "postman"]
+        },
+        {
+            slug: "css-to-tailwind-converter",
+            label: "CSS to Tailwind Converter",
+            description: "Instantly transform standard CSS into Tailwind CSS utility classes",
+            keywords: ["css", "tailwind", "framework", "converter", "frontend", "utility-first", "refactor", "styles"]
         }
     ] as const
 ).map((g) => ({

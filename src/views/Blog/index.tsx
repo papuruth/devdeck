@@ -61,7 +61,8 @@ const CATEGORY_MAP: Record<string, string> = {
     "url-parser": "Encoding",
     "image-resizer": "Image",
     "color-converter": "Image",
-    "aspect-ratio-calculator": "Image"
+    "aspect-ratio-calculator": "Image",
+    "css-to-tailwind-converter": "Text"
 };
 
 const CATEGORY_COLORS: Record<string, { color: string; bg: string }> = {

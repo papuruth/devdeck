@@ -150,6 +150,14 @@ export const SEO_META: Record<string, SeoMeta> = {
         keywords: "api tester, http client, test api online, rest client, api request builder, http request tester"
     },
 
+    "/css-tailwind": {
+        title: "CSS → Tailwind Converter — Convert CSS to Tailwind Classes | DevDeck",
+        description:
+            "Convert CSS properties to Tailwind utility classes instantly. Supports 120+ CSS properties with smart mapping, arbitrary values, and unmapped property comments.",
+        about: "CSS to Tailwind Converter parses your CSS code and translates each property into equivalent Tailwind utility classes. It handles spacing, colors, layout, typography, and more — outputting clean, copy-ready class names for direct use in your React, Vue, or HTML projects.",
+        keywords: "css to tailwind converter, tailwind classes, css to tailwind, convert css to tailwind, tailwind utility classes, css converter"
+    },
+
     // ── Blog index ───────────────────────────────────────────────────────────
     "/blog": {
         title: "DevDeck Blog — Developer Tools Explained | DevDeck",
@@ -273,5 +281,10 @@ export const SEO_META: Record<string, SeoMeta> = {
         title: "API Request Builder — Test HTTP Endpoints in Your Browser | DevDeck",
         description: "Build and send HTTP requests without Postman or curl. Test REST APIs with custom headers, JSON body, and live response inspection — free and browser-based.",
         keywords: "api request builder, http client online, test api online, rest client browser, api tester, postman alternative, curl command online"
+    },
+    "/blog/css-to-tailwind-converter": {
+        title: "CSS to Tailwind Converter — Convert CSS Properties to Tailwind Classes | DevDeck",
+        description: "Convert CSS to Tailwind utility classes instantly. Learn how CSS properties map to Tailwind equivalents and how to use arbitrary values for custom designs.",
+        keywords: "css to tailwind, tailwind converter, css to tailwind converter, tailwind classes, tailwind utility classes, convert css to tailwind online"
     }
 };

@@ -36,7 +36,8 @@ const TOOL_BLOG_SLUG: Record<string, string> = {
     "/lorem-ipsum": "lorem-ipsum-generator",
     "/word-counter": "word-counter",
     "/csv-json": "csv-to-json-converter",
-    "/api-builder": "api-request-builder"
+    "/api-builder": "api-request-builder",
+    "/css-tailwind": "css-to-tailwind-converter"
 };
 
 function ToolFallback() {
@@ -71,6 +72,7 @@ const UUIDGenerator = dynamic(() => import("components/UUIDGenerator"), { loadin
 const WordCounter = dynamic(() => import("components/WordCounter"), { loading, ssr: false });
 const YAMLJSONConverter = dynamic(() => import("components/YAMLJSONConverter"), { loading, ssr: false });
 const APIRequestBuilder = dynamic(() => import("components/APIRequestBuilder"), { loading, ssr: false });
+const CSSToTailwind = dynamic(() => import("components/CSSToTailwind"), { loading, ssr: false });
 
 export default function Operations() {
     const pathname = usePathname();
@@ -106,7 +108,8 @@ export default function Operations() {
             loremIpsum,
             wordCounter,
             csvToJson,
-            apiRequestBuilder
+            apiRequestBuilder,
+            cssToTailwind
         } = localization;
         switch (pathname) {
             case "/base64-image":
@@ -155,6 +158,8 @@ export default function Operations() {
                 return { title: csvToJson.pageTitle, component: CSVToJSON };
             case "/api-builder":
                 return { title: apiRequestBuilder.pageTitle, component: APIRequestBuilder };
+            case "/css-tailwind":
+                return { title: cssToTailwind.pageTitle, component: CSSToTailwind };
             default:
                 return null;
         }
@@ -172,82 +177,87 @@ export default function Operations() {
     return (
         <StyledToolPage>
             <StyledToolHero $categoryColor={category?.color}>
-                    <StepperNavigation currentView={title} category={category} />
-                    <StyledHeroContent>
-                        <Box>
-                            <Typography variant="h5" sx={{ lineHeight: 1.2, fontWeight: 700 }}>
-                                {title}
+                <StepperNavigation currentView={title} category={category} />
+                <StyledHeroContent>
+                    <Box>
+                        <Typography variant="h5" sx={{ lineHeight: 1.2, fontWeight: 700 }}>
+                            {title}
+                        </Typography>
+                        {currentItem?.description && (
+                            <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5, maxWidth: 540 }}>
+                                {currentItem.description}
                             </Typography>
-                            {currentItem?.description && (
-                                <Typography variant="body2" color="text.secondary" sx={{ mt: 0.5, maxWidth: 540 }}>
-                                    {currentItem.description}
-                                </Typography>
-                            )}
-                        </Box>
-                        {category && (
-                            <Chip
-                                label={category.label}
-                                size="small"
-                                sx={{
-                                    bgcolor: `${category.color}22`,
-                                    color: category.color,
-                                    fontWeight: 600,
-                                    border: `1px solid ${category.color}55`,
-                                    alignSelf: "flex-start",
-                                    mt: 0.5
-                                }}
-                            />
                         )}
-                    </StyledHeroContent>
-                </StyledToolHero>
-                <StyledToolBody>
-                    <StyledToolCard elevation={2}>
-                        <Suspense fallback={<ToolFallback />}>
-                            <Component />
-                        </Suspense>
-                    </StyledToolCard>
-                    {toolSeo?.about && (
-                        <Box sx={{ mt: 3, px: 1 }}>
-                            <Typography variant="subtitle2" gutterBottom sx={{ color: "var(--text-primary)", fontWeight: 700 }}>
-                                About this tool
-                            </Typography>
-                            <Typography variant="body2" sx={{ color: "var(--text-secondary)" }}>
-                                {toolSeo.about}
-                            </Typography>
-                        </Box>
+                    </Box>
+                    {category && (
+                        <Chip
+                            label={category.label}
+                            size="small"
+                            sx={{
+                                bgcolor: `${category.color}22`,
+                                color: category.color,
+                                fontWeight: 600,
+                                border: `1px solid ${category.color}55`,
+                                alignSelf: "flex-start",
+                                mt: 0.5
+                            }}
+                        />
                     )}
-                    <RelatedTools currentRoute={pathname} />
-                    {TOOL_BLOG_SLUG[pathname] && (
-                        <Box sx={{ mt: 2, px: 1, pb: 1 }}>
-                            <Typography
-                                variant="subtitle2"
-                                gutterBottom
-                                sx={{ color: "var(--text-secondary)", fontSize: "0.75rem", textTransform: "uppercase", letterSpacing: "0.06em", fontWeight: 700 }}
-                            >
-                                📘 Learn More
-                            </Typography>
-                            <Box
-                                component="button"
-                                onClick={() => router.push(`/blog/${TOOL_BLOG_SLUG[pathname]}`)}
-                                sx={{
-                                    background: "none",
-                                    border: "none",
-                                    padding: 0,
-                                    cursor: "pointer",
-                                    color: "#22cc99",
-                                    fontSize: "0.85rem",
-                                    fontFamily: "inherit",
-                                    textDecoration: "underline",
-                                    textUnderlineOffset: "3px",
-                                    "&:hover": { opacity: 0.75 }
-                                }}
-                            >
-                                {SEO_META[(`/blog/${TOOL_BLOG_SLUG[pathname]}` as keyof typeof SEO_META)]?.title || "Read the guide"}
-                            </Box>
+                </StyledHeroContent>
+            </StyledToolHero>
+            <StyledToolBody>
+                <StyledToolCard elevation={2}>
+                    <Suspense fallback={<ToolFallback />}>
+                        <Component />
+                    </Suspense>
+                </StyledToolCard>
+                {toolSeo?.about && (
+                    <Box sx={{ mt: 3, px: 1 }}>
+                        <Typography variant="subtitle2" gutterBottom sx={{ color: "var(--text-primary)", fontWeight: 700 }}>
+                            About this tool
+                        </Typography>
+                        <Typography variant="body2" sx={{ color: "var(--text-secondary)" }}>
+                            {toolSeo.about}
+                        </Typography>
+                    </Box>
+                )}
+                <RelatedTools currentRoute={pathname} />
+                {TOOL_BLOG_SLUG[pathname] && (
+                    <Box sx={{ mt: 2, px: 1, pb: 1 }}>
+                        <Typography
+                            variant="subtitle2"
+                            gutterBottom
+                            sx={{
+                                color: "var(--text-secondary)",
+                                fontSize: "0.75rem",
+                                textTransform: "uppercase",
+                                letterSpacing: "0.06em",
+                                fontWeight: 700
+                            }}
+                        >
+                            📘 Learn More
+                        </Typography>
+                        <Box
+                            component="button"
+                            onClick={() => router.push(`/blog/${TOOL_BLOG_SLUG[pathname]}`)}
+                            sx={{
+                                background: "none",
+                                border: "none",
+                                padding: 0,
+                                cursor: "pointer",
+                                color: "#22cc99",
+                                fontSize: "0.85rem",
+                                fontFamily: "inherit",
+                                textDecoration: "underline",
+                                textUnderlineOffset: "3px",
+                                "&:hover": { opacity: 0.75 }
+                            }}
+                        >
+                            {SEO_META[`/blog/${TOOL_BLOG_SLUG[pathname]}` as keyof typeof SEO_META]?.title || "Read the guide"}
                         </Box>
-                    )}
-                </StyledToolBody>
+                    </Box>
+                )}
+            </StyledToolBody>
         </StyledToolPage>
     );
 }
-

@@ -476,8 +476,10 @@ const blogData = {
     "jwt-decoder": {
         slug: "jwt-decoder",
         title: "JWT Toolkit — Decode & Generate JSON Web Tokens Online",
-        metaDescription: "Decode, inspect, and generate signed JWT tokens in your browser. Supports HMAC (HS256/384/512), RSA, RSA-PSS, ECDSA, and EdDSA. No server required.",
-        metaKeywords: "jwt toolkit, jwt decoder, jwt generator, sign jwt online, json web token, hs256, rs256, es256, ecdsa jwt, ed25519 jwt, jwt debugger",
+        metaDescription:
+            "Decode, inspect, and generate signed JWT tokens in your browser. Supports HMAC (HS256/384/512), RSA, RSA-PSS, ECDSA, and EdDSA. No server required.",
+        metaKeywords:
+            "jwt toolkit, jwt decoder, jwt generator, sign jwt online, json web token, hs256, rs256, es256, ecdsa jwt, ed25519 jwt, jwt debugger",
         intro: "JWT Toolkit is a complete JWT workbench. Decode any token to inspect its claims, and generate cryptographically signed JWTs using five algorithm families — all in-browser with zero server calls.",
         sections: [
             {
@@ -525,7 +527,10 @@ const blogData = {
         relatedSlugs: ["hash-generator", "json-viewer", "base64-text-encoder"],
         faq: [
             { q: "Is JWT Toolkit free?", a: "Yes, completely free." },
-            { q: "Does it send my token to a server?", a: "No. All decoding and signing happens locally in your browser. Nothing is ever sent to a server." },
+            {
+                q: "Does it send my token to a server?",
+                a: "No. All decoding and signing happens locally in your browser. Nothing is ever sent to a server."
+            },
             {
                 q: "Can it verify the JWT signature?",
                 a: "Yes. In the Decode tab, provide your secret (HMAC) or public key PEM (RSA/ECDSA/EdDSA) and the signature is verified in-browser using the Web Crypto API."
@@ -1325,7 +1330,8 @@ const blogData = {
         title: "API Request Builder — Test HTTP Endpoints in Your Browser",
         metaDescription:
             "Build and fire HTTP requests directly from your browser — no Postman, no curl. Test REST APIs with custom headers, JSON body, and real-time response inspection.",
-        metaKeywords: "api request builder, http client online, test api online, rest client browser, api tester, http request tool, postman alternative",
+        metaKeywords:
+            "api request builder, http client online, test api online, rest client browser, api tester, http request tool, postman alternative",
         intro: "Testing an API endpoint usually means firing up Postman, writing a curl command, or switching to a terminal. DevDeck's API Request Builder lets you do it all in one tab — pick a method, enter a URL, add headers, send the request, and inspect the response without leaving your browser.",
         sections: [
             {
@@ -1392,12 +1398,128 @@ const blogData = {
         relatedSlugs: ["json-viewer", "jwt-decoder", "url-parser"],
         faq: [
             { q: "Is the API Request Builder free?", a: "Yes, completely free with no signup required." },
-            { q: "Does it store my requests or responses?", a: "No. All requests are sent directly from your browser and nothing is stored on any server." },
-            { q: "Why am I getting a CORS error?", a: "Requests run from your browser, so APIs that don't set permissive CORS headers will block them. This is a browser security policy. Use the exported code snippet to make the same request from a server-side environment." },
+            {
+                q: "Does it store my requests or responses?",
+                a: "No. All requests are sent directly from your browser and nothing is stored on any server."
+            },
+            {
+                q: "Why am I getting a CORS error?",
+                a: "Requests run from your browser, so APIs that don't set permissive CORS headers will block them. This is a browser security policy. Use the exported code snippet to make the same request from a server-side environment."
+            },
             { q: "Can I test authenticated APIs?", a: "Yes. Add an Authorization header with your token (e.g. Bearer eyJ...) in the Headers tab." },
-            { q: "What is the request timeout?", a: "Requests time out after 10 seconds. If a server doesn't respond within that window you'll see a timeout error." },
-            { q: "How do I test a POST request with a JSON body?", a: "Select POST, enter the URL, add a Content-Type: application/json header, switch to the Body tab, enter your JSON, and click SEND." },
-            { q: "Can I import a cURL command?", a: "Yes. Paste any curl command directly into the URL input and the builder will automatically parse the method, URL, headers, and body." }
+            {
+                q: "What is the request timeout?",
+                a: "Requests time out after 10 seconds. If a server doesn't respond within that window you'll see a timeout error."
+            },
+            {
+                q: "How do I test a POST request with a JSON body?",
+                a: "Select POST, enter the URL, add a Content-Type: application/json header, switch to the Body tab, enter your JSON, and click SEND."
+            },
+            {
+                q: "Can I import a cURL command?",
+                a: "Yes. Paste any curl command directly into the URL input and the builder will automatically parse the method, URL, headers, and body."
+            }
+        ]
+    },
+
+    "css-to-tailwind-converter": {
+        slug: "css-to-tailwind-converter",
+        title: "CSS to Tailwind Converter — Convert CSS Properties to Tailwind Classes",
+        metaDescription:
+            "Convert CSS to Tailwind utility classes instantly. Learn how CSS properties map to Tailwind equivalents, how to use arbitrary values, and how the converter works.",
+        metaKeywords:
+            "css to tailwind, tailwind converter, css to tailwind converter, tailwind classes, tailwind utility classes, convert css to tailwind online",
+        intro: "Migrating a project from plain CSS to Tailwind CSS or converting a CSS snippet for use in a React component? DevDeck's CSS → Tailwind Converter parses your CSS rules and maps each property to the equivalent Tailwind utility class — with smart color handling, spacing scale conversion, and unmapped property annotations.",
+        sections: [
+            {
+                heading: "What is the CSS → Tailwind Converter?",
+                body: "It's a browser-based tool that takes standard CSS input and outputs equivalent Tailwind utility classes. It handles 120+ CSS properties across layout, typography, colors, spacing, borders, shadows, flexbox, grid, transforms, transitions, and more. Properties that have no direct Tailwind equivalent are annotated as comments so you know exactly what needs manual attention."
+            },
+            {
+                heading: "Why Convert CSS to Tailwind?",
+                body: "Tailwind's utility-first approach speeds up development by reducing context-switching between HTML and CSS files. Converting existing CSS to Tailwind lets you adopt this workflow incrementally — migrate one component at a time without rewriting everything from scratch. The converter also helps when you're prototyping with CSS and want to translate your work into clean Tailwind classes."
+            },
+            {
+                heading: "Key Features",
+                list: [
+                    "Parses multi-rule CSS with selectors and inline declarations",
+                    "Maps 120+ CSS properties to Tailwind equivalents",
+                    "Colors: hex, rgba, and named colors → Tailwind named classes or JIT arbitrary syntax",
+                    "Spacing: px values mapped to the Tailwind spacing scale (p-4, m-10, etc.)",
+                    "Unmapped properties shown as comments — nothing is silently dropped",
+                    "Stats badge shows 'X / Y properties mapped' for progress",
+                    "'Copy Classes' for clean class names, 'Copy All' to include annotations",
+                    "100% client-side — no data leaves your browser"
+                ]
+            },
+            {
+                heading: "How Mapping Works",
+                body: "The converter uses a curated mapping table of ~120 CSS properties. Each property has a mapper function that receives the CSS value and returns one or more Tailwind class names. For example, display: flex → flex, justify-content: center → justify-center, padding: 8px 16px → px-4 py-8. Values that don't fit the Tailwind scale (like custom pixel values) use Tailwind's JIT arbitrary value syntax: w-[18px], text-[#ff6600]."
+            },
+            {
+                heading: "Color Handling",
+                body: "Colors are handled specially. The converter recognizes named colors (white, black, red, blue…), hex codes (#fff, #000000, #22cc99…), and RGB/RGBA values. Common hex colors are mapped to their closest Tailwind named class: #fff → text-white, #22cc99 → bg-emerald-400, #3b82f6 → text-blue-500. For unrecognized colors or exact shades, the tool falls back to Tailwind's arbitrary value JIT syntax: text-[#ff6600] or bg-[rgba(34,51,68,0.5)]."
+            },
+            {
+                heading: "Spacing Scale Conversion",
+                body: "Tailwind uses a predefined spacing scale (0.5, 1, 2, 4, 8, 16, 20, 24… rem-based units). The converter maps your px values to the closest scale match: 4px → 1 (p-1), 8px → 2 (m-2), 16px → 4 (gap-4). Values that don't have an exact match in the scale fall back to arbitrary value syntax: w-[18px]."
+            },
+            {
+                heading: "CSS Shorthand Support",
+                body: "The converter handles CSS shorthand properties intelligently. margin: 10px becomes m-10, but margin: 10px 20px expands to my-10 mx-20, and margin: 10px 20px 30px 40px becomes mt-10 mr-20 mb-30 ml-40. If values repeat, the output is deduplicated — margin: 10px 20px 10px 20px collapses to my-10 mx-20. The same logic applies to padding."
+            },
+            {
+                heading: "How to Use the CSS → Tailwind Converter",
+                steps: [
+                    "Paste your CSS into the left panel (full rule blocks or just property: value pairs)",
+                    "The converter processes input in real-time with a 300ms debounce",
+                    "View the Tailwind class names in the right panel",
+                    "Check the stats badge for the mapped/total property count",
+                    "Review unmapped properties listed below the output",
+                    "Click 'Copy Classes' to copy clean class names for your className attribute",
+                    "Click 'Copy All' to copy classes plus unmapped annotations for review"
+                ]
+            },
+            {
+                heading: "Example Use Case",
+                body: "You're migrating a legacy Bootstrap project to Tailwind. You copy a CSS block like .btn { display: inline-flex; align-items: center; padding: 8px 16px; border-radius: 6px; font-weight: 700; } and paste it. The converter returns inline-flex items-center px-4 py-2 rounded-md font-bold — ready to drop directly into your JSX className. The unmapped section shows any properties that need manual Tailwind equivalents."
+            },
+            {
+                heading: "Tips",
+                list: [
+                    "Paste full CSS rule blocks with selectors — the parser extracts properties correctly",
+                    "Use 'Copy Classes' for clean output that goes straight into className attributes",
+                    "For custom pixel values not in the Tailwind scale, use arbitrary value syntax like w-[22px]",
+                    "The unmapped comments section helps you identify which properties need manual Tailwind equivalents like custom animations or specific box-shadow values",
+                    "Combine with the Smart Formatter to detect and format CSS pasted from other sources"
+                ]
+            }
+        ],
+        cta: { label: "Try CSS → Tailwind Converter →", toolRoute: "/css-tailwind" },
+        relatedSlugs: ["smart-formatter", "color-converter", "json-viewer", "yaml-to-json-converter"],
+        faq: [
+            { q: "Is the CSS to Tailwind Converter free?", a: "Yes, completely free with no signup required." },
+            { q: "Does it store my CSS?", a: "No. All conversion happens locally in your browser. Nothing is sent to any server." },
+            {
+                q: "What CSS properties are supported?",
+                a: "Over 120 properties covering display, flexbox, grid, positioning, sizing, typography, colors, backgrounds, borders, shadows, opacity, transforms, transitions, and more."
+            },
+            {
+                q: "What happens to properties that don't have a Tailwind equivalent?",
+                a: "They are shown as comments below the output (e.g., /* gap: 12px — no Tailwind class */) so you know exactly what needs manual attention."
+            },
+            {
+                q: "Can it convert responsive or pseudo-class variants?",
+                a: "Not yet. The current version converts base CSS properties. Responsive variants (sm:, md:, lg:) and pseudo-classes (:hover, :focus) are on the roadmap."
+            },
+            {
+                q: "How are colors handled?",
+                a: "Common hex colors are mapped to Tailwind named classes (#fff → white, #22cc99 → emerald-400). Unrecognized hex values use Tailwind's JIT arbitrary value syntax (text-[#ff6600])."
+            },
+            {
+                q: "Does it handle CSS shorthand values like margin: 10px 20px?",
+                a: "Yes. Shorthand values are expanded to the correct Tailwind directional classes (margin: 10px 20px → my-10 mx-20). Duplicate values are collapsed automatically."
+            }
         ]
     }
 };
@@ -1407,6 +1529,7 @@ export default blogData;
 // Ordered list for the blog index page
 export const blogList = [
     blogData["api-request-builder"],
+    blogData["css-to-tailwind-converter"],
     blogData["json-viewer"],
     blogData["jwt-decoder"],
     blogData["base64-text-encoder"],

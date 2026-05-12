@@ -52,146 +52,148 @@ export const ENRICHED_TOOLS: PaletteEntry[] = GLOBAL_CONSTANTS.OPERATIONS_ITEMS.
 }));
 
 // ── Blog guides (searchable in palette) ──────────────────────────────────────
-export const BLOG_GUIDES: PaletteEntry[] = ([
-    {
-        slug: "json-viewer",
-        label: "JSON Viewer Guide",
-        description: "How to format and validate JSON",
-        keywords: ["json", "format", "guide", "blog", "viewer", "parse"]
-    },
-    {
-        slug: "base64-text-encoder",
-        label: "Base64 Encoding Guide",
-        description: "Understand Base64 encoding and decoding",
-        keywords: ["base64", "encode", "decode", "guide", "blog", "text"]
-    },
-    {
-        slug: "regex-tester",
-        label: "Regex Guide",
-        description: "Learn regular expressions from scratch",
-        keywords: ["regex", "regexp", "pattern", "guide", "blog", "match"]
-    },
-    {
-        slug: "jwt-decoder",
-        label: "JWT Toolkit Guide",
-        description: "Decode, inspect, and generate JSON Web Tokens",
-        keywords: ["jwt", "token", "auth", "guide", "blog", "decode", "generate", "sign", "hmac", "rsa", "ecdsa"]
-    },
-    {
-        slug: "password-generator",
-        label: "Password Security Guide",
-        description: "Create strong, secure passwords",
-        keywords: ["password", "security", "guide", "blog", "generate"]
-    },
-    {
-        slug: "hash-generator",
-        label: "Hash Generator Guide",
-        description: "MD5, SHA-256, SHA-512 explained",
-        keywords: ["hash", "sha", "md5", "checksum", "guide", "blog"]
-    },
-    {
-        slug: "uuid-generator",
-        label: "UUID Generator Guide",
-        description: "What is UUID and when to use it",
-        keywords: ["uuid", "guid", "unique", "id", "guide", "blog"]
-    },
-    {
-        slug: "timestamp-converter",
-        label: "Timestamp Converter Guide",
-        description: "Unix timestamps and date conversions",
-        keywords: ["timestamp", "unix", "epoch", "date", "guide", "blog"]
-    },
-    {
-        slug: "url-parser",
-        label: "URL Parser Guide",
-        description: "Anatomy of a URL explained",
-        keywords: ["url", "parser", "href", "guide", "blog", "query"]
-    },
-    {
-        slug: "color-converter",
-        label: "Color Converter Guide",
-        description: "HEX, RGB, HSL color formats",
-        keywords: ["color", "hex", "rgb", "hsl", "guide", "blog"]
-    },
-    {
-        slug: "text-diff-checker",
-        label: "Text Diff Guide",
-        description: "Compare text and find differences",
-        keywords: ["diff", "compare", "text", "guide", "blog", "changes"]
-    },
-    {
-        slug: "image-resizer",
-        label: "Image Resizer Guide",
-        description: "Resize images in the browser",
-        keywords: ["image", "resize", "guide", "blog", "photo"]
-    },
-    {
-        slug: "qr-code-generator",
-        label: "QR Code Generator Guide",
-        description: "Generate QR codes for any URL",
-        keywords: ["qr", "code", "guide", "blog", "generate", "barcode"]
-    },
-    {
-        slug: "csv-to-json-converter",
-        label: "CSV to JSON Guide",
-        description: "Convert spreadsheet data to JSON",
-        keywords: ["csv", "json", "convert", "guide", "blog", "table"]
-    },
-    {
-        slug: "yaml-to-json-converter",
-        label: "YAML to JSON Guide",
-        description: "Convert YAML configuration to JSON",
-        keywords: ["yaml", "json", "convert", "guide", "blog"]
-    },
-    {
-        slug: "number-base-converter",
-        label: "Number Base Converter Guide",
-        description: "Binary, hex, octal conversions",
-        keywords: ["binary", "hex", "octal", "decimal", "guide", "blog"]
-    },
-    {
-        slug: "lorem-ipsum-generator",
-        label: "Lorem Ipsum Generator Guide",
-        description: "Generate placeholder text",
-        keywords: ["lorem", "ipsum", "placeholder", "guide", "blog"]
-    },
-    {
-        slug: "word-counter",
-        label: "Word Counter Guide",
-        description: "Count words, characters, reading time",
-        keywords: ["word", "count", "character", "guide", "blog"]
-    },
-    {
-        slug: "text-case-converter",
-        label: "Text Case Converter Guide",
-        description: "camelCase, snake_case, Title Case",
-        keywords: ["text", "case", "camel", "snake", "guide", "blog"]
-    },
-    {
-        slug: "url-shortener",
-        label: "URL Shortener Guide",
-        description: "Shorten long URLs instantly",
-        keywords: ["url", "shorten", "short", "guide", "blog"]
-    },
-    {
-        slug: "aspect-ratio-calculator",
-        label: "Aspect Ratio Guide",
-        description: "Calculate image and screen ratios",
-        keywords: ["aspect", "ratio", "width", "height", "guide", "blog"]
-    },
-    {
-        slug: "base64-image-converter",
-        label: "Base64 Image Guide",
-        description: "Encode images to Base64 strings",
-        keywords: ["base64", "image", "encode", "guide", "blog", "photo"]
-    },
-    {
-        slug: "api-request-builder",
-        label: "API Request Builder Guide",
-        description: "Test HTTP endpoints directly in your browser",
-        keywords: ["api", "http", "rest", "request", "builder", "guide", "blog", "curl", "postman"]
-    }
-] as const).map((g) => ({
+export const BLOG_GUIDES: PaletteEntry[] = (
+    [
+        {
+            slug: "json-viewer",
+            label: "JSON Viewer Guide",
+            description: "How to format and validate JSON",
+            keywords: ["json", "format", "guide", "blog", "viewer", "parse"]
+        },
+        {
+            slug: "base64-text-encoder",
+            label: "Base64 Encoding Guide",
+            description: "Understand Base64 encoding and decoding",
+            keywords: ["base64", "encode", "decode", "guide", "blog", "text"]
+        },
+        {
+            slug: "regex-tester",
+            label: "Regex Guide",
+            description: "Learn regular expressions from scratch",
+            keywords: ["regex", "regexp", "pattern", "guide", "blog", "match"]
+        },
+        {
+            slug: "jwt-decoder",
+            label: "JWT Toolkit Guide",
+            description: "Decode, inspect, and generate JSON Web Tokens",
+            keywords: ["jwt", "token", "auth", "guide", "blog", "decode", "generate", "sign", "hmac", "rsa", "ecdsa"]
+        },
+        {
+            slug: "password-generator",
+            label: "Password Security Guide",
+            description: "Create strong, secure passwords",
+            keywords: ["password", "security", "guide", "blog", "generate"]
+        },
+        {
+            slug: "hash-generator",
+            label: "Hash Generator Guide",
+            description: "MD5, SHA-256, SHA-512 explained",
+            keywords: ["hash", "sha", "md5", "checksum", "guide", "blog"]
+        },
+        {
+            slug: "uuid-generator",
+            label: "UUID Generator Guide",
+            description: "What is UUID and when to use it",
+            keywords: ["uuid", "guid", "unique", "id", "guide", "blog"]
+        },
+        {
+            slug: "timestamp-converter",
+            label: "Timestamp Converter Guide",
+            description: "Unix timestamps and date conversions",
+            keywords: ["timestamp", "unix", "epoch", "date", "guide", "blog"]
+        },
+        {
+            slug: "url-parser",
+            label: "URL Parser Guide",
+            description: "Anatomy of a URL explained",
+            keywords: ["url", "parser", "href", "guide", "blog", "query"]
+        },
+        {
+            slug: "color-converter",
+            label: "Color Converter Guide",
+            description: "HEX, RGB, HSL color formats",
+            keywords: ["color", "hex", "rgb", "hsl", "guide", "blog"]
+        },
+        {
+            slug: "text-diff-checker",
+            label: "Text Diff Guide",
+            description: "Compare text and find differences",
+            keywords: ["diff", "compare", "text", "guide", "blog", "changes"]
+        },
+        {
+            slug: "image-resizer",
+            label: "Image Resizer Guide",
+            description: "Resize images in the browser",
+            keywords: ["image", "resize", "guide", "blog", "photo"]
+        },
+        {
+            slug: "qr-code-generator",
+            label: "QR Code Generator Guide",
+            description: "Generate QR codes for any URL",
+            keywords: ["qr", "code", "guide", "blog", "generate", "barcode"]
+        },
+        {
+            slug: "csv-to-json-converter",
+            label: "CSV to JSON Guide",
+            description: "Convert spreadsheet data to JSON",
+            keywords: ["csv", "json", "convert", "guide", "blog", "table"]
+        },
+        {
+            slug: "yaml-to-json-converter",
+            label: "YAML to JSON Guide",
+            description: "Convert YAML configuration to JSON",
+            keywords: ["yaml", "json", "convert", "guide", "blog"]
+        },
+        {
+            slug: "number-base-converter",
+            label: "Number Base Converter Guide",
+            description: "Binary, hex, octal conversions",
+            keywords: ["binary", "hex", "octal", "decimal", "guide", "blog"]
+        },
+        {
+            slug: "lorem-ipsum-generator",
+            label: "Lorem Ipsum Generator Guide",
+            description: "Generate placeholder text",
+            keywords: ["lorem", "ipsum", "placeholder", "guide", "blog"]
+        },
+        {
+            slug: "word-counter",
+            label: "Word Counter Guide",
+            description: "Count words, characters, reading time",
+            keywords: ["word", "count", "character", "guide", "blog"]
+        },
+        {
+            slug: "text-case-converter",
+            label: "Text Case Converter Guide",
+            description: "camelCase, snake_case, Title Case",
+            keywords: ["text", "case", "camel", "snake", "guide", "blog"]
+        },
+        {
+            slug: "url-shortener",
+            label: "URL Shortener Guide",
+            description: "Shorten long URLs instantly",
+            keywords: ["url", "shorten", "short", "guide", "blog"]
+        },
+        {
+            slug: "aspect-ratio-calculator",
+            label: "Aspect Ratio Guide",
+            description: "Calculate image and screen ratios",
+            keywords: ["aspect", "ratio", "width", "height", "guide", "blog"]
+        },
+        {
+            slug: "base64-image-converter",
+            label: "Base64 Image Guide",
+            description: "Encode images to Base64 strings",
+            keywords: ["base64", "image", "encode", "guide", "blog", "photo"]
+        },
+        {
+            slug: "api-request-builder",
+            label: "API Request Builder Guide",
+            description: "Test HTTP endpoints directly in your browser",
+            keywords: ["api", "http", "rest", "request", "builder", "guide", "blog", "curl", "postman"]
+        }
+    ] as const
+).map((g) => ({
     ...g,
     kind: "guide" as const,
     route: `/blog/${g.slug}`,
@@ -293,7 +295,8 @@ const RELATED_TOOLS = {
     "/word-counter": ["/text-diff", "/text-case", "/lorem-ipsum"],
     "/lorem-ipsum": ["/word-counter", "/text-case"],
     "/csv-json": ["/json-viewer", "/yaml-json"],
-    "/api-builder": ["/json-viewer", "/jwt-decoder", "/url-validator", "/hash-generator"]
+    "/api-builder": ["/json-viewer", "/jwt-decoder", "/url-validator", "/hash-generator"],
+    "/css-tailwind": ["/smart-formatter", "/color-converter", "/json-viewer", "/yaml-json"]
 };
 
 export function getRelatedToolEntries(currentRoute: string): PaletteEntry[] {

@@ -23,6 +23,7 @@ export default function Header({ themeMode }: { themeMode: string }) {
     const dispatch = useAppDispatch();
     const [scrolled, setScrolled] = useState(false);
     const [macKbd, setMacKbd] = useState(false);
+    const [showShortcut, setShowShortcut] = useState(false);
     const pathname = usePathname();
     const router = useRouter();
     const isBlogActive = pathname?.startsWith("/blog") ?? false;
@@ -37,6 +38,7 @@ export default function Header({ themeMode }: { themeMode: string }) {
 
     useEffect(() => {
         setMacKbd(isMac);
+        setShowShortcut(true);
     }, []);
 
     return (
@@ -72,10 +74,12 @@ export default function Header({ themeMode }: { themeMode: string }) {
                             <PaletteTrigger onClick={() => dispatch(toggleCommandPaletteAction())} aria-label="Open command palette" tabIndex={0}>
                                 <SearchIcon sx={{ fontSize: "1rem", color: "rgba(255,255,255,0.45)", flexShrink: 0 }} />
                                 <TriggerPlaceholder>{localization.commandPalette.placeholder}</TriggerPlaceholder>
-                                <TriggerKbdGroup aria-hidden>
-                                    <TriggerKbd>{macKbd ? "⌘" : "Ctrl"}</TriggerKbd>
-                                    <TriggerKbd>K</TriggerKbd>
-                                </TriggerKbdGroup>
+                                {showShortcut ? (
+                                    <TriggerKbdGroup aria-hidden>
+                                        <TriggerKbd>{macKbd ? "⌘" : "Ctrl"}</TriggerKbd>
+                                        <TriggerKbd>K</TriggerKbd>
+                                    </TriggerKbdGroup>
+                                ) : null}
                             </PaletteTrigger>
                         </Box>
                         <Tooltip title="Search tools">
@@ -87,11 +91,8 @@ export default function Header({ themeMode }: { themeMode: string }) {
                                 <SearchIcon />
                             </IconButton>
                         </Tooltip>
-
                         <NavDivider aria-hidden />
-
                         <ThemeSwitcher themeMode={themeMode} />
-
                         <Tooltip title="View source on GitHub">
                             <IconButton
                                 component="a"

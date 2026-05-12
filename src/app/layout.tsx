@@ -78,7 +78,6 @@ const themeScript = `
     try {
       var c = document.cookie.split('; ').find(row=>row.startsWith('devdeck-theme='));
       var s = c ? c.split('=')[1] : '';
-      console.log('theme', s);
       document.documentElement.setAttribute('data-theme',s === 'light' || s === 'dark' ? s : window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark')
     } catch(e) {
     }

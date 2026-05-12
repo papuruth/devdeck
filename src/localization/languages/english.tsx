@@ -504,6 +504,17 @@ export default {
         prettifyBtn: "Prettify",
         invalidJson: "Invalid JSON"
     },
+    cssToTailwind: {
+        pageTitle: "CSS → Tailwind",
+        cssInputLabel: "CSS Input",
+        tailwindOutputLabel: "Tailwind Classes",
+        cssInputPlaceholder: ".selector {\n  display: flex;\n  padding: 16px;\n}",
+        copyClassesBtn: "Copy Classes",
+        copyAllBtn: "Copy All",
+        statsLabel: "[MAPPED] / [TOTAL] properties mapped",
+        unmappedComment: "no Tailwind class",
+        emptyStateMessage: "Paste CSS above to convert to Tailwind"
+    },
     common: {
         maxImageSizeText: "Maximum image size allowed is 5MB",
         imageLoadError: "Image Load Error",

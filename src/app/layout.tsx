@@ -34,11 +34,12 @@ export const metadata: Metadata = {
         icon: [
             { rel: "icon", type: "image/x-icon", url: "favicon.ico" },
             { rel: "icon", type: "image/svg+xml", url: "favicon.svg" },
+            { rel: "icon", type: "image/png", url: "favicon.png" },
             { rel: "icon", type: "image/png", sizes: "16x16", url: "/assets/images/icon-16x16.png" },
             { rel: "icon", type: "image/png", sizes: "32x32", url: "/assets/images/icon-32x32.png" }
         ],
         apple: "/assets/images/apple-touch-icon.png",
-        shortcut: "/assets/images/icon-32x32.png"
+        shortcut: "/assets/images/icon-48x48.png"
     },
     openGraph: {
         siteName: "DevDeck",

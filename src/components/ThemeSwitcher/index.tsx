@@ -12,6 +12,7 @@ export default function ThemeSwitcher({ themeMode }: { themeMode: string }) {
     const { mode, setThemeMode } = useColorMode();
     const [systemMode, setSystemMode] = useState<"light" | "dark">("dark");
     const [currentMode, setCurrentMode] = useState<ThemeMode>((themeMode || "auto") as "auto" | "light" | "dark");
+    console.log("🚀 ~ ThemeSwitcher ~ currentMode:", currentMode);
     const isMounted = useRef(false);
 
     useEffect(() => {

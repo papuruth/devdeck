@@ -3,10 +3,14 @@
 import React, { useEffect, useMemo, useState } from "react";
 import ColorModeContext from "context/ColorModeContext";
 
+const getThemeValue = () => {
+    const c = document.cookie.split("; ").find((row) => row.startsWith("devdeck-theme="));
+    return c ? c.split("=")[1] : "";
+};
 export default function ColorModeProvider({ children }: { children: React.ReactNode }) {
     const [mode, setMode] = useState<"light" | "dark">(() => {
         if (typeof window === "undefined") return "dark";
-        const saved = localStorage.getItem("devdeck-theme");
+        const saved = getThemeValue();
         if (saved === "light" || saved === "dark") return saved;
         return window.matchMedia?.("(prefers-color-scheme: light)").matches ? "light" : "dark";
     });
@@ -14,7 +18,7 @@ export default function ColorModeProvider({ children }: { children: React.ReactN
     useEffect(() => {
         const mediaQuery = window.matchMedia("(prefers-color-scheme: light)");
         const handleChange = (e: MediaQueryListEvent) => {
-            const saved = localStorage.getItem("devdeck-theme");
+            const saved = getThemeValue();
             if (saved !== "light" && saved !== "dark") {
                 setMode(e.matches ? "light" : "dark");
             }

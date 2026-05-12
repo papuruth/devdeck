@@ -73,7 +73,17 @@ export const viewport: Viewport = {
     initialScale: 1
 };
 
-const themeScript = `(function(){try{var s=localStorage.getItem('devdeck-theme');document.documentElement.setAttribute('data-theme',s==='light'||s==='dark'?s:window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches?'light':'dark')}catch(e){}})()`;
+const themeScript = `
+  (function() {
+    try {
+      var c = document.cookie.split('; ').find(row=>row.startsWith('devdeck-theme='));
+      var s = c ? c.split('=')[1] : '';
+      console.log('theme', s);
+      document.documentElement.setAttribute('data-theme',s === 'light' || s === 'dark' ? s : window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark')
+    } catch(e) {
+    }
+  })()
+`;
 
 const getCookieValue = async (cookieName: string) => {
     const cookieStore = await cookies();

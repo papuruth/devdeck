@@ -11,7 +11,8 @@ type ThemeMode = "auto" | "light" | "dark";
 export default function ThemeSwitcher() {
     const { mode, setThemeMode } = useColorMode();
     const [systemMode, setSystemMode] = useState<"light" | "dark">("dark");
-    const [currentMode, setCurrentMode] = useState<ThemeMode>("auto");
+    const [currentMode, setCurrentMode] = useState<ThemeMode>(localStorage.getItem("devdeck-theme") as "auto" | "light" | "dark");
+    console.log("🚀 ~ ThemeSwitcher ~ currentMode:", currentMode);
 
     useEffect(() => {
         const mediaQuery = window.matchMedia("(prefers-color-scheme: light)");
@@ -23,6 +24,7 @@ export default function ThemeSwitcher() {
 
     useEffect(() => {
         const saved = localStorage.getItem("devdeck-theme");
+        console.log("🚀 ~ ThemeSwitcher ~ saved:", saved);
         if (saved === "light" || saved === "dark") {
             setCurrentMode(saved);
         } else {

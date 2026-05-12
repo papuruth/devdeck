@@ -1,11 +1,12 @@
 "use client";
 
-import { DarkMode, GitHub, LightMode } from "@mui/icons-material";
+import { GitHub } from "@mui/icons-material";
 import SearchIcon from "@mui/icons-material/Search";
 import { Box, IconButton, Tooltip, useMediaQuery, useTheme } from "@mui/material";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import DevDeckLogo from "components/DevDeckLogo";
+import ThemeSwitcher from "components/ThemeSwitcher";
 import localization from "localization";
 import React, { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
@@ -13,12 +14,12 @@ import colors from "styles/colors";
 import { GLOBAL_CONSTANTS } from "utils/globalConstants";
 import { isMac } from "utils/helperFunctions";
 import { useAppDispatch } from "utils/hooks/redux";
-import { useColorMode } from "../../context/ColorModeContext";
+import { useColorMode } from "context/ColorModeContext";
 import { toggleCommandPaletteAction } from "./HeaderAction";
 import { BlogNavLink, NavDivider, PaletteTrigger, StyledContainer, TriggerKbd, TriggerKbdGroup, TriggerPlaceholder } from "./styles";
 
 export default function Header() {
-    const { mode, toggleColorMode } = useColorMode();
+    const { mode } = useColorMode();
     const dispatch = useAppDispatch();
     const [scrolled, setScrolled] = useState(false);
     const [macKbd, setMacKbd] = useState(false);
@@ -89,19 +90,7 @@ export default function Header() {
 
                         <NavDivider aria-hidden />
 
-                        <Tooltip title={mode === "dark" ? "Switch to light mode" : "Switch to dark mode"}>
-                            <IconButton
-                                onClick={toggleColorMode}
-                                sx={{
-                                    color: colors.white,
-                                    transition: "transform 0.17s ease, opacity 0.17s ease",
-                                    "&:hover": { transform: "scale(1.08)", color: "#22cc99" },
-                                    "&:active": { transform: "scale(0.95)" }
-                                }}
-                            >
-                                {mode === "dark" ? <LightMode /> : <DarkMode />}
-                            </IconButton>
-                        </Tooltip>
+                        <ThemeSwitcher />
 
                         <Tooltip title="View source on GitHub">
                             <IconButton

@@ -27,7 +27,8 @@ const TOOL_PATHS = [
     "/lorem-ipsum",
     "/word-counter",
     "/csv-json",
-    "/api-builder"
+    "/api-builder",
+    "/css-tailwind"
 ];
 
 const BLOG_POST_PATHS = Object.keys(SEO_META).filter((path) => path.startsWith("/blog/"));

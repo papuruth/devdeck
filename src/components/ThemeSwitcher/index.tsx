@@ -24,7 +24,6 @@ export default function ThemeSwitcher() {
 
     useEffect(() => {
         const saved = localStorage.getItem("devdeck-theme");
-        console.log("🚀 ~ ThemeSwitcher ~ saved:", saved);
         if (saved === "light" || saved === "dark") {
             setCurrentMode(saved);
         } else {

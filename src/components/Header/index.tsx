@@ -12,18 +12,16 @@ import React, { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import colors from "styles/colors";
 import { GLOBAL_CONSTANTS } from "utils/globalConstants";
-import { isMac } from "utils/helperFunctions";
 import { useAppDispatch } from "utils/hooks/redux";
 import { useColorMode } from "context/ColorModeContext";
 import { toggleCommandPaletteAction } from "./HeaderAction";
 import { BlogNavLink, NavDivider, PaletteTrigger, StyledContainer, TriggerKbd, TriggerKbdGroup, TriggerPlaceholder } from "./styles";
 
-export default function Header({ themeMode }: { themeMode: string }) {
+export default function Header({ themeMode, isMac }: { themeMode: string; isMac: boolean }) {
     const { mode } = useColorMode();
     const dispatch = useAppDispatch();
     const [scrolled, setScrolled] = useState(false);
-    const [macKbd, setMacKbd] = useState(false);
-    const [showShortcut, setShowShortcut] = useState(false);
+    const [macKbd, setMacKbd] = useState(isMac);
     const pathname = usePathname();
     const router = useRouter();
     const isBlogActive = pathname?.startsWith("/blog") ?? false;
@@ -38,8 +36,7 @@ export default function Header({ themeMode }: { themeMode: string }) {
 
     useEffect(() => {
         setMacKbd(isMac);
-        setShowShortcut(true);
-    }, []);
+    }, [isMac]);
 
     return (
         <StyledContainer sx={{ flexGrow: 1, minWidth: 320 }}>
@@ -74,12 +71,10 @@ export default function Header({ themeMode }: { themeMode: string }) {
                             <PaletteTrigger onClick={() => dispatch(toggleCommandPaletteAction())} aria-label="Open command palette" tabIndex={0}>
                                 <SearchIcon sx={{ fontSize: "1rem", color: "rgba(255,255,255,0.45)", flexShrink: 0 }} />
                                 <TriggerPlaceholder>{localization.commandPalette.placeholder}</TriggerPlaceholder>
-                                {showShortcut ? (
-                                    <TriggerKbdGroup aria-hidden>
-                                        <TriggerKbd>{macKbd ? "⌘" : "Ctrl"}</TriggerKbd>
-                                        <TriggerKbd>K</TriggerKbd>
-                                    </TriggerKbdGroup>
-                                ) : null}
+                                <TriggerKbdGroup aria-hidden>
+                                    <TriggerKbd>{macKbd ? "⌘" : "Ctrl"}</TriggerKbd>
+                                    <TriggerKbd>K</TriggerKbd>
+                                </TriggerKbdGroup>
                             </PaletteTrigger>
                         </Box>
                         <Tooltip title="Search tools">

@@ -7,9 +7,9 @@ const getThemeValue = () => {
     const c = document.cookie.split("; ").find((row) => row.startsWith("devdeck-theme="));
     return c ? c.split("=")[1] : "";
 };
-export default function ColorModeProvider({ children }: { children: React.ReactNode }) {
+export default function ColorModeProvider({ children, themeMode }: { children: React.ReactNode; themeMode: string }) {
     const [mode, setMode] = useState<"light" | "dark">(() => {
-        if (typeof window === "undefined") return "dark";
+        if (typeof window === "undefined") return (themeMode || "dark") as "light" || "dark";
         const saved = getThemeValue();
         if (saved === "light" || saved === "dark") return saved;
         return window.matchMedia?.("(prefers-color-scheme: light)").matches ? "light" : "dark";

@@ -29,9 +29,10 @@ function useProtocolHandler() {
 interface GlobalLayoutProps {
     children: React.ReactNode;
     themeMode: string;
+    isMac: boolean;
 }
 
-export default function GlobalLayout({ children, themeMode }: GlobalLayoutProps) {
+export default function GlobalLayout({ children, themeMode, isMac }: GlobalLayoutProps) {
     useProtocolHandler();
     const dispatch = useAppDispatch();
     const paletteOpen = useAppSelector((state) => state.headerReducer.commandPaletteOpen);
@@ -54,7 +55,7 @@ export default function GlobalLayout({ children, themeMode }: GlobalLayoutProps)
     return (
         <StyledContainer>
             <StyledMainViewContainer>
-                <Header themeMode={themeMode} />
+                <Header themeMode={themeMode} isMac={isMac} />
                 {children}
                 <Footer />
             </StyledMainViewContainer>

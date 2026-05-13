@@ -13,7 +13,6 @@ import { ENRICHED_TOOLS } from "components/CommandPalette/paletteData";
 import { GLOBAL_CONSTANTS, TOOL_CATEGORIES } from "utils/globalConstants";
 import storage from "utils/storage";
 import { toggleCommandPaletteAction } from "components/Header/HeaderAction";
-import { isMac } from "utils/helperFunctions";
 import {
     HeroCTAPrimary,
     HeroCTARow,
@@ -73,9 +72,10 @@ function highlightMatch(text: string, query: string) {
 
 interface HeroSearchProps {
     onOpenPalette: () => void;
+    isMac: boolean;
 }
 
-function HeroSearch({ onOpenPalette }: HeroSearchProps) {
+function HeroSearch({ onOpenPalette, isMac }: HeroSearchProps) {
     const router = useRouter();
     const { sendTo } = useToolChain();
     const [query, setQuery] = useState("");
@@ -83,9 +83,8 @@ function HeroSearch({ onOpenPalette }: HeroSearchProps) {
     const [focused, setFocused] = useState(false);
     const [smartHint, setSmartHint] = useState<DetectedInput | null>(null);
     const [pastedText, setPastedText] = useState("");
-    const [macKbd, setMacKbd] = useState(false);
-    const [showKeyboardHints, setShowKeyboardHints] = useState(false);
-    
+    const [macKbd, setMacKbd] = useState(isMac);
+
     const inputRef = useRef<HTMLInputElement>(null);
     const wrapperRef = useRef<HTMLDivElement>(null);
 
@@ -148,8 +147,7 @@ function HeroSearch({ onOpenPalette }: HeroSearchProps) {
 
     useEffect(() => {
         setMacKbd(isMac);
-        setShowKeyboardHints(true);
-    }, []);
+    }, [isMac]);
 
     useEffect(() => {
         const handler = (e: MouseEvent) => {
@@ -177,12 +175,10 @@ function HeroSearch({ onOpenPalette }: HeroSearchProps) {
                     spellCheck={false}
                     autoFocus
                 />
-                {showKeyboardHints ? (
-                    <HeroInputHints>
-                        <HeroInputKbd>{macKbd ? "Cmd + K" : "Ctrl + K"}</HeroInputKbd>
-                        <HeroEnterHint>or ↵</HeroEnterHint>
-                    </HeroInputHints>
-                ) : null}
+                <HeroInputHints>
+                    <HeroInputKbd>{macKbd ? "Cmd + K" : "Ctrl + K"}</HeroInputKbd>
+                    <HeroEnterHint>or ↵</HeroEnterHint>
+                </HeroInputHints>
             </HeroSearchBox>
             {showDropdown && (
                 <HeroSuggestionsList role="listbox">
@@ -272,7 +268,7 @@ function ToolCard({ item }: ToolCardProps) {
     );
 }
 
-function Home() {
+function Home({ isMac }: { isMac: boolean }) {
     const searchQuery = useAppSelector((state) => state.headerReducer?.searchQuery ?? "");
     const dispatch = useAppDispatch();
     const { OPERATIONS_ITEMS } = GLOBAL_CONSTANTS;
@@ -326,7 +322,7 @@ function Home() {
                 <StyledHeroBadge label={`⚡ ${totalTools} tools • Instant • No signup`} variant="outlined" size="small" />
 
                 {/* Inline search with live suggestions + smart paste detection */}
-                <HeroSearch onOpenPalette={() => dispatch(toggleCommandPaletteAction())} />
+                <HeroSearch onOpenPalette={() => dispatch(toggleCommandPaletteAction())} isMac={isMac} />
 
                 {/* CTA buttons */}
                 <HeroCTARow>

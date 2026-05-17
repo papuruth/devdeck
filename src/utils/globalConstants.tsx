@@ -417,5 +417,5 @@ export const GLOBAL_CONSTANTS = {
     ],
     GIT_REPO_URL: "https://github.com/papuruth/devdeck",
     APP_CREATED_YEAR: 2023,
-    BASE_URL: "https://devdeckio.netlify.app"
+    BASE_URL: "https://devdecktools.com"
 };

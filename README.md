@@ -1,5 +1,3 @@
-[![Deployment Status](https://api.netlify.com/api/v1/badges/74b15c5e-4c32-4bc0-b93f-829768a2342e/deploy-status)](https://app.netlify.com/projects/devdeckio/overview)
-
 # DevDeck
 
 A free, open-source, all-in-one developer toolbox — 23 utilities available in a single progressive web app, with dark mode, search, offline support, and server-side rendering.

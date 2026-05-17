@@ -26,3 +26,9 @@
   for = "/manifest.webmanifest"
   [headers.values]
     Cache-Control = "public, max-age=3600, must-revalidate"
+
+[[redirects]]
+  from = "/*"
+  to = "https://devdecktools.com/:splat"
+  status = 301
+  force = true

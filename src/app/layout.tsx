@@ -61,9 +61,6 @@ export const metadata: Metadata = {
         // site: "",
         // creator: "",
         images: [`${GLOBAL_CONSTANTS.BASE_URL}/assets/images/og-preview.png`]
-    },
-    verification: {
-        google: "google-site-verification=d9X2uV7QOAgl6y0GrAk5ijW1ufkps8N9azwPvUAwKzQ"
     }
 };
 

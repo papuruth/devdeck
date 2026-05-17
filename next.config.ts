@@ -1,8 +1,7 @@
+/* eslint-disable import/no-extraneous-dependencies */
 import type { NextConfig } from "next";
 import path from "path";
-// eslint-disable-next-line import/no-extraneous-dependencies
 import { InjectManifest } from "workbox-webpack-plugin";
-// eslint-disable-next-line import/no-extraneous-dependencies
 import withBundleAnalyzer from "@next/bundle-analyzer";
 
 const webpackAliases = {

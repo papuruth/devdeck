@@ -1,5 +1,7 @@
 // @ts-nocheck
+
 "use client";
+
 import { Brush, Check, Clear, ContentCopy, Info } from "@mui/icons-material";
 import { Box, Tooltip, Typography } from "@mui/material";
 import React, { useCallback, useMemo, useState } from "react";
@@ -157,7 +159,7 @@ function convert(input: string): ConversionResult | null {
                             seenKeys.add(key);
                         }
                     });
-                    mappedCount++;
+                    mappedCount += 1;
                 } else {
                     group.unmappedComments.push(generateUnmappedComment(cssProp.property, cssProp.value));
                 }
@@ -189,13 +191,13 @@ function HighlightedOutput({ groups, isMultiRule }: { groups: SelectorGroup[]; i
     const nodes: React.ReactNode[] = [];
     groups.forEach((group, gi) => {
         if (isMultiRule) {
-            nodes.push(<SelectorComment key={`s${gi}`}>{`/* ${group.selector} */`}</SelectorComment>);
+            nodes.push(<SelectorComment key={`s-${group.selector}`}>{`/* ${group.selector} */`}</SelectorComment>);
         }
-        group.mappedClasses.forEach((cls, ci) => {
-            nodes.push(<ClassLine key={`${gi}-${ci}`}>{cls}</ClassLine>);
+        group.mappedClasses.forEach((cls) => {
+            nodes.push(<ClassLine key={`${group.selector}-${cls}`}>{cls}</ClassLine>);
         });
         if (isMultiRule && gi < groups.length - 1) {
-            nodes.push(<br key={`br${gi}`} />);
+            nodes.push(<br key={`br-${group.selector}`} />);
         }
     });
     return <OutputPre>{nodes}</OutputPre>;

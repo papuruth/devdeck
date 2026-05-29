@@ -158,6 +158,11 @@ const HEX_TO_NAME: Record<string, string> = {
     "#d4d4d4": "neutral-300"
 };
 
+// Convert a CSS value to Tailwind JIT arbitrary format (spaces → underscores)
+function toJIT(val: string): string {
+    return val.replace(/\s+/g, "_");
+}
+
 // Parse common color formats
 function parseColor(value: string): string | null {
     const v = value.trim().toLowerCase();
@@ -270,10 +275,23 @@ function parseSpacing(value: string): string | null {
         return `[${v}]`;
     }
 
-    // Percentages
-    const pctMatch = v.match(/^(-?\d+(?:\.\d+)?)%$/);
+    // Percentages — map to Tailwind fractions or arbitrary
+    const pctMatch = v.match(/^(\d+(?:\.\d+)?)%$/);
     if (pctMatch) {
-        return v;
+        const num = parseFloat(pctMatch[1]);
+        if (num === 100) return "full";
+        if (Math.abs(num - 50) < 0.5) return "1/2";
+        if (Math.abs(num - 33.333) < 0.5) return "1/3";
+        if (Math.abs(num - 66.667) < 0.5) return "2/3";
+        if (Math.abs(num - 25) < 0.5) return "1/4";
+        if (Math.abs(num - 75) < 0.5) return "3/4";
+        if (Math.abs(num - 20) < 0.5) return "1/5";
+        if (Math.abs(num - 40) < 0.5) return "2/5";
+        if (Math.abs(num - 60) < 0.5) return "3/5";
+        if (Math.abs(num - 80) < 0.5) return "4/5";
+        if (Math.abs(num - 16.667) < 0.5) return "1/6";
+        if (Math.abs(num - 83.333) < 0.5) return "5/6";
+        return `[${v}]`;
     }
 
     // Full
@@ -370,7 +388,18 @@ export const CSS_TO_TAILWIND: TailwindMapping[] = [
                 "inline-grid": "inline-grid",
                 none: "hidden",
                 table: "table",
-                "inline-table": "inline-table"
+                "inline-table": "inline-table",
+                contents: "contents",
+                "flow-root": "flow-root",
+                "list-item": "list-item",
+                "table-caption": "table-caption",
+                "table-cell": "table-cell",
+                "table-column": "table-column",
+                "table-column-group": "table-column-group",
+                "table-footer-group": "table-footer-group",
+                "table-header-group": "table-header-group",
+                "table-row-group": "table-row-group",
+                "table-row": "table-row"
             };
             return map[v.trim()] || null;
         }
@@ -433,11 +462,15 @@ export const CSS_TO_TAILWIND: TailwindMapping[] = [
         mapper(v) {
             const map: Record<string, string> = {
                 "flex-start": "justify-start",
+                start: "justify-start",
                 "flex-end": "justify-end",
+                end: "justify-end",
                 center: "justify-center",
                 "space-between": "justify-between",
                 "space-around": "justify-around",
-                "space-evenly": "justify-evenly"
+                "space-evenly": "justify-evenly",
+                normal: "justify-normal",
+                stretch: "justify-stretch"
             };
             return map[v.trim()] || null;
         }
@@ -447,9 +480,12 @@ export const CSS_TO_TAILWIND: TailwindMapping[] = [
         mapper(v) {
             const map: Record<string, string> = {
                 "flex-start": "items-start",
+                start: "items-start",
                 "flex-end": "items-end",
+                end: "items-end",
                 center: "items-center",
                 baseline: "items-baseline",
+                "first baseline": "items-baseline",
                 stretch: "items-stretch"
             };
             return map[v.trim()] || null;
@@ -460,11 +496,16 @@ export const CSS_TO_TAILWIND: TailwindMapping[] = [
         mapper(v) {
             const map: Record<string, string> = {
                 "flex-start": "content-start",
+                start: "content-start",
                 "flex-end": "content-end",
+                end: "content-end",
                 center: "content-center",
                 "space-between": "content-between",
                 "space-around": "content-around",
-                stretch: "content-stretch"
+                "space-evenly": "content-evenly",
+                stretch: "content-stretch",
+                normal: "content-normal",
+                baseline: "content-baseline"
             };
             return map[v.trim()] || null;
         }
@@ -475,9 +516,40 @@ export const CSS_TO_TAILWIND: TailwindMapping[] = [
             const map: Record<string, string> = {
                 auto: "self-auto",
                 "flex-start": "self-start",
+                start: "self-start",
                 "flex-end": "self-end",
+                end: "self-end",
                 center: "self-center",
-                stretch: "self-stretch"
+                stretch: "self-stretch",
+                baseline: "self-baseline",
+                "first baseline": "self-baseline"
+            };
+            return map[v.trim()] || null;
+        }
+    },
+    {
+        property: "justify-items",
+        mapper(v) {
+            const map: Record<string, string> = {
+                start: "justify-items-start",
+                end: "justify-items-end",
+                center: "justify-items-center",
+                stretch: "justify-items-stretch",
+                normal: "justify-items-normal",
+                baseline: "justify-items-baseline"
+            };
+            return map[v.trim()] || null;
+        }
+    },
+    {
+        property: "justify-self",
+        mapper(v) {
+            const map: Record<string, string> = {
+                auto: "justify-self-auto",
+                start: "justify-self-start",
+                end: "justify-self-end",
+                center: "justify-self-center",
+                stretch: "justify-self-stretch"
             };
             return map[v.trim()] || null;
         }
@@ -485,9 +557,20 @@ export const CSS_TO_TAILWIND: TailwindMapping[] = [
     {
         property: "gap",
         mapper(v) {
-            const spacing = parseSpacing(v);
-            if (spacing) return `gap-${spacing}`;
-            return null;
+            const parts = v.trim().split(/\s+/);
+            if (parts.length === 1) {
+                const spacing = parseSpacing(parts[0]);
+                if (spacing) return `gap-${spacing}`;
+                return null;
+            }
+            // gap: <row-gap> <column-gap>
+            const rowSpacing = parseSpacing(parts[0]);
+            const colSpacing = parseSpacing(parts[1]);
+            if (rowSpacing === colSpacing && rowSpacing) return `gap-${rowSpacing}`;
+            const result: string[] = [];
+            if (rowSpacing) result.push(`gap-y-${rowSpacing}`);
+            if (colSpacing) result.push(`gap-x-${colSpacing}`);
+            return result.length ? result.join(" ") : null;
         }
     },
     {
@@ -518,7 +601,10 @@ export const CSS_TO_TAILWIND: TailwindMapping[] = [
             if (val === "repeat(3, minmax(0, 1fr))") return "grid-cols-3";
             if (val === "repeat(2, minmax(0, 1fr))") return "grid-cols-2";
             if (val === "none") return "grid-cols-none";
-            return `[grid-template-columns:${encodeURIComponent(val)}]`;
+            // Match repeat(N, 1fr) pattern generically
+            const repeatMatch = val.match(/^repeat\((\d+),\s*1fr\)$/);
+            if (repeatMatch) return `grid-cols-${repeatMatch[1]}`;
+            return `grid-cols-[${toJIT(val)}]`;
         }
     },
     {
@@ -526,7 +612,9 @@ export const CSS_TO_TAILWIND: TailwindMapping[] = [
         mapper(v) {
             const val = v.trim();
             if (val === "none") return "grid-rows-none";
-            return `[grid-template-rows:${encodeURIComponent(val)}]`;
+            const repeatMatch = val.match(/^repeat\((\d+),\s*1fr\)$/);
+            if (repeatMatch) return `grid-rows-${repeatMatch[1]}`;
+            return `grid-rows-[${toJIT(val)}]`;
         }
     },
     {
@@ -561,6 +649,45 @@ export const CSS_TO_TAILWIND: TailwindMapping[] = [
             }
             if (val === "auto") return "row-auto";
             return null;
+        }
+    },
+    {
+        property: "grid-auto-flow",
+        mapper(v) {
+            const map: Record<string, string> = {
+                row: "grid-flow-row",
+                column: "grid-flow-col",
+                dense: "grid-flow-dense",
+                "row dense": "grid-flow-row-dense",
+                "column dense": "grid-flow-col-dense"
+            };
+            return map[v.trim()] || null;
+        }
+    },
+    {
+        property: "grid-auto-columns",
+        mapper(v) {
+            const map: Record<string, string> = {
+                auto: "auto-cols-auto",
+                "min-content": "auto-cols-min",
+                "max-content": "auto-cols-max",
+                "1fr": "auto-cols-fr"
+            };
+            const val = v.trim();
+            return map[val] ?? `auto-cols-[${toJIT(val)}]`;
+        }
+    },
+    {
+        property: "grid-auto-rows",
+        mapper(v) {
+            const map: Record<string, string> = {
+                auto: "auto-rows-auto",
+                "min-content": "auto-rows-min",
+                "max-content": "auto-rows-max",
+                "1fr": "auto-rows-fr"
+            };
+            const val = v.trim();
+            return map[val] ?? `auto-rows-[${toJIT(val)}]`;
         }
     },
 
@@ -801,6 +928,7 @@ export const CSS_TO_TAILWIND: TailwindMapping[] = [
         property: "line-height",
         mapper(v) {
             const map: Record<string, string> = {
+                normal: "leading-normal",
                 "1": "leading-none",
                 "1.25": "leading-tight",
                 "1.375": "leading-snug",
@@ -809,9 +937,9 @@ export const CSS_TO_TAILWIND: TailwindMapping[] = [
                 "2": "leading-loose"
             };
             const val = v.trim();
-            if (map[val]) return `leading-${map[val]}`;
-            const pxMatch = val.match(/^(\d+)px$/);
-            if (pxMatch) return `[line-height:${val}]`;
+            if (map[val]) return map[val];
+            const pxMatch = val.match(/^(\d+(?:\.\d+)?)(px|rem|em)$/);
+            if (pxMatch) return `leading-[${val}]`;
             return null;
         }
     },
@@ -938,8 +1066,8 @@ export const CSS_TO_TAILWIND: TailwindMapping[] = [
         mapper(v) {
             const val = v.trim();
             if (val === "none") return "bg-none";
-            if (val.includes("linear-gradient")) return `[background-image:${encodeURIComponent(val)}]`;
-            if (val.includes("radial-gradient")) return `[background-image:${encodeURIComponent(val)}]`;
+            if (val.includes("linear-gradient")) return `bg-[${toJIT(val)}]`;
+            if (val.includes("radial-gradient")) return `bg-[${toJIT(val)}]`;
             return null;
         }
     },
@@ -1077,9 +1205,12 @@ export const CSS_TO_TAILWIND: TailwindMapping[] = [
                 "12px": "rounded-xl",
                 "16px": "rounded-2xl",
                 "24px": "rounded-3xl",
-                "9999px": "rounded-full"
+                "9999px": "rounded-full",
+                "50%": "rounded-full",
+                "100%": "rounded-full"
             };
-            return map[v.trim()] || null;
+            const val = v.trim();
+            return map[val] ?? `rounded-[${val}]`;
         }
     },
     {
@@ -1095,9 +1226,11 @@ export const CSS_TO_TAILWIND: TailwindMapping[] = [
                 "12px": "rounded-tl-xl",
                 "16px": "rounded-tl-2xl",
                 "24px": "rounded-tl-3xl",
-                "9999px": "rounded-tl-full"
+                "9999px": "rounded-tl-full",
+                "50%": "rounded-tl-full"
             };
-            return map[v.trim()] || null;
+            const val = v.trim();
+            return map[val] ?? `rounded-tl-[${val}]`;
         }
     },
     {
@@ -1113,9 +1246,11 @@ export const CSS_TO_TAILWIND: TailwindMapping[] = [
                 "12px": "rounded-tr-xl",
                 "16px": "rounded-tr-2xl",
                 "24px": "rounded-tr-3xl",
-                "9999px": "rounded-tr-full"
+                "9999px": "rounded-tr-full",
+                "50%": "rounded-tr-full"
             };
-            return map[v.trim()] || null;
+            const val = v.trim();
+            return map[val] ?? `rounded-tr-[${val}]`;
         }
     },
     {
@@ -1131,9 +1266,11 @@ export const CSS_TO_TAILWIND: TailwindMapping[] = [
                 "12px": "rounded-br-xl",
                 "16px": "rounded-br-2xl",
                 "24px": "rounded-br-3xl",
-                "9999px": "rounded-br-full"
+                "9999px": "rounded-br-full",
+                "50%": "rounded-br-full"
             };
-            return map[v.trim()] || null;
+            const val = v.trim();
+            return map[val] ?? `rounded-br-[${val}]`;
         }
     },
     {
@@ -1149,9 +1286,11 @@ export const CSS_TO_TAILWIND: TailwindMapping[] = [
                 "12px": "rounded-bl-xl",
                 "16px": "rounded-bl-2xl",
                 "24px": "rounded-bl-3xl",
-                "9999px": "rounded-bl-full"
+                "9999px": "rounded-bl-full",
+                "50%": "rounded-bl-full"
             };
-            return map[v.trim()] || null;
+            const val = v.trim();
+            return map[val] ?? `rounded-bl-[${val}]`;
         }
     },
 
@@ -1168,8 +1307,7 @@ export const CSS_TO_TAILWIND: TailwindMapping[] = [
             if (val.includes("0 10px 15px -3px rgba") || val.includes("0 4px 6px rgba")) return "shadow-lg";
             if (val.includes("0 20px 25px -5px rgba") || val.includes("0 10px 10px rgba")) return "shadow-xl";
             if (val.includes("0 25px 50px -12px rgba")) return "shadow-2xl";
-            if (val.includes("inset")) return `[box-shadow:${encodeURIComponent(val)}]`;
-            return `[box-shadow:${encodeURIComponent(val)}]`;
+            return `shadow-[${toJIT(val)}]`;
         }
     },
 
@@ -1548,7 +1686,7 @@ export const CSS_TO_TAILWIND: TailwindMapping[] = [
         property: "transform",
         mapper(v) {
             const val = v.trim();
-            if (val === "none") return "translate-x-0";
+            if (val === "none") return "transform-none";
             return null;
         }
     },
@@ -1637,6 +1775,24 @@ export const CSS_TO_TAILWIND: TailwindMapping[] = [
                 "scale-down": "object-scale-down"
             };
             return map[v.trim()] || null;
+        }
+    },
+    {
+        property: "object-position",
+        mapper(v) {
+            const map: Record<string, string> = {
+                center: "object-center",
+                top: "object-top",
+                bottom: "object-bottom",
+                left: "object-left",
+                right: "object-right",
+                "left top": "object-left-top",
+                "left bottom": "object-left-bottom",
+                "right top": "object-right-top",
+                "right bottom": "object-right-bottom"
+            };
+            const val = v.trim();
+            return map[val] ?? `object-[${toJIT(val)}]`;
         }
     },
 
@@ -1783,9 +1939,17 @@ export const CSS_TO_TAILWIND: TailwindMapping[] = [
         mapper(v) {
             const val = v.trim();
             if (val === "none") return "filter-none";
-            if (val.includes("blur")) {
-                const blurMatch = val.match(/blur\((\d+px)\)/);
-                if (blurMatch) return `[filter:blur(${blurMatch[1]})]`;
+            const blurMatch = val.match(/blur\((\d+(?:\.\d+)?)(px|rem)\)/);
+            if (blurMatch) {
+                const px = blurMatch[2] === "rem" ? parseFloat(blurMatch[1]) * 16 : parseFloat(blurMatch[1]);
+                if (px === 0) return "blur-none";
+                if (px <= 4) return "blur-sm";
+                if (px <= 8) return "blur";
+                if (px <= 12) return "blur-md";
+                if (px <= 16) return "blur-lg";
+                if (px <= 24) return "blur-xl";
+                if (px <= 40) return "blur-2xl";
+                return "blur-3xl";
             }
             return null;
         }
@@ -1795,7 +1959,18 @@ export const CSS_TO_TAILWIND: TailwindMapping[] = [
         mapper(v) {
             const val = v.trim();
             if (val === "none") return "backdrop-blur-none";
-            if (val.includes("blur")) return "backdrop-blur-sm";
+            const blurMatch = val.match(/blur\((\d+(?:\.\d+)?)(px|rem)\)/);
+            if (blurMatch) {
+                const px = blurMatch[2] === "rem" ? parseFloat(blurMatch[1]) * 16 : parseFloat(blurMatch[1]);
+                if (px === 0) return "backdrop-blur-none";
+                if (px <= 4) return "backdrop-blur-sm";
+                if (px <= 8) return "backdrop-blur";
+                if (px <= 12) return "backdrop-blur-md";
+                if (px <= 16) return "backdrop-blur-lg";
+                if (px <= 24) return "backdrop-blur-xl";
+                if (px <= 40) return "backdrop-blur-2xl";
+                return "backdrop-blur-3xl";
+            }
             return null;
         }
     },
@@ -1807,6 +1982,674 @@ export const CSS_TO_TAILWIND: TailwindMapping[] = [
             const val = v.trim();
             if (val === "none" || val === `""`) return "content-['']";
             return null;
+        }
+    },
+
+    // Text overflow
+    {
+        property: "text-overflow",
+        mapper(v) {
+            const map: Record<string, string> = {
+                ellipsis: "truncate",
+                clip: "text-clip"
+            };
+            return map[v.trim()] || null;
+        }
+    },
+
+    // Aspect ratio
+    {
+        property: "aspect-ratio",
+        mapper(v) {
+            const val = v.trim();
+            if (val === "auto") return "aspect-auto";
+            if (val === "1" || val === "1/1") return "aspect-square";
+            if (val === "16/9") return "aspect-video";
+            return `aspect-[${toJIT(val)}]`;
+        }
+    },
+
+    // Scroll behavior
+    {
+        property: "scroll-behavior",
+        mapper(v) {
+            const map: Record<string, string> = {
+                smooth: "scroll-smooth",
+                auto: "scroll-auto"
+            };
+            return map[v.trim()] || null;
+        }
+    },
+
+    // Order (flex/grid)
+    {
+        property: "order",
+        mapper(v) {
+            const val = v.trim();
+            const map: Record<string, string> = {
+                "1": "order-1",
+                "2": "order-2",
+                "3": "order-3",
+                "4": "order-4",
+                "5": "order-5",
+                "6": "order-6",
+                "7": "order-7",
+                "8": "order-8",
+                "9": "order-9",
+                "10": "order-10",
+                "11": "order-11",
+                "12": "order-12",
+                first: "order-first",
+                last: "order-last",
+                none: "order-none"
+            };
+            return map[val] ?? `order-[${val}]`;
+        }
+    },
+
+    // Place items (grid shorthand for align-items + justify-items)
+    {
+        property: "place-items",
+        mapper(v) {
+            const map: Record<string, string> = {
+                start: "place-items-start",
+                end: "place-items-end",
+                center: "place-items-center",
+                baseline: "place-items-baseline",
+                stretch: "place-items-stretch"
+            };
+            return map[v.trim()] || null;
+        }
+    },
+
+    // Place content
+    {
+        property: "place-content",
+        mapper(v) {
+            const map: Record<string, string> = {
+                center: "place-content-center",
+                start: "place-content-start",
+                end: "place-content-end",
+                "space-between": "place-content-between",
+                "space-around": "place-content-around",
+                "space-evenly": "place-content-evenly",
+                stretch: "place-content-stretch"
+            };
+            return map[v.trim()] || null;
+        }
+    },
+
+    // Place self
+    {
+        property: "place-self",
+        mapper(v) {
+            const map: Record<string, string> = {
+                auto: "place-self-auto",
+                start: "place-self-start",
+                end: "place-self-end",
+                center: "place-self-center",
+                stretch: "place-self-stretch"
+            };
+            return map[v.trim()] || null;
+        }
+    },
+
+    // Will change
+    {
+        property: "will-change",
+        mapper(v) {
+            const map: Record<string, string> = {
+                auto: "will-change-auto",
+                scroll: "will-change-scroll",
+                "scroll-position": "will-change-scroll",
+                contents: "will-change-contents",
+                transform: "will-change-transform"
+            };
+            return map[v.trim()] || null;
+        }
+    },
+
+    // Directional border shorthands
+    {
+        property: "border-top",
+        mapper(v) {
+            const val = v.trim();
+            if (val === "none" || val === "0") return "border-t-0";
+            const parts = val.split(/\s+/);
+            let result = "";
+            parts.forEach((part) => {
+                if (/^\d+px$/.test(part)) {
+                    const w = parseInt(part, 10);
+                    if (w === 0) result += "border-t-0 ";
+                    else if (w === 1) result += "border-t ";
+                    else if (w === 2) result += "border-t-2 ";
+                    else if (w === 4) result += "border-t-4 ";
+                    else result += `border-t-[${part}] `;
+                } else if (["solid", "dashed", "dotted", "double"].includes(part)) {
+                    result += `border-${part} `;
+                } else {
+                    const color = parseColor(part);
+                    if (color) result += `border-t-${color} `;
+                }
+            });
+            return result.trim() || null;
+        }
+    },
+    {
+        property: "border-bottom",
+        mapper(v) {
+            const val = v.trim();
+            if (val === "none" || val === "0") return "border-b-0";
+            const parts = val.split(/\s+/);
+            let result = "";
+            parts.forEach((part) => {
+                if (/^\d+px$/.test(part)) {
+                    const w = parseInt(part, 10);
+                    if (w === 0) result += "border-b-0 ";
+                    else if (w === 1) result += "border-b ";
+                    else if (w === 2) result += "border-b-2 ";
+                    else if (w === 4) result += "border-b-4 ";
+                    else result += `border-b-[${part}] `;
+                } else if (["solid", "dashed", "dotted", "double"].includes(part)) {
+                    result += `border-${part} `;
+                } else {
+                    const color = parseColor(part);
+                    if (color) result += `border-b-${color} `;
+                }
+            });
+            return result.trim() || null;
+        }
+    },
+    {
+        property: "border-left",
+        mapper(v) {
+            const val = v.trim();
+            if (val === "none" || val === "0") return "border-l-0";
+            const parts = val.split(/\s+/);
+            let result = "";
+            parts.forEach((part) => {
+                if (/^\d+px$/.test(part)) {
+                    const w = parseInt(part, 10);
+                    if (w === 0) result += "border-l-0 ";
+                    else if (w === 1) result += "border-l ";
+                    else if (w === 2) result += "border-l-2 ";
+                    else if (w === 4) result += "border-l-4 ";
+                    else result += `border-l-[${part}] `;
+                } else if (["solid", "dashed", "dotted", "double"].includes(part)) {
+                    result += `border-${part} `;
+                } else {
+                    const color = parseColor(part);
+                    if (color) result += `border-l-${color} `;
+                }
+            });
+            return result.trim() || null;
+        }
+    },
+    {
+        property: "border-right",
+        mapper(v) {
+            const val = v.trim();
+            if (val === "none" || val === "0") return "border-r-0";
+            const parts = val.split(/\s+/);
+            let result = "";
+            parts.forEach((part) => {
+                if (/^\d+px$/.test(part)) {
+                    const w = parseInt(part, 10);
+                    if (w === 0) result += "border-r-0 ";
+                    else if (w === 1) result += "border-r ";
+                    else if (w === 2) result += "border-r-2 ";
+                    else if (w === 4) result += "border-r-4 ";
+                    else result += `border-r-[${part}] `;
+                } else if (["solid", "dashed", "dotted", "double"].includes(part)) {
+                    result += `border-${part} `;
+                } else {
+                    const color = parseColor(part);
+                    if (color) result += `border-r-${color} `;
+                }
+            });
+            return result.trim() || null;
+        }
+    },
+
+    // Directional border widths
+    {
+        property: "border-top-width",
+        mapper(v) {
+            const map: Record<string, string> = { "0": "border-t-0", "0px": "border-t-0", "1px": "border-t", "2px": "border-t-2", "4px": "border-t-4", "8px": "border-t-8" };
+            return map[v.trim()] ?? `border-t-[${v.trim()}]`;
+        }
+    },
+    {
+        property: "border-bottom-width",
+        mapper(v) {
+            const map: Record<string, string> = { "0": "border-b-0", "0px": "border-b-0", "1px": "border-b", "2px": "border-b-2", "4px": "border-b-4", "8px": "border-b-8" };
+            return map[v.trim()] ?? `border-b-[${v.trim()}]`;
+        }
+    },
+    {
+        property: "border-left-width",
+        mapper(v) {
+            const map: Record<string, string> = { "0": "border-l-0", "0px": "border-l-0", "1px": "border-l", "2px": "border-l-2", "4px": "border-l-4", "8px": "border-l-8" };
+            return map[v.trim()] ?? `border-l-[${v.trim()}]`;
+        }
+    },
+    {
+        property: "border-right-width",
+        mapper(v) {
+            const map: Record<string, string> = { "0": "border-r-0", "0px": "border-r-0", "1px": "border-r", "2px": "border-r-2", "4px": "border-r-4", "8px": "border-r-8" };
+            return map[v.trim()] ?? `border-r-[${v.trim()}]`;
+        }
+    },
+
+    // Directional border colors
+    {
+        property: "border-top-color",
+        mapper(v) {
+            const color = parseColor(v);
+            return color ? `border-t-${color}` : null;
+        }
+    },
+    {
+        property: "border-bottom-color",
+        mapper(v) {
+            const color = parseColor(v);
+            return color ? `border-b-${color}` : null;
+        }
+    },
+    {
+        property: "border-left-color",
+        mapper(v) {
+            const color = parseColor(v);
+            return color ? `border-l-${color}` : null;
+        }
+    },
+    {
+        property: "border-right-color",
+        mapper(v) {
+            const color = parseColor(v);
+            return color ? `border-r-${color}` : null;
+        }
+    },
+
+    // Outline width/color/offset
+    {
+        property: "outline-width",
+        mapper(v) {
+            const map: Record<string, string> = { "0": "outline-0", "0px": "outline-0", "1px": "outline-1", "2px": "outline-2", "4px": "outline-4", "8px": "outline-8" };
+            return map[v.trim()] || null;
+        }
+    },
+    {
+        property: "outline-color",
+        mapper(v) {
+            const color = parseColor(v);
+            return color ? `outline-${color}` : null;
+        }
+    },
+    {
+        property: "outline-offset",
+        mapper(v) {
+            const map: Record<string, string> = { "0": "outline-offset-0", "0px": "outline-offset-0", "1px": "outline-offset-1", "2px": "outline-offset-2", "4px": "outline-offset-4", "8px": "outline-offset-8" };
+            return map[v.trim()] || null;
+        }
+    },
+    {
+        property: "outline-style",
+        mapper(v) {
+            const map: Record<string, string> = { solid: "outline", dashed: "outline-dashed", dotted: "outline-dotted", double: "outline-double", none: "outline-none" };
+            return map[v.trim()] || null;
+        }
+    },
+
+    // Scroll margin / padding
+    {
+        property: "scroll-margin",
+        mapper(v) {
+            const spacing = parseSpacing(v);
+            return spacing !== null ? `scroll-m-${spacing}` : null;
+        }
+    },
+    {
+        property: "scroll-padding",
+        mapper(v) {
+            const spacing = parseSpacing(v);
+            return spacing !== null ? `scroll-p-${spacing}` : null;
+        }
+    },
+
+    // Columns layout
+    {
+        property: "columns",
+        mapper(v) {
+            const val = v.trim();
+            if (/^\d+$/.test(val)) return `columns-${val}`;
+            const map: Record<string, string> = {
+                auto: "columns-auto",
+                "3xs": "columns-3xs",
+                "2xs": "columns-2xs",
+                xs: "columns-xs",
+                sm: "columns-sm",
+                md: "columns-md",
+                lg: "columns-lg",
+                xl: "columns-xl",
+                "2xl": "columns-2xl",
+                "3xl": "columns-3xl",
+                "4xl": "columns-4xl",
+                "5xl": "columns-5xl",
+                "6xl": "columns-6xl",
+                "7xl": "columns-7xl"
+            };
+            return map[val] || null;
+        }
+    },
+
+    // ── Tier 2 ──────────────────────────────────────────────────────────────
+
+    // Touch action
+    {
+        property: "touch-action",
+        mapper(v) {
+            const map: Record<string, string> = {
+                none: "touch-none",
+                auto: "touch-auto",
+                "pan-x": "touch-pan-x",
+                "pan-left": "touch-pan-left",
+                "pan-right": "touch-pan-right",
+                "pan-y": "touch-pan-y",
+                "pan-up": "touch-pan-up",
+                "pan-down": "touch-pan-down",
+                "pinch-zoom": "touch-pinch-zoom",
+                manipulation: "touch-manipulation"
+            };
+            return map[v.trim()] || null;
+        }
+    },
+
+    // Isolation
+    {
+        property: "isolation",
+        mapper(v) {
+            const map: Record<string, string> = {
+                isolate: "isolate",
+                auto: "isolation-auto"
+            };
+            return map[v.trim()] || null;
+        }
+    },
+
+    // Break before / after / inside
+    {
+        property: "break-before",
+        mapper(v) {
+            const map: Record<string, string> = {
+                auto: "break-before-auto",
+                avoid: "break-before-avoid",
+                all: "break-before-all",
+                "avoid-page": "break-before-avoid-page",
+                page: "break-before-page",
+                left: "break-before-left",
+                right: "break-before-right",
+                column: "break-before-column"
+            };
+            return map[v.trim()] || null;
+        }
+    },
+    {
+        property: "break-after",
+        mapper(v) {
+            const map: Record<string, string> = {
+                auto: "break-after-auto",
+                avoid: "break-after-avoid",
+                all: "break-after-all",
+                "avoid-page": "break-after-avoid-page",
+                page: "break-after-page",
+                left: "break-after-left",
+                right: "break-after-right",
+                column: "break-after-column"
+            };
+            return map[v.trim()] || null;
+        }
+    },
+    {
+        property: "break-inside",
+        mapper(v) {
+            const map: Record<string, string> = {
+                auto: "break-inside-auto",
+                avoid: "break-inside-avoid",
+                "avoid-page": "break-inside-avoid-page",
+                "avoid-column": "break-inside-avoid-column"
+            };
+            return map[v.trim()] || null;
+        }
+    },
+
+    // Font variant numeric
+    {
+        property: "font-variant-numeric",
+        mapper(v) {
+            const map: Record<string, string> = {
+                normal: "normal-nums",
+                ordinal: "ordinal",
+                "slashed-zero": "slashed-zero",
+                "lining-nums": "lining-nums",
+                "oldstyle-nums": "oldstyle-nums",
+                "proportional-nums": "proportional-nums",
+                "tabular-nums": "tabular-nums",
+                "diagonal-fractions": "diagonal-fractions",
+                "stacked-fractions": "stacked-fractions"
+            };
+            return map[v.trim()] || null;
+        }
+    },
+
+    // Accent color
+    {
+        property: "accent-color",
+        mapper(v) {
+            const val = v.trim();
+            if (val === "auto") return "accent-auto";
+            const color = parseColor(val);
+            if (color) return `accent-${color}`;
+            return null;
+        }
+    },
+
+    // Caret color
+    {
+        property: "caret-color",
+        mapper(v) {
+            const color = parseColor(v);
+            if (color) return `caret-${color}`;
+            return null;
+        }
+    },
+
+    // Border spacing (table)
+    {
+        property: "border-spacing",
+        mapper(v) {
+            const parts = v.trim().split(/\s+/);
+            if (parts.length === 1) {
+                const spacing = parseSpacing(parts[0]);
+                if (spacing) return `border-spacing-${spacing}`;
+                return null;
+            }
+            const x = parseSpacing(parts[0]);
+            const y = parseSpacing(parts[1]);
+            const result: string[] = [];
+            if (x) result.push(`border-spacing-x-${x}`);
+            if (y) result.push(`border-spacing-y-${y}`);
+            return result.length ? result.join(" ") : null;
+        }
+    },
+
+    // Text decoration fine-grained
+    {
+        property: "text-decoration-line",
+        mapper(v) {
+            const map: Record<string, string> = {
+                none: "no-underline",
+                underline: "underline",
+                overline: "overline",
+                "line-through": "line-through"
+            };
+            return map[v.trim()] || null;
+        }
+    },
+    {
+        property: "text-decoration-color",
+        mapper(v) {
+            const color = parseColor(v);
+            if (color) return `decoration-${color}`;
+            return null;
+        }
+    },
+    {
+        property: "text-decoration-style",
+        mapper(v) {
+            const map: Record<string, string> = {
+                solid: "decoration-solid",
+                double: "decoration-double",
+                dotted: "decoration-dotted",
+                dashed: "decoration-dashed",
+                wavy: "decoration-wavy"
+            };
+            return map[v.trim()] || null;
+        }
+    },
+    {
+        property: "text-decoration-thickness",
+        mapper(v) {
+            const map: Record<string, string> = {
+                auto: "decoration-auto",
+                "from-font": "decoration-from-font",
+                "0px": "decoration-0",
+                "1px": "decoration-1",
+                "2px": "decoration-2",
+                "4px": "decoration-4",
+                "8px": "decoration-8"
+            };
+            return map[v.trim()] || null;
+        }
+    },
+    {
+        property: "text-underline-offset",
+        mapper(v) {
+            const map: Record<string, string> = {
+                auto: "underline-offset-auto",
+                "0px": "underline-offset-0",
+                "1px": "underline-offset-1",
+                "2px": "underline-offset-2",
+                "4px": "underline-offset-4",
+                "8px": "underline-offset-8"
+            };
+            return map[v.trim()] || null;
+        }
+    },
+
+    // Screen readers
+    {
+        property: "speak",
+        mapper(v) {
+            const map: Record<string, string> = { none: "sr-only", normal: "not-sr-only" };
+            return map[v.trim()] || null;
+        }
+    },
+
+    // Hyphens
+    {
+        property: "hyphens",
+        mapper(v) {
+            const map: Record<string, string> = {
+                none: "hyphens-none",
+                manual: "hyphens-manual",
+                auto: "hyphens-auto"
+            };
+            return map[v.trim()] || null;
+        }
+    },
+
+    // Writing mode
+    {
+        property: "writing-mode",
+        mapper(v) {
+            const map: Record<string, string> = {
+                "horizontal-tb": "writing-mode-horizontal",
+                "vertical-rl": "writing-mode-vertical",
+                "vertical-lr": "writing-mode-vertical"
+            };
+            return map[v.trim()] || null;
+        }
+    },
+
+    // Overscroll behavior
+    {
+        property: "overscroll-behavior",
+        mapper(v) {
+            const map: Record<string, string> = {
+                auto: "overscroll-auto",
+                contain: "overscroll-contain",
+                none: "overscroll-none"
+            };
+            return map[v.trim()] || null;
+        }
+    },
+    {
+        property: "overscroll-behavior-x",
+        mapper(v) {
+            const map: Record<string, string> = {
+                auto: "overscroll-x-auto",
+                contain: "overscroll-x-contain",
+                none: "overscroll-x-none"
+            };
+            return map[v.trim()] || null;
+        }
+    },
+    {
+        property: "overscroll-behavior-y",
+        mapper(v) {
+            const map: Record<string, string> = {
+                auto: "overscroll-y-auto",
+                contain: "overscroll-y-contain",
+                none: "overscroll-y-none"
+            };
+            return map[v.trim()] || null;
+        }
+    },
+
+    // Box decoration break
+    {
+        property: "box-decoration-break",
+        mapper(v) {
+            const map: Record<string, string> = {
+                clone: "box-decoration-clone",
+                slice: "box-decoration-slice"
+            };
+            return map[v.trim()] || null;
+        }
+    },
+
+    // Box sizing
+    {
+        property: "box-sizing",
+        mapper(v) {
+            const map: Record<string, string> = {
+                "border-box": "box-border",
+                "content-box": "box-content"
+            };
+            return map[v.trim()] || null;
+        }
+    },
+
+    // Print color adjust
+    {
+        property: "print-color-adjust",
+        mapper(v) {
+            const map: Record<string, string> = {
+                exact: "print:text-current",
+                economy: "print:text-transparent"
+            };
+            return map[v.trim()] || null;
         }
     }
 ];

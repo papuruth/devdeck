@@ -1,235 +1,379 @@
 // @ts-nocheck
-import { ContentCopy, Clear, Info } from "@mui/icons-material";
-import { Box, Typography } from "@mui/material";
+"use client";
+import { Brush, Check, Clear, ContentCopy, Info } from "@mui/icons-material";
+import { Box, Tooltip, Typography } from "@mui/material";
 import React, { useCallback, useMemo, useState } from "react";
 import styled from "styled-components";
-import { ActionBtn, ActionBtnGroup, CodeArea, EmptyState, Panel, PanelHeader, PanelLabel, ToolLayout } from "components/Shared/ToolKit";
+import {
+    ActionBar,
+    ActionBtn,
+    ActionBtnGroup,
+    CodeArea,
+    EmptyState,
+    MetaText,
+    Panel,
+    PanelHeader,
+    PanelLabel,
+    ToolLayout
+} from "components/Shared/ToolKit";
+import LocalBadge from "components/Shared/LocalBadge";
 import { useDebounce } from "utils/hooks/useDebounce.hooks";
 import { CSS_PROPERTY_MAP } from "./cssToTailwindMap";
-import { parseCSS, formatTailwindOutput, generateUnmappedComment } from "./cssParser";
+import { parseCSS, generateUnmappedComment } from "./cssParser";
 
-const StatsBadge = styled.span`
+// ── Styled ────────────────────────────────────────────────────────────────
+
+const StatsBadge = styled.span<{ $allMapped?: boolean }>`
     display: inline-flex;
     align-items: center;
     gap: 4px;
-    padding: 2px 8px;
+    padding: 3px 8px;
     border-radius: 4px;
     font-size: 10px;
     font-weight: 600;
     font-family: var(--font-mono);
-    background: rgba(34, 204, 153, 0.1);
+    letter-spacing: 0.04em;
+    background: ${(p) => (p.$allMapped ? "rgba(34,204,153,0.12)" : "rgba(34,204,153,0.07)")};
     color: #22cc99;
+    border: 1px solid ${(p) => (p.$allMapped ? "rgba(34,204,153,0.3)" : "rgba(34,204,153,0.15)")};
+    transition: all 0.2s ease;
 `;
 
-const UnmappedComment = styled.div`
-    padding: 2px 16px 6px;
-    font-size: 10px;
+const OutputPre = styled.pre`
+    width: 100%;
+    min-height: 260px;
+    max-height: 360px;
+    background: var(--bg-input);
+    color: var(--text-primary);
+    border: none;
+    padding: 16px;
     font-family: var(--font-mono);
-    color: var(--text-secondary);
-    opacity: 0.5;
-    line-height: 1.6;
+    font-size: 12px;
+    line-height: 1.75;
+    letter-spacing: 0.02em;
+    margin: 0;
+    white-space: pre-wrap;
+    word-break: break-all;
+    overflow-x: hidden;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: var(--border-color) transparent;
+    &::-webkit-scrollbar {
+        width: 4px;
+    }
+    &::-webkit-scrollbar-track {
+        background: transparent;
+    }
+    &::-webkit-scrollbar-thumb {
+        background: var(--border-color);
+        border-radius: 2px;
+    }
 `;
 
-const cssInputPlaceholder = `
-  .btn {
+const SelectorComment = styled.span`
+    display: block;
+    color: var(--text-secondary);
+    opacity: 0.45;
+    margin-top: 14px;
+    &:first-child {
+        margin-top: 0;
+    }
+`;
+
+const ClassLine = styled.span`
+    display: block;
+    color: var(--text-primary);
+`;
+
+const UnmappedSection = styled(Box)`
+    border-top: 1px solid rgba(251, 191, 36, 0.18);
+    background: rgba(251, 191, 36, 0.025);
+`;
+
+const UnmappedHeader = styled(Box)`
     display: flex;
     align-items: center;
-    padding: 8px 16px;
-    border-radius: 8px;
-    font-weight: 700;
-    color: #fff;
-    background-color: #22cc99;
-  }
+    gap: 6px;
+    padding: 8px 16px 6px;
 `;
+
+const UnmappedRow = styled.div`
+    margin: 0 12px 3px;
+    padding: 3px 10px;
+    font-size: 11px;
+    font-family: var(--font-mono);
+    color: var(--text-secondary);
+    opacity: 0.65;
+    line-height: 1.6;
+    border-left: 2px solid rgba(251, 191, 36, 0.3);
+    border-radius: 0 2px 2px 0;
+`;
+
+// ── Types ─────────────────────────────────────────────────────────────────
+
+interface SelectorGroup {
+    selector: string;
+    mappedClasses: string[];
+    unmappedComments: string[];
+}
+
+interface ConversionResult {
+    groups: SelectorGroup[];
+    isMultiRule: boolean;
+    allMapped: boolean;
+    totalClasses: number;
+    allUnmapped: string[];
+    classesOnly: string;
+    mappedCount: number;
+    totalCount: number;
+}
+
+// ── Logic ─────────────────────────────────────────────────────────────────
+
+function convert(input: string): ConversionResult | null {
+    const parsed = parseCSS(input);
+    if (parsed.properties.length === 0) return null;
+
+    let mappedCount = 0;
+    const totalCount = parsed.properties.length;
+    const selectorMap = new Map<string, SelectorGroup>();
+    const seenKeys = new Set<string>();
+
+    parsed.properties.forEach((cssProp) => {
+        if (!selectorMap.has(cssProp.selector)) {
+            selectorMap.set(cssProp.selector, { selector: cssProp.selector, mappedClasses: [], unmappedComments: [] });
+        }
+        const group = selectorMap.get(cssProp.selector)!;
+        const mapper = CSS_PROPERTY_MAP[cssProp.property];
+
+        if (mapper) {
+            try {
+                const result = mapper(cssProp.value);
+                if (result) {
+                    result.split(/\s+/).forEach((cls) => {
+                        const key = `${cssProp.selector}|${cls}`;
+                        if (cls.trim() && !seenKeys.has(key)) {
+                            group.mappedClasses.push(cls.trim());
+                            seenKeys.add(key);
+                        }
+                    });
+                    mappedCount++;
+                } else {
+                    group.unmappedComments.push(generateUnmappedComment(cssProp.property, cssProp.value));
+                }
+            } catch {
+                group.unmappedComments.push(generateUnmappedComment(cssProp.property, cssProp.value));
+            }
+        } else {
+            group.unmappedComments.push(generateUnmappedComment(cssProp.property, cssProp.value));
+        }
+    });
+
+    const groups = Array.from(selectorMap.values());
+    const isMultiRule = groups.length > 1;
+    return {
+        groups,
+        isMultiRule,
+        allMapped: mappedCount === totalCount,
+        totalClasses: groups.reduce((s, g) => s + g.mappedClasses.length, 0),
+        allUnmapped: groups.flatMap((g) => g.unmappedComments),
+        classesOnly: groups.flatMap((g) => g.mappedClasses).join(" "),
+        mappedCount,
+        totalCount
+    };
+}
+
+// ── Output renderer ───────────────────────────────────────────────────────
+
+function HighlightedOutput({ groups, isMultiRule }: { groups: SelectorGroup[]; isMultiRule: boolean }) {
+    const nodes: React.ReactNode[] = [];
+    groups.forEach((group, gi) => {
+        if (isMultiRule) {
+            nodes.push(<SelectorComment key={`s${gi}`}>{`/* ${group.selector} */`}</SelectorComment>);
+        }
+        group.mappedClasses.forEach((cls, ci) => {
+            nodes.push(<ClassLine key={`${gi}-${ci}`}>{cls}</ClassLine>);
+        });
+        if (isMultiRule && gi < groups.length - 1) {
+            nodes.push(<br key={`br${gi}`} />);
+        }
+    });
+    return <OutputPre>{nodes}</OutputPre>;
+}
+
+// ── Placeholder ───────────────────────────────────────────────────────────
+
+const PLACEHOLDER = `.btn {
+  display: flex;
+  align-items: center;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-weight: 700;
+  color: #fff;
+  background-color: #22cc99;
+}`;
+
+// ── Component ─────────────────────────────────────────────────────────────
 
 export default function CSSToTailwind() {
     const [cssInput, setCssInput] = useState("");
-    const [copied, setCopied] = useState(false);
+    const [copiedClasses, setCopiedClasses] = useState(false);
     const [copiedAll, setCopiedAll] = useState(false);
 
-    // Debounce input for performance
     const debouncedInput = useDebounce(cssInput, 300);
 
-    // Convert CSS to Tailwind
-    const conversionResult = useMemo(() => {
-        if (!debouncedInput.trim()) {
-            return null;
-        }
-
-        const parsed = parseCSS(debouncedInput);
-        if (parsed.properties.length === 0) {
-            return null;
-        }
-
-        const mappedClasses: string[] = [];
-        const unmappedComments: string[] = [];
-        let mappedCount = 0;
-        const totalCount = parsed.properties.length;
-
-        // Track unique properties to avoid duplicates
-        const seenProperties = new Set<string>();
-
-        parsed.properties.forEach((cssProp) => {
-            const mapper = CSS_PROPERTY_MAP[cssProp.property];
-            if (mapper) {
-                try {
-                    const result = mapper(cssProp.value);
-                    if (result) {
-                        // Split multiple classes (e.g., "border border-solid border-gray-500")
-                        const classes = result.split(/\s+/);
-                        classes.forEach((cls) => {
-                            if (cls.trim() && !seenProperties.has(cssProp.property + cls)) {
-                                mappedClasses.push(cls.trim());
-                                seenProperties.add(cssProp.property + cls);
-                            }
-                        });
-                        mappedCount += 1;
-                    } else {
-                        unmappedComments.push(generateUnmappedComment(cssProp.property, cssProp.value));
-                    }
-                } catch (e) {
-                    unmappedComments.push(generateUnmappedComment(cssProp.property, cssProp.value));
-                }
-            } else {
-                unmappedComments.push(generateUnmappedComment(cssProp.property, cssProp.value));
-            }
-        });
-
-        return {
-            mappedClasses,
-            unmappedComments,
-            mappedCount,
-            totalCount,
-            output: formatTailwindOutput(mappedClasses),
-            fullOutput: formatTailwindOutput(mappedClasses) + (unmappedComments.length > 0 ? `\n${unmappedComments.join("\n")}` : "")
-        };
+    const result = useMemo(() => {
+        if (!debouncedInput.trim()) return null;
+        return convert(debouncedInput);
     }, [debouncedInput]);
 
-    // Copy classes only (for direct use in className)
-    const handleCopy = useCallback(async () => {
-        if (!conversionResult) return;
-        try {
-            await navigator.clipboard.writeText(conversionResult.mappedClasses.join(" "));
-            setCopied(true);
-            setTimeout(() => setCopied(false), 2000);
-        } catch (err) {
-            console.error("Failed to copy:", err);
-        }
-    }, [conversionResult]);
+    const hasOutput = result?.groups.some((g) => g.mappedClasses.length > 0);
+    const hasUnmapped = (result?.allUnmapped.length ?? 0) > 0;
 
-    // Copy all output (including comments)
+    const handleCopyClasses = useCallback(async () => {
+        if (!result?.classesOnly) return;
+        await navigator.clipboard.writeText(result.classesOnly);
+        setCopiedClasses(true);
+        setTimeout(() => setCopiedClasses(false), 2000);
+    }, [result]);
+
     const handleCopyAll = useCallback(async () => {
-        if (!conversionResult) return;
-        try {
-            await navigator.clipboard.writeText(conversionResult.fullOutput);
-            setCopiedAll(true);
-            setTimeout(() => setCopiedAll(false), 2000);
-        } catch (err) {
-            console.error("Failed to copy:", err);
-        }
-    }, [conversionResult]);
+        if (!result) return;
+        const lines: string[] = [];
+        result.groups.forEach((group) => {
+            if (result.isMultiRule) lines.push(`/* ${group.selector} */`);
+            if (group.mappedClasses.length) lines.push(group.mappedClasses.join(" "));
+            if (group.unmappedComments.length) lines.push(...group.unmappedComments);
+        });
+        await navigator.clipboard.writeText(lines.join("\n"));
+        setCopiedAll(true);
+        setTimeout(() => setCopiedAll(false), 2000);
+    }, [result]);
 
-    // Clear input
-    const handleClear = useCallback(() => {
-        setCssInput("");
+    const handlePaste = useCallback(async () => {
+        try {
+            const text = await navigator.clipboard.readText();
+            if (text) setCssInput(text);
+        } catch {
+            // Browser may block clipboard access without user gesture
+        }
     }, []);
 
-    const renderOutputPanel = () => {
-        if (!cssInput.trim()) {
-            return (
-                <EmptyState>
-                    <Typography variant="body2">Paste CSS above to convert to Tailwind</Typography>
-                </EmptyState>
-            );
-        }
-        if (!conversionResult) {
-            return (
-                <EmptyState>
-                    <Typography variant="body2">Parsing CSS...</Typography>
-                </EmptyState>
-            );
-        }
-        if (conversionResult.mappedClasses.length === 0) {
-            return (
-                <EmptyState>
-                    <Typography variant="body2">No Tailwind mappings found for the provided CSS</Typography>
-                    {conversionResult.unmappedComments.length > 0 && (
-                        <Box sx={{ mt: 2, width: "100%" }}>
-                            {conversionResult.unmappedComments.map((comment, i) => (
-                                // eslint-disable-next-line react/no-array-index-key
-                                <UnmappedComment key={i}>{comment}</UnmappedComment>
-                            ))}
-                        </Box>
-                    )}
-                </EmptyState>
-            );
-        }
-        return (
-            <>
-                <CodeArea
-                    value={conversionResult.output}
-                    readOnly
-                    spellCheck={false}
-                    style={{
-                        cursor: "default",
-                        minHeight: "200px"
-                    }}
-                />
-                {conversionResult.unmappedComments.length > 0 && (
-                    <Box sx={{ px: 2, pb: 1 }}>
-                        <Box sx={{ display: "flex", alignItems: "center", gap: 0.5, mb: 1 }}>
-                            <Info fontSize="small" sx={{ fontSize: 14, color: "var(--text-secondary)", opacity: 0.5 }} />
-                            <Typography variant="caption" sx={{ color: "var(--text-secondary)", opacity: 0.5 }}>
-                                Unmapped properties:
-                            </Typography>
-                        </Box>
-                        {conversionResult.unmappedComments.map((comment, i) => (
-                            // eslint-disable-next-line react/no-array-index-key
-                            <UnmappedComment key={i}>{comment}</UnmappedComment>
-                        ))}
-                    </Box>
-                )}
-            </>
-        );
-    };
+    const handleClear = useCallback(() => setCssInput(""), []);
 
     return (
         <ToolLayout>
-            {/* Input Panel */}
+            {/* ── CSS Input ──────────────────────────────────────────── */}
             <Panel>
                 <PanelHeader>
                     <PanelLabel>CSS Input</PanelLabel>
                     <ActionBtnGroup>
-                        <ActionBtn onClick={handleClear} disabled={!cssInput}>
+                        <LocalBadge />
+                        <ActionBtn onClick={handlePaste}>Paste</ActionBtn>
+                        <ActionBtn onClick={handleClear} disabled={!cssInput} $danger={!!cssInput}>
                             <Clear fontSize="small" />
                             Clear
                         </ActionBtn>
                     </ActionBtnGroup>
                 </PanelHeader>
-                <CodeArea value={cssInput} onChange={(e) => setCssInput(e.target.value)} placeholder={cssInputPlaceholder} spellCheck={false} />
+                <CodeArea
+                    value={cssInput}
+                    onChange={(e) => setCssInput(e.target.value)}
+                    placeholder={PLACEHOLDER}
+                    spellCheck={false}
+                />
             </Panel>
 
-            {/* Output Panel */}
+            {/* ── Tailwind Output ────────────────────────────────────── */}
             <Panel>
                 <PanelHeader>
                     <PanelLabel>Tailwind Classes</PanelLabel>
-                    <ActionBtnGroup>
-                        {conversionResult && (
-                            <StatsBadge>
-                                {conversionResult.mappedCount} / {conversionResult.totalCount} mapped
-                            </StatsBadge>
-                        )}
-                        <ActionBtn onClick={handleCopy} disabled={!conversionResult || !conversionResult.mappedClasses.length}>
-                            <ContentCopy fontSize="small" />
-                            {copied ? "Copied!" : "Copy Classes"}
-                        </ActionBtn>
-                        <ActionBtn onClick={handleCopyAll} disabled={!conversionResult}>
-                            <ContentCopy fontSize="small" />
-                            {copiedAll ? "Copied!" : "Copy All"}
-                        </ActionBtn>
-                    </ActionBtnGroup>
+                    {result && (
+                        <StatsBadge $allMapped={result.allMapped}>
+                            {result.allMapped ? (
+                                <>
+                                    <Check sx={{ fontSize: 10 }} />
+                                    All mapped
+                                </>
+                            ) : (
+                                `${result.mappedCount} / ${result.totalCount} mapped`
+                            )}
+                        </StatsBadge>
+                    )}
                 </PanelHeader>
-                {renderOutputPanel()}
+
+                {/* Empty state */}
+                {!cssInput.trim() && (
+                    <EmptyState>
+                        <Brush sx={{ fontSize: 30, opacity: 0.3, mb: 0.5 }} />
+                        <Typography variant="body2">Paste CSS above to convert</Typography>
+                        <Typography variant="caption" sx={{ opacity: 0.55, fontSize: "11px", fontFamily: "Inter, sans-serif" }}>
+                            Supports multi-rule, shorthand, hex colors, !important
+                        </Typography>
+                    </EmptyState>
+                )}
+
+                {/* No mappings found */}
+                {cssInput.trim() && (!result || !hasOutput) && (
+                    <EmptyState>
+                        <Typography variant="body2">No Tailwind classes found</Typography>
+                        <Typography variant="caption" sx={{ opacity: 0.55, fontSize: "11px" }}>
+                            Check that your CSS contains valid property declarations
+                        </Typography>
+                    </EmptyState>
+                )}
+
+                {/* Output */}
+                {hasOutput && (
+                    <>
+                        <HighlightedOutput groups={result.groups} isMultiRule={result.isMultiRule} />
+
+                        {/* Unmapped section */}
+                        {hasUnmapped && (
+                            <UnmappedSection>
+                                <UnmappedHeader>
+                                    <Info sx={{ fontSize: 13, color: "rgba(251,191,36,0.65)" }} />
+                                    <Typography
+                                        variant="caption"
+                                        sx={{ fontSize: "11px", color: "var(--text-secondary)", opacity: 0.65, fontFamily: "Inter, sans-serif" }}
+                                    >
+                                        {result.allUnmapped.length} propert{result.allUnmapped.length === 1 ? "y" : "ies"} couldn&apos;t be mapped
+                                    </Typography>
+                                </UnmappedHeader>
+                                {result.allUnmapped.map((comment, i) => (
+                                    // eslint-disable-next-line react/no-array-index-key
+                                    <UnmappedRow key={i}>{comment}</UnmappedRow>
+                                ))}
+                                <Box sx={{ pb: 1 }} />
+                            </UnmappedSection>
+                        )}
+
+                        {/* Action bar */}
+                        <ActionBar>
+                            <MetaText>
+                                {result.totalClasses} class{result.totalClasses !== 1 ? "es" : ""}
+                            </MetaText>
+                            <ActionBtnGroup>
+                                <ActionBtn
+                                    onClick={handleCopyClasses}
+                                    disabled={!result.classesOnly}
+                                    $success={copiedClasses}
+                                >
+                                    {copiedClasses ? <Check fontSize="small" /> : <ContentCopy fontSize="small" />}
+                                    {copiedClasses ? "Copied!" : "Copy className"}
+                                </ActionBtn>
+                                {hasUnmapped && (
+                                    <Tooltip title="Copies classes + unmapped notes" placement="top" arrow>
+                                        <ActionBtn onClick={handleCopyAll} $success={copiedAll}>
+                                            {copiedAll ? <Check fontSize="small" /> : <ContentCopy fontSize="small" />}
+                                            {copiedAll ? "Copied!" : "With notes"}
+                                        </ActionBtn>
+                                    </Tooltip>
+                                )}
+                            </ActionBtnGroup>
+                        </ActionBar>
+                    </>
+                )}
             </Panel>
         </ToolLayout>
     );

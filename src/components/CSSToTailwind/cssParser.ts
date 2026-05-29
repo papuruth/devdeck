@@ -48,7 +48,8 @@ export function parseCSS(input: string): ParsedCSS {
             if (colonIndex === -1) return;
 
             const property = trimmedDecl.substring(0, colonIndex).trim().toLowerCase();
-            const value = trimmedDecl.substring(colonIndex + 1).trim();
+            // Strip !important suffix before mapping
+            const value = trimmedDecl.substring(colonIndex + 1).trim().replace(/\s*!important\s*$/i, "").trim();
 
             if (property && value) {
                 props.push({
@@ -75,7 +76,7 @@ export function parseCSS(input: string): ParsedCSS {
                 if (colonIndex === -1) return;
 
                 const property = trimmedDecl.substring(0, colonIndex).trim().toLowerCase();
-                const value = trimmedDecl.substring(colonIndex + 1).trim();
+                const value = trimmedDecl.substring(colonIndex + 1).trim().replace(/\s*!important\s*$/i, "").trim();
 
                 if (property && value) {
                     props.push({
@@ -123,5 +124,8 @@ export function formatTailwindOutput(classes: string[]): string {
  * Generate comment for unmapped properties
  */
 export function generateUnmappedComment(property: string, value: string): string {
+    if (/var\(--[^)]+\)/.test(value)) {
+        return `/* ${property}: ${value} — CSS variable, add manually */`;
+    }
     return `/* ${property}: ${value} — no Tailwind class */`;
 }

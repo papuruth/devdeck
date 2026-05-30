@@ -82,7 +82,17 @@ const nextConfig: NextConfig = {
     },
     async redirects() {
         return [];
+    },
+    logging: {
+        fetches: {
+            fullUrl: true
+        }
     }
 };
+
+// This prints to your CI terminal console right when 'next build' kicks off:
+console.log("=== BUILD TIME ENVIRONMENT ENVS ===");
+console.log(JSON.stringify(process.env, null, 2));
+console.log("====================================");
 
 export default withBundleAnalyzer({ enabled: process.env.ANALYZE === "true" })(nextConfig);

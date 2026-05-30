@@ -26,6 +26,13 @@ function useProtocolHandler() {
     }, []);
 }
 
+function isEditableTarget(target: EventTarget | null): boolean {
+    if (!target) return false;
+    const el = target as HTMLElement;
+    const tag = el.tagName?.toLowerCase();
+    return tag === "input" || tag === "textarea" || tag === "select" || el.isContentEditable;
+}
+
 interface GlobalLayoutProps {
     children: React.ReactNode;
     themeMode: string;
@@ -36,15 +43,21 @@ export default function GlobalLayout({ children, themeMode, isMac }: GlobalLayou
     useProtocolHandler();
     const dispatch = useAppDispatch();
     const paletteOpen = useAppSelector((state) => state.headerReducer.commandPaletteOpen);
+    const router = useRouter();
 
     const handleKeyDown = useCallback(
         (e: KeyboardEvent) => {
             if ((e.ctrlKey || e.metaKey) && e.key === "k") {
                 e.preventDefault();
                 dispatch(toggleCommandPaletteAction());
+                return;
+            }
+            if (e.key === "Backspace" && !isEditableTarget(e.target)) {
+                e.preventDefault();
+                router.back();
             }
         },
-        [dispatch]
+        [dispatch, router]
     );
 
     useEffect(() => {

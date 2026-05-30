@@ -14,6 +14,25 @@ import ColorModeContext from "../../context/ColorModeContext";
 const LoadJSONModal = dynamic(() => import("./components/LoadJSONModal"), { ssr: false });
 const Editor = dynamic(() => import("./components/Editor"), { ssr: false });
 
+const LIGHT_THEME = {
+    base00: "rgba(0,0,0,0)",
+    base01: "rgb(245,245,245)",
+    base02: "rgb(235,235,235)",
+    base03: "#6b7280",
+    base04: "rgba(0,0,0,0.65)",
+    base05: "#374151",
+    base06: "#1f2937",
+    base07: "#111827",
+    base08: "#d33682",
+    base09: "#c2410c",
+    base0A: "#b45309",
+    base0B: "#16a34a",
+    base0C: "#6c71c4",
+    base0D: "#374151",
+    base0E: "#2aa198",
+    base0F: "#268bd2",
+};
+
 const { jsonViewer: L } = localization;
 
 function filterJsonByQuery(obj: any, query: string): any {
@@ -107,7 +126,7 @@ export default function JSONViewer() {
     const [jsonInput, setJSONInput] = useState("");
     const [showLinkModal, setShowLinkModal] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
-    const [collapsed, setCollapsed] = useState(1);
+    const [collapsed, setCollapsed] = useState<number | boolean>(1);
     const { history: jsonHistory, addHistory: addJsonHistory, clearHistory: clearJsonHistory } = useToolHistory("json-viewer");
     const { consumeChain } = useToolChain();
 
@@ -216,8 +235,8 @@ export default function JSONViewer() {
                                 spellCheck={false}
                             />
                             <ViewerBtnGroup>
-                                <ActionBtn onClick={() => setCollapsed(0)}>{L.expandAllBtn}</ActionBtn>
-                                <ActionBtn onClick={() => setCollapsed(Infinity)}>{L.collapseAllBtn}</ActionBtn>
+                                <ActionBtn onClick={() => setCollapsed(false)}>{L.expandAllBtn}</ActionBtn>
+                                <ActionBtn onClick={() => setCollapsed(true)}>{L.collapseAllBtn}</ActionBtn>
                             </ViewerBtnGroup>
                         </ViewerControls>
                         <ViewerArea>
@@ -226,7 +245,7 @@ export default function JSONViewer() {
                                     key={collapsed}
                                     src={filteredJson}
                                     collapsed={collapsed}
-                                    theme={mode === "dark" ? "ocean" : "rjv-default"}
+                                    theme={mode === "dark" ? "ocean" : LIGHT_THEME}
                                     iconStyle="circle"
                                     displayDataTypes={false}
                                     quotesOnKeys={false}

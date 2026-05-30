@@ -1,10 +1,18 @@
-import { diffWords } from "diff";
+import { diffChars, diffLines, diffWords } from "diff";
 import localization from "localization";
 import React, { useMemo, useState } from "react";
 import styled from "styled-components";
-import { ActionBtn, EmptyState, InputArea, MetaText, Panel, PanelHeader, PanelLabel, ToolLayout } from "components/Shared/ToolKit";
+import { ActionBtn, EmptyState, InputArea, MetaText, ModeBtn, ModeToggle, Panel, PanelHeader, PanelLabel, ToolLayout } from "components/Shared/ToolKit";
 
 const { textDiff: L } = localization;
+
+type DiffMode = "words" | "chars" | "lines";
+
+const MODES: { id: DiffMode; label: string }[] = [
+    { id: "words", label: "Words" },
+    { id: "chars", label: "Chars" },
+    { id: "lines", label: "Lines" },
+];
 
 const ToolWrap = styled.div`
     display: flex;
@@ -28,29 +36,48 @@ const DiffArea = styled.div`
 `;
 
 const Added = styled.mark`
-    background: rgba(34, 204, 153, 0.25);
+    background: rgba(34, 204, 153, 0.22);
     color: var(--text-primary);
     border-radius: 2px;
+    outline: 1px solid rgba(34, 204, 153, 0.35);
 `;
 
 const Removed = styled.mark`
-    background: rgba(239, 68, 68, 0.2);
+    background: rgba(239, 68, 68, 0.15);
     color: #ef4444;
     text-decoration: line-through;
     border-radius: 2px;
+    outline: 1px solid rgba(239, 68, 68, 0.3);
+`;
+
+const ModeRow = styled.div`
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--border-color);
+    background: rgba(0, 0, 0, 0.02);
 `;
 
 export default function TextDiff() {
     const [original, setOriginal] = useState("");
     const [modified, setModified] = useState("");
+    const [mode, setMode] = useState<DiffMode>("words");
 
     const { parts, stats } = useMemo(() => {
         if (!original && !modified) return { parts: [], stats: null };
-        const result = diffWords(original, modified);
+        const result =
+            mode === "chars"
+                ? diffChars(original, modified)
+                : mode === "lines"
+                  ? diffLines(original, modified)
+                  : diffWords(original, modified);
         const added = result.filter((p) => p.added).reduce((n, p) => n + (p.count || 0), 0);
         const removed = result.filter((p) => p.removed).reduce((n, p) => n + (p.count || 0), 0);
         return { parts: result, stats: { added, removed } };
-    }, [original, modified]);
+    }, [original, modified, mode]);
+
+    const unitLabel = mode === "chars" ? "chars" : mode === "lines" ? "lines" : L.wordsLabel;
 
     return (
         <ToolWrap>
@@ -92,7 +119,7 @@ export default function TextDiff() {
                                 <MetaText>
                                     <span style={{ color: "#22cc99" }}>+{stats.added}</span>
                                     {" / "}
-                                    <span style={{ color: "#ef4444" }}>-{stats.removed}</span> {L.wordsLabel}
+                                    <span style={{ color: "#ef4444" }}>-{stats.removed}</span> {unitLabel}
                                 </MetaText>
                             )}
                             <ActionBtn
@@ -107,6 +134,15 @@ export default function TextDiff() {
                         </div>
                     )}
                 </PanelHeader>
+                <ModeRow>
+                    <ModeToggle style={{ padding: "2px", gap: "1px" }}>
+                        {MODES.map(({ id, label }) => (
+                            <ModeBtn key={id} $active={mode === id} onClick={() => setMode(id)} style={{ padding: "5px 14px", fontSize: "11px" }}>
+                                {label}
+                            </ModeBtn>
+                        ))}
+                    </ModeToggle>
+                </ModeRow>
                 {parts.length > 0 ? (
                     <DiffArea>
                         {parts.map((part, i) => {

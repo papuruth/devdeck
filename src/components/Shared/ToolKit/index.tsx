@@ -31,7 +31,7 @@ export const ToolLayout = styled(Box)`
     gap: 20px;
     width: 100%;
     margin-top: 20px;
-    align-items: start;
+    align-items: stretch;
     ${styledMedia.lessThan("md")`
         grid-template-columns: 1fr;
     `}

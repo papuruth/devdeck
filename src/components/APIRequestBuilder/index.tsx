@@ -47,8 +47,8 @@ function tokenizeCurl(str) {
             inSingle = true;
         } else if (ch === `"`) {
             inDouble = true;
-        } else if (ch === "\\" && i + 1 < str.length && str[i + 1] === "\n") {
-            i += 2;
+        } else if (ch === "\\" && i + 1 < str.length && (str[i + 1] === "\n" || (str[i + 1] === "\r" && i + 2 < str.length && str[i + 2] === "\n"))) {
+            i += str[i + 1] === "\r" ? 3 : 2;
             advance = false;
         } else if (ch === " " || ch === "\t" || ch === "\n" || ch === "\r") {
             if (current) {
@@ -855,6 +855,7 @@ export default function APIRequestBuilder() {
             if (parsed.body) {
                 setJsonBody(parsed.body);
                 setBodyTab("json");
+                setRequestTab("body");
             }
             setCurlParsed(true);
             setTimeout(() => setCurlParsed(false), 2500);
@@ -871,6 +872,7 @@ export default function APIRequestBuilder() {
             if (parsed.body) {
                 setJsonBody(parsed.body);
                 setBodyTab("json");
+                setRequestTab("body");
             }
             setCurlParsed(true);
             setTimeout(() => setCurlParsed(false), 2500);

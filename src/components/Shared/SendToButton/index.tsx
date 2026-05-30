@@ -45,12 +45,21 @@ export default function SendToButton({ value, targets = [] }: SendToButtonProps)
             <Button
                 size="small"
                 variant="outlined"
-                startIcon={<CallSplit fontSize="small" />}
+                startIcon={<CallSplit style={{ fontSize: 11 }} />}
                 onClick={handleOpen}
                 sx={{
-                    borderColor: "rgba(34,204,153,0.4)",
+                    borderColor: "rgba(34,204,153,0.35)",
                     color: "#22cc99",
-                    fontSize: "0.75rem",
+                    fontSize: "11px",
+                    fontWeight: 500,
+                    letterSpacing: "0.04em",
+                    padding: "8px 14px",
+                    minHeight: "36px",
+                    lineHeight: 1.5,
+                    textTransform: "none",
+                    borderRadius: "var(--radius-btn, 6px)",
+                    fontFamily: "Inter, sans-serif",
+                    "& .MuiButton-startIcon": { marginRight: "5px" },
                     "&:hover": { borderColor: "#22cc99", background: "rgba(34,204,153,0.08)" }
                 }}
             >

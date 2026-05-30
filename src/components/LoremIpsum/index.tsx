@@ -1,6 +1,6 @@
 import { Check, ContentCopy } from "@mui/icons-material";
 import localization from "localization";
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import styled from "styled-components";
 import {
     ActionBar,
@@ -94,6 +94,11 @@ export default function LoremIpsum() {
         else if (unit === "sentences") text = Array.from({ length: count }, sentence).join(" ");
         else text = Array.from({ length: count }, randomWord).join(" ");
         setOutput(text);
+    }, [count, unit]);
+
+    useEffect(() => {
+        if (output) generate();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [count, unit]);
 
     const handleCopy = useCallback(() => {

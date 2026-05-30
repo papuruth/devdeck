@@ -129,13 +129,19 @@ const BtnGroup = styled(ActionBtnGroup)`
 export default function CSVToJSON() {
     const [csv, setCsv] = useState("");
     const [hasHeader, setHasHeader] = useState(true);
+    const [trimValues, setTrimValues] = useState(false);
     const [tab, setTab] = useState("table");
     const [copied, setCopied] = useState(false);
 
     const { rows, columns, json, error, total } = useMemo(() => {
         if (!csv.trim()) return { rows: [], columns: [], json: "", error: "", total: 0 };
         try {
-            const result = Papa.parse(csv.trim(), { header: hasHeader, skipEmptyLines: true }) as Papa.ParseResult<Record<string, unknown>>;
+            const result = Papa.parse(csv.trim(), {
+                header: hasHeader,
+                skipEmptyLines: true,
+                transform: trimValues ? (v: string) => v.trim() : undefined,
+                transformHeader: trimValues ? (h: string) => h.trim() : undefined,
+            }) as Papa.ParseResult<Record<string, unknown>>;
             if (result.errors.length) {
                 return { rows: [], columns: [], json: "", error: result.errors[0].message, total: 0 };
             }
@@ -152,7 +158,7 @@ export default function CSVToJSON() {
             const errorMessage = e instanceof Error ? e.message : String(e);
             return { rows: [], columns: [], json: "", error: errorMessage, total: 0 };
         }
-    }, [csv, hasHeader]);
+    }, [csv, hasHeader, trimValues]);
 
     const handleCopy = useCallback(() => {
         if (!json || !window?.navigator?.clipboard) return;
@@ -186,6 +192,10 @@ export default function CSVToJSON() {
                     <ToggleLabel>
                         <ToggleSwitch checked={hasHeader} onChange={(e) => setHasHeader(e.target.checked)} />
                         {L.firstRowHeaderLabel}
+                    </ToggleLabel>
+                    <ToggleLabel style={{ marginLeft: 12 }}>
+                        <ToggleSwitch checked={trimValues} onChange={(e) => setTrimValues(e.target.checked)} />
+                        Ignore whitespace
                     </ToggleLabel>
                 </ToggleRow>
                 <InputArea

@@ -134,7 +134,7 @@ function syntaxHighlightJson(json: string): React.ReactNode {
             i += 1;
         } else {
             tokens.push(
-                <span key={i} style={{ color: "rgba(255,255,255,0.28)" }}>
+                <span key={i} style={{ color: "var(--text-secondary)" }}>
                     {m[5]}
                 </span>
             );

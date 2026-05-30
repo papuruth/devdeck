@@ -662,7 +662,10 @@ interface DateTimePickerProps {
 function DateTimePicker({ onChange }: DateTimePickerProps) {
     const [open, setOpen] = useState(false);
     const [selected, setSelected] = useState<Date | undefined>(undefined);
-    const [timeStr, setTimeStr] = useState("00:00");
+    const [timeStr, setTimeStr] = useState(() => {
+        const now = new Date();
+        return `${String(now.getHours()).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`;
+    });
     const [dropPos, setDropPos] = useState({ top: 0, left: 0 });
     const triggerRef = useRef<HTMLButtonElement>(null);
     const dropRef = useRef<HTMLDivElement>(null);
@@ -739,7 +742,7 @@ function DateTimePicker({ onChange }: DateTimePickerProps) {
 
 export default function TimestampConverter() {
     const [mode, setMode] = useState("unix2date");
-    const [unixInput, setUnixInput] = useState("");
+    const [unixInput, setUnixInput] = useState(() => String(Math.floor(Date.now() / 1000)));
     const [dateInput, setDateInput] = useState("");
     const [tz, setTz] = useState(SYSTEM_TZ);
     const [copiedLabel, setCopiedLabel] = useState<string | null>(null);

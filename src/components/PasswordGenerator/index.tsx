@@ -135,15 +135,17 @@ const MinSelect = styled.select`
 `;
 
 const PasswordDisplay = styled.div`
-    padding: 20px 16px;
-    font-size: 18px;
+    padding: 24px 20px;
+    font-size: 17px;
     font-family: var(--font-mono);
     color: #22cc99;
     word-break: break-all;
-    line-height: 1.6;
+    line-height: 1.75;
     flex: 1;
-    background: var(--bg-input);
-    min-height: 80px;
+    background: linear-gradient(135deg, var(--bg-input) 0%, rgba(34, 204, 153, 0.03) 100%);
+    min-height: 100px;
+    letter-spacing: 0.04em;
+    text-shadow: 0 0 20px rgba(34, 204, 153, 0.2);
 `;
 
 const MetaSection = styled.div`
@@ -177,8 +179,8 @@ const MetaValue = styled.span<{ $color?: string }>`
 `;
 
 const StrengthBar = styled.div`
-    height: 4px;
-    border-radius: 2px;
+    height: 6px;
+    border-radius: 3px;
     background: var(--border-color);
     overflow: hidden;
     flex: 1;
@@ -186,7 +188,7 @@ const StrengthBar = styled.div`
 
 const StrengthFill = styled.div<{ $score?: number }>`
     height: 100%;
-    border-radius: 2px;
+    border-radius: 3px;
     width: ${(p) => ((p.$score ?? 0) + 1) * 20}%;
     background: ${(p) => {
         const score = p.$score ?? 0;
@@ -195,7 +197,14 @@ const StrengthFill = styled.div<{ $score?: number }>`
         if (score === 3) return "#fbbf24";
         return "#22cc99";
     }};
-    transition: width 0.3s ease, background 0.3s ease;
+    box-shadow: 0 0 8px ${(p) => {
+        const score = p.$score ?? 0;
+        if (score <= 1) return "#ef444466";
+        if (score === 2) return "#f9731666";
+        if (score === 3) return "#fbbf2466";
+        return "#22cc9966";
+    }};
+    transition: width 0.35s ease, background 0.35s ease, box-shadow 0.35s ease;
 `;
 
 const BtnGroup = styled(ActionBtnGroup)`

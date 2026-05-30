@@ -66,8 +66,17 @@ const TipText = styled.p`
 const PasswordInputWrap = styled.div`
     display: flex;
     align-items: center;
-    padding: 14px 16px;
+    padding: 10px 14px;
     gap: 8px;
+    margin: 14px 16px;
+    background: var(--bg-input);
+    border: 1.5px solid var(--border-color);
+    border-radius: 10px;
+    transition: border-color 0.15s, box-shadow 0.15s;
+    &:focus-within {
+        border-color: #22cc99;
+        box-shadow: 0 0 0 3px rgba(34, 204, 153, 0.1);
+    }
 `;
 
 const PasswordInput = styled.input`
@@ -124,15 +133,16 @@ const MetaLabel = styled.span`
     min-width: 80px;
 `;
 
-const MetaValue = styled.span<{ $color?: string }>`
-    font-size: 12px;
+const MetaValue = styled.span<{ $color?: string; $prominent?: boolean }>`
+    font-size: ${(p) => (p.$prominent ? "14px" : "12px")};
     font-family: var(--font-mono);
+    font-weight: ${(p) => (p.$prominent ? "600" : "400")};
     color: ${(p) => p.$color || "var(--text-primary)"};
 `;
 
 const StrengthBar = styled.div`
-    height: 4px;
-    border-radius: 2px;
+    height: 6px;
+    border-radius: 3px;
     background: var(--border-color);
     overflow: hidden;
     flex: 1;
@@ -140,10 +150,11 @@ const StrengthBar = styled.div`
 
 const StrengthFill = styled.div<{ $score?: number }>`
     height: 100%;
-    border-radius: 2px;
+    border-radius: 3px;
     width: ${(p) => ((p.$score ?? 0) + 1) * 20}%;
     background: ${(p) => getStrengthColor(p.$score)};
-    transition: width 0.3s ease, background 0.3s ease;
+    box-shadow: 0 0 8px ${(p) => getStrengthColor(p.$score)}66;
+    transition: width 0.35s ease, background 0.35s ease, box-shadow 0.35s ease;
 `;
 
 const CharTypeSection = styled.div`
@@ -271,7 +282,7 @@ export default function PasswordStrengthMeter() {
                             </MetaRow>
                             <MetaRow>
                                 <MetaLabel>{L.crackTimeLabel}</MetaLabel>
-                                <MetaValue>{analysis.crackTime}</MetaValue>
+                                <MetaValue $prominent $color={getStrengthColor(analysis.score)}>{analysis.crackTime}</MetaValue>
                             </MetaRow>
                             <MetaRow>
                                 <MetaLabel>{L.lengthLabel}</MetaLabel>

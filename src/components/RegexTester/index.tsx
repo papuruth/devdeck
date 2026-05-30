@@ -26,12 +26,22 @@ const PRESETS = [
     { label: "Email", pattern: "[a-zA-Z0-9._%+\\-]+@[a-zA-Z0-9.\\-]+\\.[a-zA-Z]{2,}" },
     { label: "URL", pattern: "https?:\\/\\/(www\\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b[-a-zA-Z0-9()@:%_+.~#?&/=]*" },
     { label: "IPv4", pattern: "\\b(?:(?:25[0-5]|2[0-4]\\d|[01]?\\d\\d?)\\.){3}(?:25[0-5]|2[0-4]\\d|[01]?\\d\\d?)\\b" },
+    { label: "IPv6", pattern: "([0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}" },
     { label: "Date YYYY-MM-DD", pattern: "\\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\\d|3[01])" },
-    { label: "Hex Color", pattern: "#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})\\b" },
+    { label: "Time HH:MM", pattern: "\\b([01]?\\d|2[0-3]):[0-5]\\d(:[0-5]\\d)?\\b" },
+    { label: "Hex Color", pattern: "#([0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})\\b" },
     { label: "UUID", pattern: "[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}" },
     { label: "JWT", pattern: "eyJ[A-Za-z0-9_-]+\\.eyJ[A-Za-z0-9_-]+\\.[A-Za-z0-9_-]+" },
     { label: "HTML Tag", pattern: "<\\/?[a-zA-Z][^>]*>" },
-    { label: "Number", pattern: "-?\\b\\d+(?:\\.\\d+)?\\b" }
+    { label: "Number", pattern: "-?\\b\\d+(?:\\.\\d+)?\\b" },
+    { label: "Phone (US)", pattern: "\\+?1?[\\s.-]?\\(?\\d{3}\\)?[\\s.-]?\\d{3}[\\s.-]?\\d{4}" },
+    { label: "Credit Card", pattern: "\\b(?:4\\d{3}|5[1-5]\\d{2}|6011|3[47]\\d{2})[\\s-]?\\d{4}[\\s-]?\\d{4}[\\s-]?\\d{4,7}\\b" },
+    { label: "Postal Code (US)", pattern: "\\b\\d{5}(?:-\\d{4})?\\b" },
+    { label: "Slug", pattern: "\\b[a-z0-9]+(?:-[a-z0-9]+)*\\b" },
+    { label: "Semver", pattern: "\\bv?\\d+\\.\\d+\\.\\d+(?:-[\\w.]+)?(?:\\+[\\w.]+)?\\b" },
+    { label: "Base64", pattern: "(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?" },
+    { label: "SQL SELECT", pattern: "(?i)\\bSELECT\\b[\\s\\S]+?\\bFROM\\b" },
+    { label: "Markdown Heading", pattern: "^#{1,6}\\s.+" },
 ];
 
 function buildSegments(text: string, matches: RegExpMatchArray[]) {

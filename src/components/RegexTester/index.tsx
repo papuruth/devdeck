@@ -41,7 +41,7 @@ const PRESETS = [
     { label: "Semver", pattern: "\\bv?\\d+\\.\\d+\\.\\d+(?:-[\\w.]+)?(?:\\+[\\w.]+)?\\b" },
     { label: "Base64", pattern: "(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?" },
     { label: "SQL SELECT", pattern: "(?i)\\bSELECT\\b[\\s\\S]+?\\bFROM\\b" },
-    { label: "Markdown Heading", pattern: "^#{1,6}\\s.+" },
+    { label: "Markdown Heading", pattern: "^#{1,6}\\s.+" }
 ];
 
 function buildSegments(text: string, matches: RegExpMatchArray[]) {
@@ -155,7 +155,7 @@ const SubHeader = styled.div`
     padding: 8px 16px;
     border-top: 1px solid var(--border-color);
     border-bottom: 1px solid var(--border-color);
-    background: rgba(0, 0, 0, 0.04);
+    background: var(--bg-panel-header);
     min-height: 36px;
 `;
 

@@ -88,7 +88,7 @@ const CloseBtn = styled.button`
 const ModalTabStrip = styled.div`
     display: flex;
     border-bottom: 1px solid var(--border-color);
-    background: rgba(0, 0, 0, 0.04);
+    background: var(--bg-panel-header);
 `;
 
 const ModalTab = styled.button<{ $active?: boolean }>`

@@ -30,7 +30,7 @@ const LIGHT_THEME = {
     base0C: "#6c71c4",
     base0D: "#374151",
     base0E: "#2aa198",
-    base0F: "#268bd2",
+    base0F: "#268bd2"
 };
 
 const { jsonViewer: L } = localization;
@@ -242,7 +242,7 @@ export default function JSONViewer() {
                         <ViewerArea>
                             {filteredJson !== null && filteredJson !== undefined ? (
                                 <ReactJsonView
-                                    key={collapsed}
+                                    key={String(collapsed)}
                                     src={filteredJson}
                                     collapsed={collapsed}
                                     theme={mode === "dark" ? "ocean" : LIGHT_THEME}

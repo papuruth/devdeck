@@ -60,7 +60,7 @@ export const PanelHeader = styled(Box)`
     justify-content: space-between;
     padding: 12px 16px;
     border-bottom: 1px solid var(--border-color);
-    background: rgba(0, 0, 0, 0.04);
+    background: var(--bg-panel-header);
     min-height: 44px;
     flex-wrap: wrap;
     gap: 6px;
@@ -213,7 +213,7 @@ export const ErrorState = styled(Box)`
 export const TabStrip = styled(Box)`
     display: flex;
     border-bottom: 1px solid var(--border-color);
-    background: rgba(0, 0, 0, 0.04);
+    background: var(--bg-panel-header);
 `;
 
 export const TabBtn = styled.button<TabBtnProps>`
@@ -250,7 +250,7 @@ export const ActionBar = styled(Box)`
     justify-content: space-between;
     padding: 10px 16px;
     border-top: 1px solid var(--border-color);
-    background: rgba(0, 0, 0, 0.04);
+    background: var(--bg-panel-header);
     gap: 8px;
     flex-wrap: wrap;
 `;

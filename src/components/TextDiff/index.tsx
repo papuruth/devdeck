@@ -11,7 +11,7 @@ type DiffMode = "words" | "chars" | "lines";
 const MODES: { id: DiffMode; label: string }[] = [
     { id: "words", label: "Words" },
     { id: "chars", label: "Chars" },
-    { id: "lines", label: "Lines" },
+    { id: "lines", label: "Lines" }
 ];
 
 const ToolWrap = styled.div`
@@ -66,18 +66,17 @@ export default function TextDiff() {
 
     const { parts, stats } = useMemo(() => {
         if (!original && !modified) return { parts: [], stats: null };
-        const result =
-            mode === "chars"
-                ? diffChars(original, modified)
-                : mode === "lines"
-                  ? diffLines(original, modified)
-                  : diffWords(original, modified);
+        let result;
+        if (mode === "chars") result = diffChars(original, modified);
+        else if (mode === "lines") result = diffLines(original, modified);
+        else result = diffWords(original, modified);
         const added = result.filter((p) => p.added).reduce((n, p) => n + (p.count || 0), 0);
         const removed = result.filter((p) => p.removed).reduce((n, p) => n + (p.count || 0), 0);
         return { parts: result, stats: { added, removed } };
     }, [original, modified, mode]);
 
-    const unitLabel = mode === "chars" ? "chars" : mode === "lines" ? "lines" : L.wordsLabel;
+    const UNIT_LABELS: Record<DiffMode, string> = { chars: "chars", lines: "lines", words: L.wordsLabel };
+    const unitLabel = UNIT_LABELS[mode];
 
     return (
         <ToolWrap>

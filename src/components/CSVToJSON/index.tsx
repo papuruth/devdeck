@@ -140,7 +140,7 @@ export default function CSVToJSON() {
                 header: hasHeader,
                 skipEmptyLines: true,
                 transform: trimValues ? (v: string) => v.trim() : undefined,
-                transformHeader: trimValues ? (h: string) => h.trim() : undefined,
+                transformHeader: trimValues ? (h: string) => h.trim() : undefined
             }) as Papa.ParseResult<Record<string, unknown>>;
             if (result.errors.length) {
                 return { rows: [], columns: [], json: "", error: result.errors[0].message, total: 0 };

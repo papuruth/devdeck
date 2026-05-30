@@ -231,7 +231,7 @@ generateEmptyState: "Fill in the form to generate a token"
 
 ---
 
-## 1.3 CSS → Tailwind Converter — NEW (`/css-tailwind`)
+## 1.3 CSS → Tailwind Converter — NEW (`/css-tailwind`) ✅ COMPLETE
 
 **Why:** High SEO value ("css to tailwind"), unique in the DevDeck catalog, useful for React/Next.js devs daily.
 
@@ -867,6 +867,20 @@ Expansions that boost existing pages' keywords:
 - **Cross-phase:** Tool Chaining usage (SendToButton clicks) appears in analytics — target >5% of tool sessions include a chain action
 - **Return users:** Weekly active users +20% by end of Phase 3
 - **SEO:** 6 new routes indexed; existing expanded tools see keyword count increase
+
+---
+
+---
+
+# Technical Backlog (Deferred — Large Scope)
+
+These items were identified during the May 2026 bug/feedback audit but require dedicated project tracks. All other items from that audit are complete.
+
+| # | Item | Scope | Notes |
+|---|------|-------|-------|
+| 11 | **Smart Editor for all textareas** | High | Replace every `InputArea` / `CodeArea` with a CodeMirror or Monaco-based smart editor — syntax highlighting, line numbers, auto-indent, bracket matching. Affects every tool in the app. Needs a shared `SmartEditor` wrapper component before rollout. |
+| 17 | **WCAG compliance audit** | High | Full accessibility pass across the whole app — keyboard navigation, focus management, ARIA labels, color contrast ratios (target AA), screen-reader testing. Use axe-core + Lighthouse CI. |
+| 19 | **Blog design system revamp** | Medium | Separate design project for the blog/learn section. Needs its own design brief — unrelated to the dev tools themselves. |
 
 ---
 

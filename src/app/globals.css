@@ -1,22 +1,24 @@
 /* Color mode tokens */
 :root {
-  --bg-page: #eef0f4;
+  --bg-page: #dde1eb;
   --bg-surface: #ffffff;
   --bg-card: #ffffff;
-  --bg-input: #f4f5f8;
+  --bg-input: #eef0f5;
+  --bg-panel-header: #f3f5f9;
   --text-primary: rgba(0, 0, 0, 0.87);
-  --text-secondary: rgba(0, 0, 0, 0.65);
-  --border-color: rgba(0, 0, 0, 0.18);
+  --text-secondary: rgba(0, 0, 0, 0.58);
+  --border-color: rgba(0, 0, 0, 0.14);
   --hero-gradient: linear-gradient(135deg, #1f1e29 0%, #22cc99 100%);
   --radius-panel: 12px;
   --radius-btn: 6px;
-  --shadow-panel: 0 2px 8px rgba(0, 0, 0, 0.08), 0 8px 32px rgba(0, 0, 0, 0.12);
+  --shadow-panel: 0 1px 3px rgba(0, 0, 0, 0.06), 0 4px 12px rgba(0, 0, 0, 0.08), 0 12px 32px rgba(0, 0, 0, 0.1);
 }
 [data-theme="dark"] {
   --bg-page: #121212;
   --bg-surface: #1e1e2e;
   --bg-card: #252535;
   --bg-input: #121212;
+  --bg-panel-header: rgba(0, 0, 0, 0.2);
   --text-primary: rgba(255, 255, 255, 0.87);
   --text-secondary: rgba(255, 255, 255, 0.6);
   --border-color: rgba(255, 255, 255, 0.12);

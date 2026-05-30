@@ -356,7 +356,7 @@ const SectionTitle = styled.div`
     letter-spacing: 0.08em;
     text-transform: uppercase;
     color: var(--text-secondary);
-    background: rgba(0, 0, 0, 0.04);
+    background: var(--bg-panel-header);
     border-bottom: 1px solid var(--border-color);
     border-left: 3px solid rgba(34, 204, 153, 0.45);
 `;
@@ -365,7 +365,7 @@ const TabRow = styled.div`
     display: flex;
     align-items: stretch;
     border-bottom: 1px solid var(--border-color);
-    background: rgba(0, 0, 0, 0.04);
+    background: var(--bg-panel-header);
 `;
 
 const JsonOutput = styled.div`
@@ -501,7 +501,7 @@ const SecretInputRow = styled.div`
 
 const B64ToggleBtn = styled.button<{ $active?: boolean }>`
     flex: 0 0 auto;
-    background: ${(p) => (p.$active ? "linear-gradient(135deg, rgba(129,140,248,0.2) 0%, rgba(129,140,248,0.08) 100%)" : "rgba(0,0,0,0.04)")};
+    background: ${(p) => (p.$active ? "linear-gradient(135deg, rgba(129,140,248,0.2) 0%, rgba(129,140,248,0.08) 100%)" : "var(--bg-panel-header)")};
     color: ${(p) => (p.$active ? "#818cf8" : "var(--text-secondary)")};
     border: none;
     border-left: 1px solid ${(p) => (p.$active ? "rgba(129,140,248,0.3)" : "var(--border-color)")};
@@ -568,7 +568,7 @@ const GenLabel = styled.div`
     letter-spacing: 0.08em;
     text-transform: uppercase;
     color: var(--text-secondary);
-    background: rgba(0, 0, 0, 0.04);
+    background: var(--bg-panel-header);
     border-bottom: 1px solid var(--border-color);
     border-left: 3px solid rgba(34, 204, 153, 0.45);
     display: flex;
@@ -671,7 +671,7 @@ const KeyPemTextarea = styled.textarea`
         border-color: #818cf8;
     }
     &[readonly] {
-        background: rgba(0, 0, 0, 0.04);
+        background: var(--bg-panel-header);
         color: var(--text-secondary);
         cursor: default;
     }

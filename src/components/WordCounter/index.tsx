@@ -253,7 +253,7 @@ const KeywordHeader = styled.div`
     justify-content: space-between;
     padding: 8px 16px;
     border-top: 1px solid var(--border-color);
-    background: rgba(0, 0, 0, 0.04);
+    background: var(--bg-panel-header);
     min-height: 36px;
 `;
 

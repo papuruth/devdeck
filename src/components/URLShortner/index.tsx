@@ -3,7 +3,7 @@ import localization from "localization";
 import QRCode from "qrcode";
 import React, { useCallback, useEffect, useState } from "react";
 import styled, { keyframes } from "styled-components";
-import { ActionBtn, Panel, PanelHeader, PanelLabel } from "components/Shared/ToolKit";
+import { ActionBtn, Panel } from "components/Shared/ToolKit";
 import ToolSkeleton from "components/Shared/ToolSkeleton";
 import toast from "utils/toast";
 import { useToolChain } from "context/ToolChainContext";
@@ -511,6 +511,18 @@ function URLShortner() {
         if (e.key === "Enter" && url && !shortenedLink && !isLoading) shortenURL();
     };
 
+    function renderResult() {
+        if (shortenedLink) return null;
+        if (isLoading) return <Panel><ToolSkeleton rows={3} /></Panel>;
+        return (
+            <EmptyPanel>
+                <EmptyIcon><LinkIcon style={{ fontSize: 24 }} /></EmptyIcon>
+                <EmptyTitle>Ready to shorten</EmptyTitle>
+                <EmptySub>{L.emptyStateMessage}</EmptySub>
+            </EmptyPanel>
+        );
+    }
+
     return (
         <PageWrap>
             <HeroCard>
@@ -551,7 +563,7 @@ function URLShortner() {
                 </InputArea>
             </HeroCard>
 
-            {shortenedLink ? (
+            {shortenedLink && (
                 <ResultGrid>
                     <ResultCard>
                         <ResultBanner>
@@ -597,23 +609,8 @@ function URLShortner() {
                         </QrCard>
                     )}
                 </ResultGrid>
-            ) : (
-                <>
-                    {isLoading ? (
-                        <Panel>
-                            <ToolSkeleton rows={3} />
-                        </Panel>
-                    ) : (
-                        <EmptyPanel>
-                            <EmptyIcon>
-                                <LinkIcon style={{ fontSize: 24 }} />
-                            </EmptyIcon>
-                            <EmptyTitle>Ready to shorten</EmptyTitle>
-                            <EmptySub>{L.emptyStateMessage}</EmptySub>
-                        </EmptyPanel>
-                    )}
-                </>
             )}
+            {renderResult()}
         </PageWrap>
     );
 }

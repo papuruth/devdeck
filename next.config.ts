@@ -51,7 +51,7 @@ const nextConfig: NextConfig = {
         // bundles workbox directly into the output — no importScripts, no blocking
         // network round-trip when the SW wakes up.
         if (!isServer && !dev) {
-            const swBuildId = process.env.BUILD_ID ?? String(Date.now());
+            const swBuildId = process.env.VERCEL_DEPLOYMENT_ID ?? String(Date.now());
             config.plugins.push(
                 new webpack.DefinePlugin({
                     "process.env.SW_BUILD_ID": JSON.stringify(swBuildId)
@@ -82,17 +82,7 @@ const nextConfig: NextConfig = {
     },
     async redirects() {
         return [];
-    },
-    logging: {
-        fetches: {
-            fullUrl: true
-        }
     }
 };
-
-// This prints to your CI terminal console right when 'next build' kicks off:
-console.log("=== BUILD TIME ENVIRONMENT ENVS ===");
-console.log(JSON.stringify(process.env, null, 2));
-console.log("====================================");
 
 export default withBundleAnalyzer({ enabled: process.env.ANALYZE === "true" })(nextConfig);

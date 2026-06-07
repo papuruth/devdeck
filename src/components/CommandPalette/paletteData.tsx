@@ -41,7 +41,8 @@ const TOOL_KEYWORDS: Record<string, string[]> = {
     "/text-diff": ["diff", "compare", "text", "difference", "changes"],
     "/lorem-ipsum": ["lorem", "ipsum", "placeholder", "dummy", "text", "generate", "filler"],
     "/word-counter": ["word", "count", "character", "sentence", "paragraph", "reading", "analyze"],
-    "/csv-json": ["csv", "json", "convert", "table", "parse", "spreadsheet", "data"]
+    "/csv-json": ["csv", "json", "convert", "table", "parse", "spreadsheet", "data"],
+    "/smart-formatter": ["format", "detect", "json", "jwt", "base64", "uuid", "hash", "curl", "timestamp", "csv", "html", "color", "ip", "auto-detect"]
 };
 
 // ── Enriched tools (OPERATIONS_ITEMS + keywords + kind) ──────────────────────
@@ -197,6 +198,12 @@ export const BLOG_GUIDES: PaletteEntry[] = (
             label: "CSS to Tailwind Converter",
             description: "Instantly transform standard CSS into Tailwind CSS utility classes",
             keywords: ["css", "tailwind", "framework", "converter", "frontend", "utility-first", "refactor", "styles"]
+        },
+        {
+            slug: "smart-formatter",
+            label: "Smart Formatter Guide",
+            description: "Auto-detect and format any data — JSON, JWT, Base64, UUID, and more",
+            keywords: ["smart", "formatter", "detect", "format", "json", "jwt", "base64", "guide", "blog"]
         }
     ] as const
 ).map((g) => ({
@@ -302,7 +309,8 @@ const RELATED_TOOLS = {
     "/lorem-ipsum": ["/word-counter", "/text-case"],
     "/csv-json": ["/json-viewer", "/yaml-json"],
     "/api-builder": ["/json-viewer", "/jwt-decoder", "/url-validator", "/hash-generator"],
-    "/css-tailwind": ["/smart-formatter", "/color-converter", "/json-viewer", "/yaml-json"]
+    "/css-tailwind": ["/smart-formatter", "/color-converter", "/json-viewer", "/yaml-json"],
+    "/smart-formatter": ["/json-viewer", "/jwt-decoder", "/base64-text", "/uuid-generator", "/hash-generator", "/timestamp"]
 };
 
 export function getRelatedToolEntries(currentRoute: string): PaletteEntry[] {

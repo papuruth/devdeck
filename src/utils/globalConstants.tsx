@@ -1,6 +1,7 @@
 import {
     Analytics,
     AspectRatio,
+    AutoFixHigh,
     Brush,
     Calculate,
     Code,
@@ -51,7 +52,8 @@ const {
     wordCounter,
     csvToJson,
     apiRequestBuilder,
-    cssToTailwind
+    cssToTailwind,
+    smartFormatter
 } = localization;
 
 export const TOOL_CATEGORIES = [
@@ -85,6 +87,19 @@ export const GLOBAL_CONSTANTS = {
             badge: "new",
             icon: (
                 <Brush
+                    fontSize="large"
+                    sx={{ fontSize: "5rem", width: { xs: "0.5em", sm: "0.5em", md: "1em" }, height: { xs: "0.5em", sm: "0.5em", md: "1em" } }}
+                />
+            )
+        },
+        {
+            label: smartFormatter.pageTitle,
+            route: "/smart-formatter",
+            description: "Paste any data and auto-detect the format — JSON, JWT, URLs, Base64, UUID, hash, cURL, timestamps, CSV, HTML, colors, and IP addresses",
+            category: "utilities",
+            badge: "smart",
+            icon: (
+                <AutoFixHigh
                     fontSize="large"
                     sx={{ fontSize: "5rem", width: { xs: "0.5em", sm: "0.5em", md: "1em" }, height: { xs: "0.5em", sm: "0.5em", md: "1em" } }}
                 />

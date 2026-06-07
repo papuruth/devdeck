@@ -158,6 +158,14 @@ export const SEO_META: Record<string, SeoMeta> = {
         keywords: "css to tailwind converter, tailwind classes, css to tailwind, convert css to tailwind, tailwind utility classes, css converter"
     },
 
+    "/smart-formatter": {
+        title: "Smart Formatter — Auto-Detect & Format Any Data | DevDeck",
+        description:
+            "Paste any data and instantly get beautifully formatted output. Auto-detects JSON, JWT, URLs, Base64, UUIDs, hashes, cURL commands, timestamps, CSV, HTML, colors, and IP addresses.",
+        about: "Smart Formatter is your universal data formatter. Paste JSON, JWT, Base64, UUID, hash, cURL, Unix timestamp, CSV, HTML, hex color, or IP address — it auto-detects the format and displays a clean, formatted breakdown with one-click routing to specialized tools.",
+        keywords: "smart formatter, data formatter, json formatter, jwt decoder, base64 decoder, uuid validator, hash checker, curl parser, timestamp converter, csv parser"
+    },
+
     // ── Blog index ───────────────────────────────────────────────────────────
     "/blog": {
         title: "DevDeck Blog — Developer Tools Explained | DevDeck",

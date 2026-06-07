@@ -37,7 +37,8 @@ const TOOL_BLOG_SLUG: Record<string, string> = {
     "/word-counter": "word-counter",
     "/csv-json": "csv-to-json-converter",
     "/api-builder": "api-request-builder",
-    "/css-tailwind": "css-to-tailwind-converter"
+    "/css-tailwind": "css-to-tailwind-converter",
+    "/smart-formatter": "smart-formatter"
 };
 
 function ToolFallback() {
@@ -73,6 +74,7 @@ const WordCounter = dynamic(() => import("components/WordCounter"), { loading, s
 const YAMLJSONConverter = dynamic(() => import("components/YAMLJSONConverter"), { loading, ssr: false });
 const APIRequestBuilder = dynamic(() => import("components/APIRequestBuilder"), { loading, ssr: false });
 const CSSToTailwind = dynamic(() => import("components/CSSToTailwind"), { loading, ssr: false });
+const SmartFormatter = dynamic(() => import("components/SmartFormatter"), { loading, ssr: false });
 
 export default function Operations() {
     const pathname = usePathname();
@@ -109,7 +111,8 @@ export default function Operations() {
             wordCounter,
             csvToJson,
             apiRequestBuilder,
-            cssToTailwind
+            cssToTailwind,
+            smartFormatter
         } = localization;
         switch (pathname) {
             case "/base64-image":
@@ -160,6 +163,8 @@ export default function Operations() {
                 return { title: apiRequestBuilder.pageTitle, component: APIRequestBuilder };
             case "/css-tailwind":
                 return { title: cssToTailwind.pageTitle, component: CSSToTailwind };
+            case "/smart-formatter":
+                return { title: smartFormatter.pageTitle, component: SmartFormatter };
             default:
                 return null;
         }

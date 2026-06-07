@@ -28,7 +28,8 @@ const TOOL_PATHS = [
     "/word-counter",
     "/csv-json",
     "/api-builder",
-    "/css-tailwind"
+    "/css-tailwind",
+    "/smart-formatter"
 ];
 
 const BLOG_POST_PATHS = Object.keys(SEO_META).filter((path) => path.startsWith("/blog/"));

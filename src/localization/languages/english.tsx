@@ -477,6 +477,22 @@ export default {
         detectedLabel: "detected",
         openInToolBtn: "Open in Tool →"
     },
+    smartFormatter: {
+        pageTitle: "Smart Formatter",
+        inputPlaceholder: "Paste anything — JSON, JWT, URL, Base64, UUID, hash, cURL, timestamp…",
+        detectedLabel: "detected",
+        openInToolBtn: "Open in [TOOL] →",
+        noDetectionLabel: "Unknown format",
+        formattedOutputLabel: "Formatted Output",
+        emptyStateMessage: "Paste any data above — we'll format and identify it",
+        binaryDataLabel: "Binary data — cannot display as text",
+        copyFormattedBtn: "Copy",
+        inputLabel: "Input",
+        clearBtn: "Clear",
+        statsChars: "chars",
+        statsLines: "lines",
+        statsWords: "words"
+    },
     apiRequestBuilder: {
         pageTitle: "API Request Builder",
         urlPlaceholder: "https://api.example.com/endpoint",

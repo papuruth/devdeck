@@ -8,7 +8,7 @@ import { CacheFirst, NetworkFirst, NetworkOnly } from "workbox-strategies";
 import { ExpirationPlugin } from "workbox-expiration";
 
 const SW_BUILD_ID = process.env.SW_BUILD_ID ?? "unknown";
-console.log("🚀 ~ SW_BUILD_ID:", SW_BUILD_ID);
+
 clientsClaim();
 
 // Allow the client to trigger a SW update via postMessage

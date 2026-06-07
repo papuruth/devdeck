@@ -6,11 +6,11 @@ import localization from "localization";
 import toast from "utils/toast";
 import { downloadFile, getDataUrl } from "utils/helperFunctions";
 import topLoader from "utils/topLoader";
+import { SmartEditor } from "components/Shared/SmartEditor";
 import {
     ActionBar,
     ActionBtn,
     ActionBtnGroup,
-    CodeArea,
     DropWrap,
     EmptyState,
     ImagePreviewArea,
@@ -164,10 +164,11 @@ export default function ImageToBase64() {
                     ))}
                 </TabStrip>
 
-                <CodeArea
+                <SmartEditor
                     value={activeValue}
                     readOnly
                     placeholder={activeTab === "html" ? "HTML <img /> tag will appear here…" : "Base64 / CSS will appear here…"}
+                    language="text"
                 />
 
                 {activeValue && (

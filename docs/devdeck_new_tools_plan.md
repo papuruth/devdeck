@@ -878,18 +878,20 @@ All three phases are complete. Tools already confirmed in the codebase (`/text-d
 
 ---
 
-## 4.1 Cron Expression Builder — NEW (`/cron-builder`) ⬅ next candidate
+## 4.1 Cron Expression Builder — NEW (`/cron-builder`) ✅ COMPLETE
 
 **Why:** Differentiating — no other tool in the catalog covers this. Devs constantly forget cron syntax and there's no browser-based builder with a premium UI.
 
-- Visual checkbox grid (minute / hour / day-of-month / month / day-of-week)
+- Visual field controls (minute / hour / day-of-month / month / day-of-week) with per-field presets
 - Human-readable plain-English description auto-generated
 - Show next 5 scheduled run times
 - Bidirectional: paste a cron string → populates the visual builder
+- Quick preset chips (Every minute, Hourly, Daily, Weekly, Monthly, Weekdays 9 AM, Every 5 min)
+- LocalBadge — fully browser-based, zero backend
 
 ---
 
-## 4.2 Smart Editor Upgrade (Backlog #11)
+## 4.2 Smart Editor Upgrade (Backlog #11) ✅ COMPLETE
 
 **Scope: High — affects every tool**
 

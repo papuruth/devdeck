@@ -2,7 +2,8 @@
 import localization from "localization";
 import React, { useCallback, useMemo, useState } from "react";
 import styled, { keyframes } from "styled-components";
-import { ActionBar, ActionBtn, ActionBtnGroup, CodeArea, EmptyState, ModeBtn, ModeToggle, Panel, PanelHeader, PanelLabel, TabBtn, TabStrip, ToolLayout } from "components/Shared/ToolKit";
+import { ActionBar, ActionBtn, ActionBtnGroup, EmptyState, ModeBtn, ModeToggle, Panel, PanelHeader, PanelLabel, TabBtn, TabStrip, ToolLayout } from "components/Shared/ToolKit";
+import { SmartEditor } from "components/Shared/SmartEditor";
 import LocalBadge from "components/Shared/LocalBadge";
 import SendToButton from "components/Shared/SendToButton";
 
@@ -185,9 +186,9 @@ export default function EncoderDecoder() {
         [tab, mode]
     );
 
-    const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-        setInput(e.target.value);
-        debouncedConvert(e.target.value);
+    const handleInputChange = (val: string) => {
+        setInput(val);
+        debouncedConvert(val);
     };
 
     const output = useMemo(() => {
@@ -247,7 +248,7 @@ export default function EncoderDecoder() {
                     <PanelHeader>
                         <PanelLabel>{L.inputLabel}</PanelLabel>
                     </PanelHeader>
-                    <CodeArea placeholder={L.emptyStateMessage} value={input} onChange={handleInputChange} spellCheck={false} />
+                    <SmartEditor placeholder={L.emptyStateMessage} value={input} onChange={handleInputChange} language="text" />
                     {error && <ErrorBadge>✕ {error}</ErrorBadge>}
                     <ActionBar>
                         <ActionBtnGroup>
@@ -264,7 +265,7 @@ export default function EncoderDecoder() {
                     </PanelHeader>
                     {output ? (
                         <>
-                            <CodeArea value={output} readOnly spellCheck={false} />
+                            <SmartEditor value={output} readOnly language="text" />
                             <ActionBar>
                                 <ActionBtnGroup>
                                     <ActionBtn $success={copiedOutput} onClick={handleCopyOutput}>

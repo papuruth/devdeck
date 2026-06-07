@@ -64,6 +64,9 @@ export const PanelHeader = styled(Box)`
     min-height: 44px;
     flex-wrap: wrap;
     gap: 6px;
+    position: sticky;
+    top: 0;
+    z-index: 2;
 `;
 
 export const DropWrap = styled(Box)`
@@ -82,6 +85,8 @@ export const PanelLabel = styled(Typography)`
     letter-spacing: 0.1em;
     color: var(--text-secondary) !important;
     line-height: 1.5 !important;
+    margin: 0;
+    align-self: center;
     ${styledMedia.lessThan("sm")`
         font-size: 13px !important;
     `}

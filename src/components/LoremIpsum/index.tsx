@@ -6,7 +6,6 @@ import {
     ActionBar,
     ActionBtn,
     ActionBtnGroup,
-    CodeArea,
     EmptyState,
     ModeBtn,
     ModeToggle,
@@ -15,6 +14,7 @@ import {
     PanelLabel,
     ToolLayout
 } from "components/Shared/ToolKit";
+import { SmartEditor } from "components/Shared/SmartEditor";
 
 const { loremIpsum: L } = localization;
 
@@ -145,7 +145,7 @@ export default function LoremIpsum() {
                 </PanelHeader>
                 {output ? (
                     <>
-                        <CodeArea value={output} readOnly spellCheck={false} style={{ flex: 1, minHeight: 320 }} />
+                        <SmartEditor value={output} readOnly language="text" style={{ flex: 1 }} minHeight="320px" />
                         <ActionBar>
                             <BtnGroup>
                                 <ActionBtn $success={copied} onClick={handleCopy}>

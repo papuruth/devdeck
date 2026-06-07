@@ -7,7 +7,8 @@ import HistoryDropdown from "components/Shared/HistoryDropdown";
 import localization from "localization";
 import React, { useContext, useEffect, useMemo, useState } from "react";
 import styled, { keyframes } from "styled-components";
-import { ActionBar, ActionBtn, ActionBtnGroup, CodeArea, EmptyState, Panel, PanelHeader, PanelLabel, TabBtn, TabStrip } from "components/Shared/ToolKit";
+import { ActionBar, ActionBtn, ActionBtnGroup, EmptyState, Panel, PanelHeader, PanelLabel, TabBtn, TabStrip } from "components/Shared/ToolKit";
+import { SmartEditor } from "components/Shared/SmartEditor";
 import { useToolHistory } from "utils/hooks/useToolHistory.hooks";
 import { useToolChain } from "context/ToolChainContext";
 import ColorModeContext from "../../context/ColorModeContext";
@@ -146,12 +147,6 @@ const SchemaPanelSection = styled.div`
     flex-direction: column;
 `;
 
-const SchemaCodeArea = styled(CodeArea)`
-    min-height: 180px;
-    &:read-only {
-        cursor: default;
-    }
-`;
 
 const ValidationBadge = styled.div<{ $valid: boolean }>`
     display: flex;
@@ -243,7 +238,7 @@ export default function JSONViewer() {
         }
     }, [consumeChain]);
 
-    const handleJSONInput = ({ target: { value } }: React.ChangeEvent<HTMLTextAreaElement>): void => {
+    const handleJSONInput = (value: string): void => {
         setJSONInput(value);
         if (value.trim().length > 5) addJsonHistory(value.trim());
     };
@@ -366,7 +361,7 @@ export default function JSONViewer() {
                                 <PanelLabel>{L.jsonDataLabel}</PanelLabel>
                             </PanelHeader>
                             {jsonInput ? (
-                                <SchemaCodeArea value={jsonInput} readOnly spellCheck={false} />
+                                <SmartEditor value={jsonInput} readOnly language="json" minHeight="180px" />
                             ) : (
                                 <NoDataNote>{L.noJsonDataNote}</NoDataNote>
                             )}
@@ -378,15 +373,16 @@ export default function JSONViewer() {
                             <PanelHeader>
                                 <PanelLabel>{L.schemaInputLabel}</PanelLabel>
                             </PanelHeader>
-                            <SchemaCodeArea
+                            <SmartEditor
                                 value={schemaInput}
-                                onChange={(e) => {
-                                    setSchemaInput(e.target.value);
+                                onChange={(val) => {
+                                    setSchemaInput(val);
                                     setValidationResult(null);
                                     setSchemaParseError(null);
                                 }}
                                 placeholder={L.schemaInputLabel}
-                                spellCheck={false}
+                                language="json"
+                                minHeight="180px"
                             />
                             <ActionBar>
                                 <ActionBtnGroup>

@@ -7,7 +7,6 @@ import {
     ActionBar,
     ActionBtn,
     ActionBtnGroup,
-    CodeArea as BaseCodeArea,
     EmptyState,
     MetaText,
     ModeBtn,
@@ -17,6 +16,7 @@ import {
     PanelLabel,
     ToolLayout
 } from "components/Shared/ToolKit";
+import { SmartEditor } from "components/Shared/SmartEditor";
 
 const { yamlJsonConverter: L, common: C } = localization;
 
@@ -28,13 +28,6 @@ const ToolWrap = styled.div`
     margin-top: 4px;
 `;
 
-const CodeArea = styled(BaseCodeArea)`
-    flex: 1;
-    min-height: 320px;
-    &:read-only {
-        cursor: default;
-    }
-`;
 
 const ErrorBadge = styled.span`
     font-size: 11px;
@@ -107,7 +100,7 @@ export default function YAMLJSONConverter() {
                         <PanelLabel>{inputLabel}</PanelLabel>
                         {input && <MetaText>{input.length.toLocaleString()} chars</MetaText>}
                     </PanelHeader>
-                    <CodeArea value={input} onChange={(e) => setInput(e.target.value)} placeholder={inputPlaceholder} spellCheck={false} autoFocus />
+                    <SmartEditor value={input} onChange={setInput} placeholder={inputPlaceholder} language={mode === "yaml2json" ? "yaml" : "json"} style={{ flex: 1 }} minHeight="320px" autoFocus />
                     {input && (
                         <ActionBar>
                             <ActionBtnGroup>
@@ -130,7 +123,7 @@ export default function YAMLJSONConverter() {
                     </PanelHeader>
                     {output ? (
                         <>
-                            <CodeArea value={output} readOnly placeholder={outputPlaceholder} spellCheck={false} />
+                            <SmartEditor value={output} readOnly placeholder={outputPlaceholder} language={mode === "yaml2json" ? "json" : "yaml"} style={{ flex: 1 }} minHeight="320px" />
                             <ActionBar>
                                 <BtnGroup>
                                     <ActionBtn $success={copied} onClick={handleCopy}>

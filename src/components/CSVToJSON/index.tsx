@@ -7,9 +7,7 @@ import {
     ActionBar,
     ActionBtn,
     ActionBtnGroup,
-    CodeArea,
     EmptyState,
-    InputArea,
     MetaText,
     Panel,
     PanelHeader,
@@ -18,6 +16,7 @@ import {
     TabStrip,
     ToolLayout
 } from "components/Shared/ToolKit";
+import { SmartEditor } from "components/Shared/SmartEditor";
 import SendToButton from "components/Shared/SendToButton";
 
 const { csvToJson: L, common: C } = localization;
@@ -198,13 +197,13 @@ export default function CSVToJSON() {
                         Ignore whitespace
                     </ToggleLabel>
                 </ToggleRow>
-                <InputArea
+                <SmartEditor
                     value={csv}
-                    onChange={(e) => setCsv(e.target.value)}
+                    onChange={setCsv}
                     placeholder={"name,age,city\nAlice,30,New York\nBob,25,London"}
-                    spellCheck={false}
+                    language="text"
                     autoFocus
-                    style={{ minHeight: 360 }}
+                    minHeight="360px"
                 />
                 {csv && (
                     <ActionBar>
@@ -261,7 +260,7 @@ export default function CSVToJSON() {
                                 </StyledTable>
                             </TableWrap>
                         ) : (
-                            <CodeArea value={json} readOnly spellCheck={false} style={{ flex: 1, minHeight: 320 }} />
+                            <SmartEditor value={json} readOnly language="json" style={{ flex: 1 }} minHeight="320px" />
                         )}
                         <ActionBar>
                             <BtnGroup>

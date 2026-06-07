@@ -1820,6 +1820,102 @@ const blogData = {
                 a: "Yes. Bookmark /command-playground and start every session by pasting whatever data you have. It eliminates the step of deciding which DevDeck tool to open."
             }
         ]
+    },
+    "cron-expression-builder": {
+        slug: "cron-expression-builder",
+        title: "Cron Expression Builder — Write and Understand Cron Syntax",
+        metaDescription: "Build cron expressions visually, get plain-English descriptions, and preview the next 5 scheduled runs — all in the browser with no backend needed.",
+        metaKeywords: "cron expression builder, cron job syntax, cron schedule, cron generator, cron tester, unix cron, online cron builder, cron parser",
+        intro: "Cron expressions power scheduled jobs on Linux servers, cloud functions, CI pipelines, and almost every backend system. They're terse, easy to get wrong, and notoriously hard to read at a glance. DevDeck's Cron Expression Builder gives you a visual editor, instant plain-English translation, and next-run preview — so you can write and verify a schedule in seconds.",
+        sections: [
+            {
+                heading: "What Is a Cron Expression?",
+                body: "A cron expression is a five-field string that defines when a job should run. Each field represents a unit of time — minute, hour, day-of-month, month, and day-of-week — and they're separated by spaces. The scheduler checks the expression every minute and runs the job when all five fields match the current time. The asterisk (*) means 'any value', so '* * * * *' runs every minute, and '0 9 * * 1-5' runs at 9:00 AM on weekdays."
+            },
+            {
+                heading: "Cron Syntax Field Reference",
+                list: [
+                    "Minute (0–59) — position 1, controls the minute of the hour",
+                    "Hour (0–23) — position 2, controls the hour of the day",
+                    "Day of Month (1–31) — position 3, controls the specific day within a month",
+                    "Month (1–12) — position 4, controls which months the job runs",
+                    "Day of Week (0–7) — position 5, where 0 and 7 both mean Sunday"
+                ]
+            },
+            {
+                heading: "Special Characters",
+                list: [
+                    "* — every value in the field (e.g. * in minute = every minute)",
+                    "*/n — every nth value (e.g. */15 in minute = every 15 minutes)",
+                    "n,m — list of specific values (e.g. 1,15 in day = 1st and 15th)",
+                    "n-m — range (e.g. 1-5 in day-of-week = Monday through Friday)",
+                    "n-m/s — range with step (e.g. 0-23/6 in hour = every 6 hours)"
+                ]
+            },
+            {
+                heading: "Common Cron Patterns",
+                list: [
+                    "'* * * * *' — every minute",
+                    "'0 * * * *' — at the top of every hour",
+                    "'0 0 * * *' — every day at midnight",
+                    "'0 9 * * 1-5' — weekdays at 9:00 AM",
+                    "'*/15 * * * *' — every 15 minutes",
+                    "'0 0 1 * *' — first of every month at midnight",
+                    "'0 0 * * 0' — every Sunday at midnight",
+                    "'0 12 * * 1,3,5' — Mon, Wed, Fri at noon"
+                ]
+            },
+            {
+                heading: "Day-of-Month vs Day-of-Week Interaction",
+                body: "When both day-of-month and day-of-week are set to anything other than *, most schedulers use OR logic — the job runs if either condition is met. For example, '0 0 1 * 1' runs on the 1st of every month AND every Monday. To restrict to a specific day of the month within a specific weekday, you need application-level logic rather than cron alone. DevDeck's builder surfaces this in the plain-English description so you can spot unexpected behavior before deploying."
+            },
+            {
+                heading: "How to Use the Cron Expression Builder",
+                steps: [
+                    "Type a cron expression directly into the expression input at the top — the builder validates it as you type with a green/red indicator",
+                    "Or use the Quick Presets chips (Every minute, Hourly, Daily midnight, etc.) to start from a known-good base",
+                    "Fine-tune each field using the preset chips per field or by editing the raw value in the field's input box",
+                    "The right panel shows a plain-English description of your schedule and the next 5 upcoming run times",
+                    "Click 'Copy Expression' to copy the final cron string to your clipboard"
+                ]
+            },
+            {
+                heading: "Cron in the Cloud",
+                body: "Cloud schedulers use cron syntax with minor variations. AWS EventBridge uses a six-field format with an added seconds field at position 0. Google Cloud Scheduler follows standard 5-field POSIX cron. GitHub Actions workflows use the standard 5-field format inside 'cron:' under 'schedule:'. Kubernetes CronJobs also use standard 5-field cron. Always verify behavior in your specific runtime — DevDeck's builder follows the standard 5-field POSIX format used by Linux cron and most cloud platforms."  // eslint-disable-line max-len
+            },
+            {
+                heading: "Validating Cron Expressions",
+                list: [
+                    "Check the validity dot next to the expression input — green means parseable, red means invalid syntax",
+                    "Read the plain-English description — if it doesn't match your intent, the expression needs adjustment",
+                    "Check the next 5 run times — verify the dates and times align with your expected schedule",
+                    "Watch for OR-logic surprises when both day-of-month and day-of-week are non-wildcard",
+                    "Test edge cases: February for monthly jobs, year-end dates, and DST transitions if your scheduler respects timezones"
+                ]
+            }
+        ],
+        cta: { label: "Build a Cron Expression →", toolRoute: "/cron-builder" },
+        relatedSlugs: ["timestamp-converter", "command-playground", "regex-tester", "uuid-generator"],
+        faq: [
+            { q: "Is the builder free?", a: "Yes, fully free with no account needed." },
+            { q: "Does it store my cron expressions?", a: "No. Everything runs locally in your browser — nothing is sent to a server." },
+            {
+                q: "Why does my schedule run more often than expected?",
+                a: "The most common cause is having both day-of-month and day-of-week set to non-wildcard values. Standard cron uses OR logic in this case — the job runs when either condition matches, not only when both match. Set one of the two to '*' if you want stricter control."
+            },
+            {
+                q: "What's the difference between 0 and 7 in day-of-week?",
+                a: "Both represent Sunday. Standard POSIX cron uses 0 for Sunday, but some implementations also accept 7. DevDeck normalizes both to Sunday when parsing and generating the plain-English description."
+            },
+            {
+                q: "Can I use named months and days?",
+                a: "Standard cron accepts named values (JAN, FEB, MON, TUE, etc.) in some implementations, but numeric values are universally supported. DevDeck's builder uses numeric values to ensure maximum compatibility."
+            },
+            {
+                q: "How accurate is the 'next 5 runs' preview?",
+                a: "The preview computes run times from the current moment in your local timezone. It does not account for DST transitions or leap seconds. For production systems, always validate in the scheduler's own timezone settings."
+            }
+        ]
     }
 };
 
@@ -1854,5 +1950,6 @@ export const blogList = [
     blogData["smart-formatter"],
     blogData["html-jsx"],
     blogData["encoder-decoder"],
-    blogData["command-playground"]
+    blogData["command-playground"],
+    blogData["cron-expression-builder"]
 ];

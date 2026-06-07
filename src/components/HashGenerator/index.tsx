@@ -10,13 +10,13 @@ import {
     ActionBtnGroup,
     DropWrap,
     EmptyState,
-    InputArea,
     MetaText,
     Panel,
     PanelHeader,
     PanelLabel,
     ToolLayout
 } from "components/Shared/ToolKit";
+import { SmartEditor } from "components/Shared/SmartEditor";
 import LocalBadge from "components/Shared/LocalBadge";
 import { useToolChain } from "context/ToolChainContext";
 import { useShareableURL } from "utils/hooks/useShareableURL.hooks";
@@ -172,15 +172,15 @@ export default function HashGenerator() {
                         <LocalBadge />
                     </ActionBtnGroup>
                 </PanelHeader>
-                <InputArea
+                <SmartEditor
                     value={input}
-                    onChange={(e) => {
-                        setInput(e.target.value);
+                    onChange={(val) => {
+                        setInput(val);
                         setFileName(null);
                         setFileHashes({});
                     }}
                     placeholder={L.inputPlaceholder}
-                    spellCheck={false}
+                    language="text"
                     autoFocus
                 />
                 <DropWrap>

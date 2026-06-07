@@ -11,7 +11,6 @@ import {
     ActionBar,
     ActionBtn,
     ActionBtnGroup,
-    CodeArea,
     EmptyState,
     Panel,
     PanelHeader,
@@ -20,6 +19,7 @@ import {
     TabStrip,
     ToolLayout
 } from "components/Shared/ToolKit";
+import { SmartEditor } from "components/Shared/SmartEditor";
 
 const { apiRequestBuilder: L, common: C } = localization;
 
@@ -807,12 +807,13 @@ const SnippetSelect = styled.select`
     color: var(--text-primary);
     border: 1px solid var(--border-color);
     border-radius: 4px;
-    padding: 4px 8px;
+    padding: 2px 8px;
     font-size: 11px;
     font-family: "Inter", sans-serif;
     outline: none;
     cursor: pointer;
     max-width: 180px;
+    align-self: center;
     &:focus {
         border-color: rgba(34, 204, 153, 0.5);
     }
@@ -1035,6 +1036,24 @@ export default function APIRequestBuilder() {
         [snippetType, method, url, headers, bodyTab, jsonBody, formBody]
     );
 
+    const snippetLanguage = useMemo(() => {
+        const map = {
+            curl: "shell",
+            fetch: "javascript",
+            axios: "javascript",
+            xhr: "javascript",
+            "node-http": "javascript",
+            python: "python",
+            go: "go",
+            php: "php",
+            ruby: "ruby",
+            swift: "swift",
+            csharp: "csharp",
+            java: "java"
+        };
+        return map[snippetType] ?? "text";
+    }, [snippetType]);
+
     const handleCopySnippet = () => {
         if (!snippetCode) return;
         navigator.clipboard.writeText(snippetCode).then(() => {
@@ -1178,16 +1197,16 @@ export default function APIRequestBuilder() {
                                     {L.formTabLabel}
                                 </TabBtn>
                             </TabStrip>
-                            <CodeArea
+                            <SmartEditor
                                 value={bodyTab === "json" ? jsonBody : formBody}
-                                onChange={(e) => {
-                                    if (bodyTab === "json") setJsonBody(e.target.value);
-                                    else setFormBody(e.target.value);
+                                onChange={(val) => {
+                                    if (bodyTab === "json") setJsonBody(val);
+                                    else setFormBody(val);
                                     setBodyPrettifyError(false);
                                 }}
                                 placeholder={bodyTab === "json" ? `{\n  "key": "value"\n}` : "key=value&other=data"}
-                                style={{ minHeight: 140 }}
-                                spellCheck={false}
+                                language={bodyTab === "json" ? "json" : "text"}
+                                minHeight="140px"
                             />
                             {bodyPrettifyError && <PrettifyError>{L.invalidJson}</PrettifyError>}
                         </>
@@ -1214,10 +1233,10 @@ export default function APIRequestBuilder() {
 
             {/* ── SNIPPET PANEL ─────────────────────────────────── */}
             {showSnippet && (
-                <Panel style={{ maxHeight: "calc(100vh - 400px)", overflowY: "auto" }}>
+                <Panel style={{ maxHeight: "calc(100vh - 400px)" }}>
                     <PanelHeader>
                         <PanelLabel>&lt;/&gt; Code Snippet</PanelLabel>
-                        <Box sx={{ display: "flex", gap: "4px", alignItems: "center", ml: "auto" }}>
+                        <Box sx={{ display: "flex", gap: "4px", alignItems: "center", ml: "auto", alignSelf: "center" }}>
                             <SnippetSelect value={snippetType} onChange={(e) => setSnippetType(e.target.value)}>
                                 {SNIPPET_TYPES.map((t) => (
                                     <option key={t.value} value={t.value}>
@@ -1229,24 +1248,19 @@ export default function APIRequestBuilder() {
                                 <IconButton
                                     size="small"
                                     onClick={handleCopySnippet}
-                                    sx={{ color: snippetCopied ? "#22cc99" : "var(--text-secondary)" }}
+                                    sx={{ color: snippetCopied ? "#22cc99" : "var(--text-secondary)", minHeight: 16 }}
                                 >
                                     <ContentCopy style={{ fontSize: 14 }} />
                                 </IconButton>
                             </Tooltip>
                             <Tooltip title="Close" placement="top" arrow>
-                                <IconButton size="small" onClick={() => setShowSnippet(false)} sx={{ color: "var(--text-secondary)" }}>
+                                <IconButton size="small" onClick={() => setShowSnippet(false)} sx={{ color: "var(--text-secondary)", minHeight: 16 }}>
                                     <Close style={{ fontSize: 14 }} />
                                 </IconButton>
                             </Tooltip>
                         </Box>
                     </PanelHeader>
-                    <CodeArea
-                        value={snippetCode}
-                        readOnly
-                        style={{ minHeight: 300, maxHeight: "calc(100vh - 400px)", overflowY: "auto", fontSize: 11 }}
-                        spellCheck={false}
-                    />
+                    <SmartEditor value={snippetCode} readOnly language={snippetLanguage} minHeight="200px" maxHeight="calc(100vh - 444px)" />
                 </Panel>
             )}
 
@@ -1304,11 +1318,7 @@ export default function APIRequestBuilder() {
                                 (response.isJson ? (
                                     <JsonTokenizer json={response.body} />
                                 ) : (
-                                    <CodeArea
-                                        value={response.body}
-                                        readOnly
-                                        style={{ minHeight: 260, maxHeight: "calc(100vh - 400px)", overflowY: "auto" }}
-                                    />
+                                    <SmartEditor value={response.body} readOnly language="text" minHeight="260px" maxHeight="calc(100vh - 400px)" />
                                 ))}
 
                             {/* Headers tab */}

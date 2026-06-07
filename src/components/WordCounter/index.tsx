@@ -7,13 +7,13 @@ import {
     ActionBtn,
     ActionBtnGroup,
     EmptyState,
-    InputArea,
     MetaText,
     Panel,
     PanelHeader,
     PanelLabel,
     ToolLayout
 } from "components/Shared/ToolKit";
+import { SmartEditor } from "components/Shared/SmartEditor";
 import SendToButton, { type SendToTarget } from "components/Shared/SendToButton";
 import { useToolChain } from "context/ToolChainContext";
 import { useShareableURL } from "utils/hooks/useShareableURL.hooks";
@@ -283,7 +283,7 @@ export default function WordCounter() {
                         </MetaText>
                     )}
                 </PanelHeader>
-                <InputArea value={text} onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setText(e.target.value)} placeholder={L.placeholder} spellCheck style={{ minHeight: 400 }} />
+                <SmartEditor value={text} onChange={setText} placeholder={L.placeholder} language="text" minHeight="400px" />
                 {text && (
                     <ActionBar>
                         <ActionBtnGroup>

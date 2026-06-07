@@ -1,5 +1,6 @@
 import React from "react";
-import { ActionBar, ActionBtn, ActionBtnGroup, CodeArea } from "components/Shared/ToolKit";
+import { ActionBar, ActionBtn, ActionBtnGroup } from "components/Shared/ToolKit";
+import { SmartEditor } from "components/Shared/SmartEditor";
 
 const EMPTY_CTAS = ["paste", "loadJSONData"];
 const CONTENT_CTAS = ["copy", "clear", "format", "removeWhitespace"];
@@ -14,7 +15,7 @@ const CTA_LABELS = {
 };
 
 interface EditorProps {
-    handleJSONInput: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
+    handleJSONInput: (value: string) => void;
     jsonInput: string;
     handleEditorOperations: (id: string) => Promise<void>;
 }
@@ -34,12 +35,13 @@ export default function Editor({ handleJSONInput, jsonInput, handleEditorOperati
                     ))}
                 </ActionBtnGroup>
             </ActionBar>
-            <CodeArea
+            <SmartEditor
                 value={jsonInput}
                 onChange={handleJSONInput}
                 placeholder="Paste JSON code here..."
-                spellCheck={false}
-                style={{ flex: 1, minHeight: 400 }}
+                language="json"
+                style={{ flex: 1 }}
+                minHeight="400px"
             />
         </>
     );

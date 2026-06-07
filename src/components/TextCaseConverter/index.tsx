@@ -8,13 +8,13 @@ import {
     ActionBar,
     ActionBtnGroup,
     EmptyState,
-    InputArea,
     MetaText,
     Panel,
     PanelHeader,
     PanelLabel,
     ToolLayout
 } from "components/Shared/ToolKit";
+import { SmartEditor } from "components/Shared/SmartEditor";
 import SendToButton, { type SendToTarget } from "components/Shared/SendToButton";
 import { useToolChain } from "context/ToolChainContext";
 import { useShareableURL } from "utils/hooks/useShareableURL.hooks";
@@ -101,7 +101,7 @@ export default function TextCaseConverter() {
                     <PanelLabel>{L.inputTextLabel}</PanelLabel>
                     {input && <MetaText>{input.length.toLocaleString()} chars</MetaText>}
                 </PanelHeader>
-                <InputArea value={input} onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => setInput(e.target.value)} placeholder={L.inputPlaceholder} spellCheck={false} autoFocus />
+                <SmartEditor value={input} onChange={setInput} placeholder={L.inputPlaceholder} language="text" autoFocus />
                 {input && (
                     <ActionBar>
                         <BtnGroup>

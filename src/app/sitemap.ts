@@ -32,7 +32,8 @@ const TOOL_PATHS = [
     "/smart-formatter",
     "/html-jsx",
     "/encoder-decoder",
-    "/command-playground"
+    "/command-playground",
+    "/cron-builder"
 ];
 
 const BLOG_POST_PATHS = Object.keys(SEO_META).filter((path) => path.startsWith("/blog/"));

@@ -2,7 +2,8 @@
 import localization from "localization";
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import styled, { keyframes } from "styled-components";
-import { ActionBar, ActionBtn, ActionBtnGroup, CodeArea, EmptyState, MetaText, Panel, PanelHeader, PanelLabel, ToolLayout } from "components/Shared/ToolKit";
+import { ActionBar, ActionBtn, ActionBtnGroup, EmptyState, MetaText, Panel, PanelHeader, PanelLabel, ToolLayout } from "components/Shared/ToolKit";
+import { SmartEditor } from "components/Shared/SmartEditor";
 import { useToolChain } from "context/ToolChainContext";
 import LocalBadge from "components/Shared/LocalBadge";
 
@@ -192,9 +193,9 @@ export default function HTMLToJSX() {
         []
     );
 
-    const handleHtmlChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-        setHtml(e.target.value);
-        debouncedConvert(e.target.value);
+    const handleHtmlChange = (val: string) => {
+        setHtml(val);
+        debouncedConvert(val);
     };
 
     const handleCopyJsx = useCallback(() => {
@@ -233,7 +234,7 @@ export default function HTMLToJSX() {
                 <PanelHeader>
                     <PanelLabel>{L.htmlInputLabel}</PanelLabel>
                 </PanelHeader>
-                <CodeArea placeholder={L.htmlInputPlaceholder} value={html} onChange={handleHtmlChange} spellCheck={false} />
+                <SmartEditor placeholder={L.htmlInputPlaceholder} value={html} onChange={handleHtmlChange} language="html" />
                 {hasWarnings && html && (
                     <WarningBadge>⚠️ {L.partialConversionWarning}</WarningBadge>
                 )}
@@ -252,7 +253,7 @@ export default function HTMLToJSX() {
                 </PanelHeader>
                 {converted ? (
                     <>
-                        <CodeArea value={converted} readOnly spellCheck={false} />
+                        <SmartEditor value={converted} readOnly language="javascript" />
                         <ActionBar>
                             <ActionBtnGroup>
                                 {transformations > 0 && <MetaText>{transformations} {L.transformationsLabel}</MetaText>}

@@ -13,13 +13,13 @@ import {
     ActionBar,
     ActionBtn,
     ActionBtnGroup,
-    CodeArea,
     EmptyState,
     Panel,
     PanelHeader,
     PanelLabel,
     ToolLayout
 } from "components/Shared/ToolKit";
+import { SmartEditor } from "components/Shared/SmartEditor";
 import { detectInputType } from "utils/inputDetector";
 
 const { smartFormatter: L, common: C } = localization;
@@ -597,12 +597,13 @@ export default function SmartFormatter() {
                     <PanelLabel>{L.inputLabel}</PanelLabel>
                     <LocalBadge />
                 </PanelHeader>
-                <CodeArea
+                <SmartEditor
                     value={input}
-                    onChange={(e) => setInput(e.target.value)}
+                    onChange={setInput}
                     placeholder={L.inputPlaceholder}
-                    spellCheck={false}
-                    style={{ flex: 1, minHeight: 300 }}
+                    language="text"
+                    style={{ flex: 1 }}
+                    minHeight="300px"
                 />
                 <ActionBar>
                     <ActionBtn $danger onClick={handleClear}>

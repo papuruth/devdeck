@@ -2,7 +2,8 @@ import { diffChars, diffLines, diffWords } from "diff";
 import localization from "localization";
 import React, { useMemo, useState } from "react";
 import styled from "styled-components";
-import { ActionBtn, EmptyState, InputArea, MetaText, ModeBtn, ModeToggle, Panel, PanelHeader, PanelLabel, ToolLayout } from "components/Shared/ToolKit";
+import { ActionBtn, EmptyState, MetaText, ModeBtn, ModeToggle, Panel, PanelHeader, PanelLabel, ToolLayout } from "components/Shared/ToolKit";
+import { SmartEditor } from "components/Shared/SmartEditor";
 
 const { textDiff: L } = localization;
 
@@ -86,11 +87,11 @@ export default function TextDiff() {
                         <PanelLabel>{L.originalLabel}</PanelLabel>
                         {original && <MetaText>{original.length.toLocaleString()} chars</MetaText>}
                     </PanelHeader>
-                    <InputArea
+                    <SmartEditor
                         value={original}
-                        onChange={(e) => setOriginal(e.target.value)}
+                        onChange={setOriginal}
                         placeholder={L.originalPlaceholder}
-                        spellCheck={false}
+                        language="text"
                         autoFocus
                     />
                 </Panel>
@@ -100,11 +101,11 @@ export default function TextDiff() {
                         <PanelLabel>{L.modifiedLabel}</PanelLabel>
                         {modified && <MetaText>{modified.length.toLocaleString()} chars</MetaText>}
                     </PanelHeader>
-                    <InputArea
+                    <SmartEditor
                         value={modified}
-                        onChange={(e) => setModified(e.target.value)}
+                        onChange={setModified}
                         placeholder={L.modifiedPlaceholder}
-                        spellCheck={false}
+                        language="text"
                     />
                 </Panel>
             </ToolLayout>

@@ -336,5 +336,16 @@ export const SEO_META: Record<string, SeoMeta> = {
         description: "Paste any data and DevDeck automatically detects what you're working with — JSON, JWT, URLs, Base64, hashes, and more. Instantly launch the right tool for the job.",
         about: "Command Playground uses intelligent detection to identify your data type (JSON, JWT, URL, Base64, UUID, hash, Unix timestamp, CSV, and HTML) and suggest the best DevDeck tool to process it. No manual tool selection needed — just paste and go.",
         keywords: "command playground, data detector, smart detection, json detector, jwt decoder, url validator, data type detection, developer tools"
+    },
+    "/cron-builder": {
+        title: "Cron Expression Builder — Visual Cron Scheduler | DevDeck",
+        description: "Build and validate cron expressions visually. Get a plain-English description of your schedule and preview the next 5 run times — no docs needed.",
+        about: "Cron Expression Builder lets you construct cron schedules with intuitive field controls and quick presets. It translates any cron string into plain English and shows the next 5 upcoming run times — fully browser-based with no backend required.",
+        keywords: "cron expression builder, cron job scheduler, cron syntax, cron generator, cron tester, cron parser, cron schedule, unix cron, online cron builder"
+    },
+    "/blog/cron-expression-builder": {
+        title: "Cron Expression Builder — How to Write Cron Jobs | DevDeck",
+        description: "Learn how to write cron expressions for Linux, macOS, and cloud schedulers. Covers syntax, special characters, and common patterns with a visual builder.",
+        keywords: "cron expression, cron job syntax, cron schedule, how to write cron, cron special characters, cron examples, linux cron job, cloud scheduler"
     }
 };

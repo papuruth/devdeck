@@ -42,7 +42,8 @@ const TOOL_KEYWORDS: Record<string, string[]> = {
     "/lorem-ipsum": ["lorem", "ipsum", "placeholder", "dummy", "text", "generate", "filler"],
     "/word-counter": ["word", "count", "character", "sentence", "paragraph", "reading", "analyze"],
     "/csv-json": ["csv", "json", "convert", "table", "parse", "spreadsheet", "data"],
-    "/smart-formatter": ["format", "detect", "json", "jwt", "base64", "uuid", "hash", "curl", "timestamp", "csv", "html", "color", "ip", "auto-detect"]
+    "/smart-formatter": ["format", "detect", "json", "jwt", "base64", "uuid", "hash", "curl", "timestamp", "csv", "html", "color", "ip", "auto-detect"],
+    "/cron-builder": ["cron", "expression", "schedule", "job", "interval", "recurring", "task", "unix", "linux", "build", "generate"]
 };
 
 // ── Enriched tools (OPERATIONS_ITEMS + keywords + kind) ──────────────────────
@@ -204,6 +205,12 @@ export const BLOG_GUIDES: PaletteEntry[] = (
             label: "Smart Formatter Guide",
             description: "Auto-detect and format any data — JSON, JWT, Base64, UUID, and more",
             keywords: ["smart", "formatter", "detect", "format", "json", "jwt", "base64", "guide", "blog"]
+        },
+        {
+            slug: "cron-expression-builder",
+            label: "Cron Expression Builder Guide",
+            description: "Write and understand cron job syntax with field reference and common patterns",
+            keywords: ["cron", "expression", "schedule", "job", "syntax", "guide", "blog", "unix", "linux"]
         }
     ] as const
 ).map((g) => ({
@@ -297,7 +304,7 @@ const RELATED_TOOLS = {
     "/hash-generator": ["/uuid-generator", "/base64-text", "/password-tools"],
     "/url-validator": ["/url-shortener", "/api-builder"],
     "/url-shortener": ["/url-validator", "/qr-generator"],
-    "/timestamp": ["/number-base", "/uuid-generator"],
+    "/timestamp": ["/cron-builder", "/number-base", "/uuid-generator"],
     "/number-base": ["/timestamp", "/hash-generator"],
     "/image-resizer": ["/base64-image", "/aspect-ratio-calculator"],
     "/aspect-ratio-calculator": ["/image-resizer"],
@@ -313,7 +320,8 @@ const RELATED_TOOLS = {
     "/smart-formatter": ["/command-playground", "/json-viewer", "/jwt-decoder", "/base64-text", "/encoder-decoder", "/hash-generator"],
     "/html-jsx": ["/css-tailwind", "/encoder-decoder", "/smart-formatter", "/text-case"],
     "/encoder-decoder": ["/base64-text", "/smart-formatter", "/hash-generator", "/url-validator", "/jwt-decoder"],
-    "/command-playground": ["/smart-formatter", "/json-viewer", "/jwt-decoder", "/encoder-decoder", "/base64-text"]
+    "/command-playground": ["/smart-formatter", "/json-viewer", "/jwt-decoder", "/encoder-decoder", "/base64-text"],
+    "/cron-builder": ["/timestamp", "/command-playground", "/regex-tester", "/uuid-generator"]
 };
 
 export function getRelatedToolEntries(currentRoute: string): PaletteEntry[] {

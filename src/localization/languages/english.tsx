@@ -638,5 +638,19 @@ export default {
         matchLabel: "match",
         noSuggestionsMessage: "No suggestions yet — paste some data above",
         emptyStateHint: "Try pasting a JWT token, a JSON object, or a URL"
+    },
+    cronBuilder: {
+        pageTitle: "Cron Expression Builder",
+        builderLabel: "Cron Expression",
+        outputLabel: "Schedule Preview",
+        presetsLabel: "Quick Presets",
+        descriptionLabel: "In plain English",
+        nextRunsLabel: "Next 5 runs",
+        copyBtn: "Copy Expression",
+        copiedBtn: "Copied!",
+        copyTooltip: "Copy cron expression to clipboard",
+        emptyStateMessage: "Enter a valid cron expression to see the schedule",
+        noRunsMessage: "No upcoming runs found within the next year",
+        invalidExprMessage: "Invalid cron expression"
     }
 };

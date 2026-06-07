@@ -20,6 +20,7 @@ import {
     ToolLayout
 } from "components/Shared/ToolKit";
 import LocalBadge from "components/Shared/LocalBadge";
+import { SmartEditor } from "components/Shared/SmartEditor";
 import { SignJWT, importPKCS8, importSPKI, jwtVerify } from "jose";
 
 const { jwtDecoder: L, common: C } = localization;
@@ -744,58 +745,6 @@ const GenSecretField = styled.input`
     }
 `;
 
-const JSON_EDITOR_LAYER = `
-  font-family: var(--font-mono) !important;
-  font-size: 12px;
-  line-height: 1.75;
-  letter-spacing: 0.02em;
-  padding: 12px 16px;
-  margin: 0;
-  border: none;
-  white-space: pre-wrap;
-  word-break: break-all;
-  overflow-wrap: break-word;
-  width: 100%;
-  box-sizing: border-box;
-  min-height: 130px;
-  display: block;
-`;
-
-const JsonEditorWrapper = styled.div`
-    position: relative;
-    min-height: 155px;
-    background: var(--bg-input);
-    overflow: auto;
-    transition: box-shadow 0.2s ease;
-    &:focus-within {
-        box-shadow: inset 0 0 0 2px rgba(34, 204, 153, 0.3);
-    }
-`;
-
-const JsonHighlightLayer = styled.div`
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: 100%;
-    pointer-events: none;
-    color: transparent;
-    ${JSON_EDITOR_LAYER}
-`;
-
-const JsonEditorTextarea = styled.textarea`
-    display: block;
-    position: relative;
-    background: transparent;
-    color: transparent;
-    caret-color: var(--text-primary);
-    outline: none;
-    resize: none;
-    overflow: hidden;
-    -webkit-appearance: none;
-    appearance: none;
-    z-index: 1;
-    ${JSON_EDITOR_LAYER}
-`;
 
 const GenOutputSection = styled.div`
     display: flex;
@@ -1023,19 +972,6 @@ function SigVerify({ token, alg, signature, secretKey }: SigVerifyProps) {
     );
 }
 
-// ─── JsonEditor ───────────────────────────────────────────────────────────────
-
-function JsonEditor({ value, onChange }: { value: string; onChange: (v: string) => void }) {
-    return (
-        <JsonEditorWrapper>
-            <JsonHighlightLayer aria-hidden="true">
-                {value ? syntaxHighlightJson(value) : <span style={{ color: "var(--text-secondary)", opacity: 0.4 }}>{"{ }"}</span>}
-            </JsonHighlightLayer>
-            <JsonEditorTextarea value={value} onChange={(e) => onChange(e.target.value)} spellCheck={false} />
-        </JsonEditorWrapper>
-    );
-}
-
 // ─── GenerateTab ──────────────────────────────────────────────────────────────
 
 function GenerateTab() {
@@ -1236,7 +1172,7 @@ function GenerateTab() {
                                 <Backspace sx={{ fontSize: 13 }} />
                             </GenLabelClearBtn>
                         </GenLabel>
-                        <JsonEditor value={headerJson} onChange={setHeaderJson} />
+                        <SmartEditor value={headerJson} onChange={setHeaderJson} language="json" minHeight="120px" />
                     </GenSection>
 
                     <GenSection>
@@ -1246,7 +1182,7 @@ function GenerateTab() {
                                 <Backspace sx={{ fontSize: 13 }} />
                             </GenLabelClearBtn>
                         </GenLabel>
-                        <JsonEditor value={payloadJson} onChange={setPayloadJson} />
+                        <SmartEditor value={payloadJson} onChange={setPayloadJson} language="json" minHeight="160px" />
                     </GenSection>
 
                     <GenSection>

@@ -16,11 +16,11 @@ import {
     PanelHeader,
     PanelLabel,
     MetaText,
-    CodeArea as BaseCodeArea,
     ActionBar,
     ActionBtnGroup,
     ActionBtn
 } from "components/Shared/ToolKit";
+import { SmartEditor } from "components/Shared/SmartEditor";
 
 const { base64Text: L, common: C } = localization;
 
@@ -60,14 +60,6 @@ const ErrorBadge = styled(Typography)`
     line-height: 1.5 !important;
 `;
 
-/* CodeArea extended: flex:1 + taller min-height for split-panel layout */
-const CodeArea = styled(BaseCodeArea)`
-    flex: 1;
-    min-height: 300px;
-    &:read-only {
-        cursor: default;
-    }
-`;
 
 /* ─── Component ──────────────────────────────────────── */
 
@@ -149,7 +141,7 @@ export default function Base64Text() {
                         <PanelLabel>{inputLabel}</PanelLabel>
                         {inputMeta && <MetaText>{inputMeta}</MetaText>}
                     </PanelHeader>
-                    <CodeArea value={input} onChange={(e) => setInput(e.target.value)} placeholder={inputPlaceholder} spellCheck={false} autoFocus />
+                    <SmartEditor value={input} onChange={setInput} placeholder={inputPlaceholder} language="text" style={{ flex: 1 }} minHeight="300px" autoFocus />
                     {input && (
                         <ActionBar>
                             <BtnGroup>
@@ -168,7 +160,7 @@ export default function Base64Text() {
                         <PanelLabel>{outputLabel}</PanelLabel>
                         {error ? <ErrorBadge>{error}</ErrorBadge> : outputMeta && <MetaText>{outputMeta}</MetaText>}
                     </PanelHeader>
-                    <CodeArea value={output} readOnly placeholder={outputPlaceholder} spellCheck={false} />
+                    <SmartEditor value={output} readOnly placeholder={outputPlaceholder} language="text" style={{ flex: 1 }} minHeight="300px" />
                     {output && (
                         <ActionBar>
                             <BtnGroup>

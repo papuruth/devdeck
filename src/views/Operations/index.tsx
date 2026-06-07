@@ -41,7 +41,8 @@ const TOOL_BLOG_SLUG: Record<string, string> = {
     "/smart-formatter": "smart-formatter",
     "/html-jsx": "html-jsx",
     "/encoder-decoder": "encoder-decoder",
-    "/command-playground": "command-playground"
+    "/command-playground": "command-playground",
+    "/cron-builder": "cron-expression-builder"
 };
 
 function ToolFallback() {
@@ -81,6 +82,7 @@ const SmartFormatter = dynamic(() => import("components/SmartFormatter"), { load
 const HTMLToJSX = dynamic(() => import("components/HTMLToJSX"), { loading, ssr: false });
 const EncoderDecoder = dynamic(() => import("components/EncoderDecoder"), { loading, ssr: false });
 const CommandPlayground = dynamic(() => import("components/CommandPlayground"), { loading, ssr: false });
+const CronBuilder = dynamic(() => import("components/CronBuilder"), { loading, ssr: false });
 
 export default function Operations() {
     const pathname = usePathname();
@@ -121,7 +123,8 @@ export default function Operations() {
             smartFormatter,
             htmlToJsx,
             encoderDecoder,
-            commandPlayground
+            commandPlayground,
+            cronBuilder
         } = localization;
         switch (pathname) {
             case "/base64-image":
@@ -180,6 +183,8 @@ export default function Operations() {
                 return { title: encoderDecoder.pageTitle, component: EncoderDecoder };
             case "/command-playground":
                 return { title: commandPlayground.pageTitle, component: CommandPlayground };
+            case "/cron-builder":
+                return { title: cronBuilder.pageTitle, component: CronBuilder };
             default:
                 return null;
         }

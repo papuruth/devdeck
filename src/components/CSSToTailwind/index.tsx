@@ -10,7 +10,6 @@ import {
     ActionBar,
     ActionBtn,
     ActionBtnGroup,
-    CodeArea,
     EmptyState,
     MetaText,
     Panel,
@@ -18,6 +17,7 @@ import {
     PanelLabel,
     ToolLayout
 } from "components/Shared/ToolKit";
+import { SmartEditor } from "components/Shared/SmartEditor";
 import LocalBadge from "components/Shared/LocalBadge";
 import { useDebounce } from "utils/hooks/useDebounce.hooks";
 import { CSS_PROPERTY_MAP } from "./cssToTailwindMap";
@@ -278,11 +278,11 @@ export default function CSSToTailwind() {
                         </ActionBtn>
                     </ActionBtnGroup>
                 </PanelHeader>
-                <CodeArea
+                <SmartEditor
                     value={cssInput}
-                    onChange={(e) => setCssInput(e.target.value)}
+                    onChange={setCssInput}
                     placeholder={PLACEHOLDER}
-                    spellCheck={false}
+                    language="css"
                 />
             </Panel>
 

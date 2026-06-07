@@ -1,6 +1,6 @@
 // @ts-nocheck
 import { Box, Typography } from "@mui/material";
-import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import styled, { keyframes } from "styled-components";
 import { useRouter } from "next/navigation";
 import { useToolChain } from "context/ToolChainContext";
@@ -9,6 +9,7 @@ import { detectInputType } from "utils/inputDetector";
 import { GLOBAL_CONSTANTS } from "utils/globalConstants";
 import LocalBadge from "components/Shared/LocalBadge";
 import localization from "localization";
+import { SmartEditor } from "components/Shared/SmartEditor";
 
 const { commandPlayground: L } = localization;
 
@@ -56,32 +57,6 @@ const InputCard = styled(Box)`
     animation: ${fadeUp} 0.35s ease 0.05s both;
 `;
 
-const StyledTextarea = styled.textarea`
-    width: 100%;
-    min-height: 148px;
-    background: var(--bg-input);
-    border: 1.5px solid var(--border-color);
-    border-radius: 8px;
-    color: var(--text-primary);
-    font-family: "JetBrains Mono", "Fira Code", monospace;
-    font-size: 13px;
-    line-height: 1.6;
-    padding: 12px 14px;
-    resize: vertical;
-    outline: none;
-    box-sizing: border-box;
-    transition: border-color 0.18s ease, box-shadow 0.18s ease;
-
-    &::placeholder {
-        color: var(--text-secondary);
-        opacity: 0.6;
-    }
-
-    &:focus {
-        border-color: #22cc99;
-        box-shadow: 0 0 0 3px rgba(34, 204, 153, 0.12);
-    }
-`;
 
 // ── Example chips ────────────────────────────────────────────────────────────
 const ExampleRow = styled(Box)`
@@ -261,8 +236,6 @@ export default function CommandPlayground() {
     const { sendTo } = useToolChain();
     const [input, setInput] = useState("");
     const [recent, setRecent] = useState<string[]>([]);
-    const textareaRef = useRef<HTMLTextAreaElement>(null);
-
     const debouncedInput = useDebounce(input, 300);
 
     useEffect(() => {
@@ -310,7 +283,6 @@ export default function CommandPlayground() {
 
     const handleExampleClick = useCallback((value: string) => {
         setInput(value);
-        textareaRef.current?.focus();
     }, []);
 
     const hasInput = debouncedInput.trim().length > 0;
@@ -323,12 +295,11 @@ export default function CommandPlayground() {
             </HeaderRow>
 
             <InputCard>
-                <StyledTextarea
-                    ref={textareaRef}
+                <SmartEditor
                     value={input}
-                    onChange={(e) => setInput(e.target.value)}
+                    onChange={setInput}
                     placeholder={L.inputPlaceholder}
-                    spellCheck={false}
+                    language="text"
                     autoFocus
                 />
 

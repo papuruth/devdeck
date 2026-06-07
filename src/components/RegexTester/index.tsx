@@ -8,7 +8,6 @@ import {
     ActionBar,
     ActionBtn,
     ActionBtnGroup,
-    CodeArea,
     EmptyState,
     MetaText,
     Panel,
@@ -18,6 +17,7 @@ import {
     TabStrip,
     ToolLayout
 } from "components/Shared/ToolKit";
+import { SmartEditor } from "components/Shared/SmartEditor";
 import { useToolChain } from "context/ToolChainContext";
 import { useShareableURL } from "utils/hooks/useShareableURL.hooks";
 
@@ -544,12 +544,12 @@ export default function RegexTester() {
                             <PanelLabel>{L.testStringLabel}</PanelLabel>
                             {testStr && <MetaText>{testStr.length.toLocaleString()} chars</MetaText>}
                         </SubHeader>
-                        <CodeArea
+                        <SmartEditor
                             value={testStr}
-                            onChange={(e) => setTestStr(e.target.value)}
+                            onChange={setTestStr}
                             placeholder={L.testStringPlaceholder}
-                            spellCheck={false}
-                            style={{ minHeight: 160 }}
+                            language="text"
+                            minHeight="160px"
                         />
                         {(pattern || testStr) && (
                             <ActionBar>
@@ -658,10 +658,11 @@ export default function RegexTester() {
                         </PanelHeader>
                         {generatedEntry ? (
                             <>
-                                <CodeArea
+                                <SmartEditor
                                     readOnly
                                     value={`/${generatedEntry.pattern}/${generatedEntry.flags}`}
-                                    style={{ minHeight: 80, cursor: "default" }}
+                                    language="text"
+                                    minHeight="80px"
                                 />
                                 <PanelLabel style={{ padding: "16px 16px 8px" }}>{L.explanationLabel}</PanelLabel>
                                 <ExplanationSection>

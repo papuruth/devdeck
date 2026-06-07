@@ -27,6 +27,7 @@ import {
     Terminal,
     VpnKey
 } from "@mui/icons-material";
+
 import localization from "localization";
 import React from "react";
 
@@ -58,7 +59,8 @@ const {
     smartFormatter,
     htmlToJsx,
     encoderDecoder,
-    commandPlayground
+    commandPlayground,
+    cronBuilder
 } = localization;
 
 export const TOOL_CATEGORIES = [
@@ -339,6 +341,19 @@ export const GLOBAL_CONSTANTS = {
             badge: "wow",
             icon: (
                 <Terminal
+                    fontSize="large"
+                    sx={{ fontSize: "5rem", width: { xs: "0.5em", sm: "0.5em", md: "1em" }, height: { xs: "0.5em", sm: "0.5em", md: "1em" } }}
+                />
+            )
+        },
+        {
+            label: cronBuilder.pageTitle,
+            route: "/cron-builder",
+            description: "Build cron expressions visually, get a plain-English description, and preview the next 5 scheduled run times",
+            category: "developer",
+            badge: "new",
+            icon: (
+                <Schedule
                     fontSize="large"
                     sx={{ fontSize: "5rem", width: { xs: "0.5em", sm: "0.5em", md: "1em" }, height: { xs: "0.5em", sm: "0.5em", md: "1em" } }}
                 />

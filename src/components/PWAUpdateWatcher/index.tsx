@@ -66,7 +66,7 @@ export default function PWAUpdateWatcher() {
         };
     }, [isUpdating]);
 
-    if (!waitingSW) return null;
+    if (!waitingSW || process.env.NODE_ENV === "development") return null;
 
     const handleUpdate = () => {
         if (!waitingSW) return;

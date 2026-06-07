@@ -211,6 +211,24 @@ export const BLOG_GUIDES: PaletteEntry[] = (
             label: "Cron Expression Builder Guide",
             description: "Write and understand cron job syntax with field reference and common patterns",
             keywords: ["cron", "expression", "schedule", "job", "syntax", "guide", "blog", "unix", "linux"]
+        },
+        {
+            slug: "html-jsx",
+            label: "HTML to JSX Converter Guide",
+            description: "Convert HTML markup to valid JSX for React",
+            keywords: ["html", "jsx", "react", "convert", "guide", "blog", "className", "htmlFor"]
+        },
+        {
+            slug: "encoder-decoder",
+            label: "Encoder / Decoder Guide",
+            description: "Base64, URL encoding, HTML entities, and more",
+            keywords: ["encode", "decode", "base64", "url", "html", "entities", "unicode", "hex", "binary", "guide", "blog"]
+        },
+        {
+            slug: "command-playground",
+            label: "Command Playground Guide",
+            description: "Paste any developer data and auto-detect the right tool",
+            keywords: ["command", "playground", "detect", "route", "json", "jwt", "url", "uuid", "base64", "guide", "blog"]
         }
     ] as const
 ).map((g) => ({

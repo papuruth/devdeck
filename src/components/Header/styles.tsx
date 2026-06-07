@@ -165,6 +165,52 @@ export const NavDivider = muiStyled("span")(({ theme }) => ({
     }
 }));
 
+// ── Tool chain breadcrumb pill ───────────────────────────────────────────────
+export const ChainPill = styled(Box)`
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 8px 3px 10px;
+    background: rgba(34, 204, 153, 0.1);
+    border: 1px solid rgba(34, 204, 153, 0.3);
+    border-radius: 20px;
+    color: #22cc99;
+    font-size: 11px;
+    font-family: "Inter", sans-serif;
+    font-weight: 500;
+    line-height: 1;
+`;
+
+export const ChainPillClose = styled.button`
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: none;
+    padding: 0;
+    margin: 0;
+    cursor: pointer;
+    color: inherit;
+    border-radius: 50%;
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+    opacity: 0.7;
+    transition: opacity 0.15s ease, background 0.15s ease;
+    line-height: 1;
+
+    &:hover {
+        opacity: 1;
+        background: rgba(34, 204, 153, 0.2);
+    }
+
+    svg {
+        display: block;
+        width: 10px;
+        height: 10px;
+    }
+`;
+
 // ── Blog / Guides nav link ─────────────────────────────────────────────────────
 interface BlogNavLinkProps {
     $active?: boolean;

@@ -1,18 +1,30 @@
 "use client";
 
 import dynamic from "next/dynamic";
+import Ajv from "ajv";
 import ReactJsonView from "@microlink/react-json-view";
 import HistoryDropdown from "components/Shared/HistoryDropdown";
 import localization from "localization";
 import React, { useContext, useEffect, useMemo, useState } from "react";
-import styled from "styled-components";
-import { ActionBtn, ActionBtnGroup, Panel, PanelHeader, PanelLabel, TabBtn, TabStrip } from "components/Shared/ToolKit";
+import styled, { keyframes } from "styled-components";
+import { ActionBar, ActionBtn, ActionBtnGroup, CodeArea, EmptyState, Panel, PanelHeader, PanelLabel, TabBtn, TabStrip } from "components/Shared/ToolKit";
 import { useToolHistory } from "utils/hooks/useToolHistory.hooks";
 import { useToolChain } from "context/ToolChainContext";
 import ColorModeContext from "../../context/ColorModeContext";
 
 const LoadJSONModal = dynamic(() => import("./components/LoadJSONModal"), { ssr: false });
 const Editor = dynamic(() => import("./components/Editor"), { ssr: false });
+
+const fadeInDown = keyframes`
+    from {
+        opacity: 0;
+        transform: translateY(-4px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+`;
 
 const LIGHT_THEME = {
     base00: "rgba(0,0,0,0)",
@@ -120,6 +132,96 @@ const ViewerBtnGroup = styled(ActionBtnGroup)`
     flex-shrink: 0;
 `;
 
+const SchemaContainer = styled.div`
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    width: 100%;
+    margin-top: 20px;
+    ${({ theme }) => theme ? "" : "@media (max-width: 768px) { grid-template-columns: 1fr; }"}
+`;
+
+const SchemaPanelSection = styled.div`
+    display: flex;
+    flex-direction: column;
+`;
+
+const SchemaCodeArea = styled(CodeArea)`
+    min-height: 180px;
+    &:read-only {
+        cursor: default;
+    }
+`;
+
+const ValidationBadge = styled.div<{ $valid: boolean }>`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 30px 20px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    font-family: "Inter", sans-serif;
+    animation: ${fadeInDown} 0.2s ease;
+    color: ${(p) => (p.$valid ? "#22cc99" : "#ef4444")};
+    background: ${(p) => (p.$valid ? "rgba(34,204,153,0.1)" : "rgba(239,68,68,0.06)")};
+    border: 1px solid ${(p) => (p.$valid ? "rgba(34,204,153,0.3)" : "rgba(239,68,68,0.3)")};
+`;
+
+const ErrorList = styled.div`
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 16px;
+    flex: 1;
+    overflow-y: auto;
+`;
+
+const ErrorItem = styled.div`
+    padding: 10px 12px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-family: var(--font-mono);
+    color: #ef4444;
+    background: rgba(239, 68, 68, 0.06);
+    border-left: 3px solid #ef4444;
+    line-height: 1.5;
+`;
+
+const ErrorPath = styled.span`
+    color: #fbbf24;
+    font-weight: 600;
+`;
+
+const ParseErrorNote = styled.div`
+    padding: 10px 16px;
+    background: rgba(239, 68, 68, 0.06);
+    border-bottom: 1px solid rgba(239, 68, 68, 0.3);
+    color: #ef4444;
+    font-size: 11px;
+    font-family: var(--font-mono);
+    border-radius: 4px 4px 0 0;
+`;
+
+const NoDataNote = styled.div`
+    padding: 16px;
+    color: var(--text-secondary);
+    font-size: 12px;
+    font-family: "Inter", sans-serif;
+    opacity: 0.6;
+`;
+
+const SAMPLE_SCHEMA = {
+    type: "object",
+    properties: {
+        name: { type: "string" },
+        age: { type: "integer", minimum: 0 },
+        email: { type: "string" }
+    },
+    required: ["name", "email"]
+};
+
 export default function JSONViewer() {
     const { mode } = useContext(ColorModeContext);
     const [tab, setTab] = useState("editor");
@@ -127,12 +229,18 @@ export default function JSONViewer() {
     const [showLinkModal, setShowLinkModal] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
     const [collapsed, setCollapsed] = useState<number | boolean>(1);
+    const [schemaInput, setSchemaInput] = useState(JSON.stringify(SAMPLE_SCHEMA, null, 2));
+    const [validationResult, setValidationResult] = useState<{ valid: boolean; errors: any[] } | null>(null);
+    const [schemaParseError, setSchemaParseError] = useState<string | null>(null);
     const { history: jsonHistory, addHistory: addJsonHistory, clearHistory: clearJsonHistory } = useToolHistory("json-viewer");
     const { consumeChain } = useToolChain();
 
     useEffect(() => {
         const chained = consumeChain("/json-viewer");
-        if (chained && typeof chained === "string") setJSONInput(chained);
+        if (chained) {
+            const value = typeof chained === "string" ? chained : JSON.stringify(chained, null, 2);
+            setJSONInput(value);
+        }
     }, [consumeChain]);
 
     const handleJSONInput = ({ target: { value } }: React.ChangeEvent<HTMLTextAreaElement>): void => {
@@ -206,6 +314,36 @@ export default function JSONViewer() {
         addJsonHistory(formatted);
     }
 
+    const handleValidateSchema = () => {
+        setSchemaParseError(null);
+        setValidationResult(null);
+
+        try {
+            const { $schema: ignored, ...schema } = JSON.parse(schemaInput);
+            const ajv = new Ajv({ allErrors: true, strict: false });
+            const validate = ajv.compile(schema);
+
+            try {
+                const data = JSON.parse(jsonInput);
+                const isValid = validate(data);
+                setValidationResult({
+                    valid: isValid,
+                    errors: isValid ? [] : (validate.errors || [])
+                });
+            } catch (e) {
+                setSchemaParseError(L.dataParseError);
+            }
+        } catch (e) {
+            setSchemaParseError(L.schemaParseError);
+        }
+    };
+
+    const handleLoadExample = () => {
+        setSchemaInput(JSON.stringify(SAMPLE_SCHEMA, null, 2));
+        setValidationResult(null);
+        setSchemaParseError(null);
+    };
+
     return (
         <ToolWrap>
             <TabStrip>
@@ -215,51 +353,129 @@ export default function JSONViewer() {
                 <TabBtn $active={tab === "viewer"} onClick={() => setTab("viewer")} disabled={!jsonInput}>
                     {L.viewerTab}
                 </TabBtn>
+                <TabBtn $active={tab === "schema"} onClick={() => setTab("schema")}>
+                    {L.schemaTab}
+                </TabBtn>
             </TabStrip>
 
-            <Panel>
-                <PanelHeader>
-                    <PanelLabel>{tab === "editor" ? L.jsonInputLabel : L.jsonViewerLabel}</PanelLabel>
-                    {tab === "editor" && <HistoryDropdown history={jsonHistory} onSelect={(v: string) => setJSONInput(v)} onClear={clearJsonHistory} />}
-                </PanelHeader>
+            {tab === "schema" ? (
+                <SchemaContainer>
+                    <SchemaPanelSection>
+                        <Panel style={{ flex: 1, display: "flex", flexDirection: "column" }}>
+                            <PanelHeader>
+                                <PanelLabel>{L.jsonDataLabel}</PanelLabel>
+                            </PanelHeader>
+                            {jsonInput ? (
+                                <SchemaCodeArea value={jsonInput} readOnly spellCheck={false} />
+                            ) : (
+                                <NoDataNote>{L.noJsonDataNote}</NoDataNote>
+                            )}
+                        </Panel>
+                    </SchemaPanelSection>
 
-                {tab === "editor" ? (
-                    <Editor handleJSONInput={handleJSONInput} jsonInput={jsonInput} handleEditorOperations={handleEditorOperations} />
-                ) : (
-                    <>
-                        <ViewerControls>
-                            <SearchInput
-                                value={searchQuery}
-                                onChange={(e) => setSearchQuery(e.target.value)}
-                                placeholder={L.searchPlaceholder}
+                    <SchemaPanelSection>
+                        <Panel style={{ flex: 1, display: "flex", flexDirection: "column" }}>
+                            <PanelHeader>
+                                <PanelLabel>{L.schemaInputLabel}</PanelLabel>
+                            </PanelHeader>
+                            <SchemaCodeArea
+                                value={schemaInput}
+                                onChange={(e) => {
+                                    setSchemaInput(e.target.value);
+                                    setValidationResult(null);
+                                    setSchemaParseError(null);
+                                }}
+                                placeholder={L.schemaInputLabel}
                                 spellCheck={false}
                             />
-                            <ViewerBtnGroup>
-                                <ActionBtn onClick={() => setCollapsed(false)}>{L.expandAllBtn}</ActionBtn>
-                                <ActionBtn onClick={() => setCollapsed(true)}>{L.collapseAllBtn}</ActionBtn>
-                            </ViewerBtnGroup>
-                        </ViewerControls>
-                        <ViewerArea>
-                            {filteredJson !== null && filteredJson !== undefined ? (
-                                <ReactJsonView
-                                    key={String(collapsed)}
-                                    src={filteredJson}
-                                    collapsed={collapsed}
-                                    theme={mode === "dark" ? "ocean" : LIGHT_THEME}
-                                    iconStyle="circle"
-                                    displayDataTypes={false}
-                                    quotesOnKeys={false}
-                                    onAdd={searchQuery ? undefined : handleJsonMutation}
-                                    onEdit={searchQuery ? undefined : handleJsonMutation}
-                                    onDelete={searchQuery ? undefined : handleJsonMutation}
+                            <ActionBar>
+                                <ActionBtnGroup>
+                                    <ActionBtn onClick={handleValidateSchema}>{L.validateBtn}</ActionBtn>
+                                    <ActionBtn onClick={handleLoadExample}>{L.loadExampleBtn}</ActionBtn>
+                                </ActionBtnGroup>
+                            </ActionBar>
+                        </Panel>
+                    </SchemaPanelSection>
+
+                    <Panel style={{ gridColumn: "1 / -1", flex: 1, display: "flex", flexDirection: "column" }}>
+                        <PanelHeader>
+                            <PanelLabel>{L.validationResult}</PanelLabel>
+                        </PanelHeader>
+                        {schemaParseError && (
+                            <>
+                                <ParseErrorNote>{schemaParseError}</ParseErrorNote>
+                                <ErrorList />
+                            </>
+                        )}
+                        {!schemaParseError && validationResult && validationResult.valid && (
+                            <ValidationBadge $valid>✓ {L.validLabel}</ValidationBadge>
+                        )}
+                        {!schemaParseError && validationResult && !validationResult.valid && (
+                            <>
+                                <ValidationBadge $valid={false}>
+                                    ✕ {validationResult.errors.length} {L.errorsLabel}
+                                </ValidationBadge>
+                                <ErrorList>
+                                    {validationResult.errors.map((err: any) => (
+                                        <ErrorItem key={`${err.instancePath}-${err.message}`}>
+                                            <ErrorPath>{err.instancePath || "root"}</ErrorPath>: {err.message}
+                                        </ErrorItem>
+                                    ))}
+                                </ErrorList>
+                            </>
+                        )}
+                        {!schemaParseError && !validationResult && (
+                            <EmptyState>
+                                <span>{L.schemaEmptyState}</span>
+                            </EmptyState>
+                        )}
+                    </Panel>
+                </SchemaContainer>
+            ) : (
+                <Panel>
+                    <PanelHeader>
+                        <PanelLabel>{tab === "editor" ? L.jsonInputLabel : L.jsonViewerLabel}</PanelLabel>
+                        {tab === "editor" && <HistoryDropdown history={jsonHistory} onSelect={(v: string) => setJSONInput(v)} onClear={clearJsonHistory} />}
+                    </PanelHeader>
+
+                    {tab === "editor" ? (
+                        <Editor handleJSONInput={handleJSONInput} jsonInput={jsonInput} handleEditorOperations={handleEditorOperations} />
+                    ) : (
+                        <>
+                            <ViewerControls>
+                                <SearchInput
+                                    value={searchQuery}
+                                    onChange={(e) => setSearchQuery(e.target.value)}
+                                    placeholder={L.searchPlaceholder}
+                                    spellCheck={false}
                                 />
-                            ) : (
-                                <NoMatch>{searchQuery ? L.noMatchesMessage : L.noValidJsonMessage}</NoMatch>
-                            )}
-                        </ViewerArea>
-                    </>
-                )}
-            </Panel>
+                                <ViewerBtnGroup>
+                                    <ActionBtn onClick={() => setCollapsed(false)}>{L.expandAllBtn}</ActionBtn>
+                                    <ActionBtn onClick={() => setCollapsed(true)}>{L.collapseAllBtn}</ActionBtn>
+                                </ViewerBtnGroup>
+                            </ViewerControls>
+                            <ViewerArea>
+                                {filteredJson !== null && filteredJson !== undefined ? (
+                                    <ReactJsonView
+                                        key={String(collapsed)}
+                                        src={filteredJson}
+                                        collapsed={collapsed}
+                                        theme={mode === "dark" ? "ocean" : LIGHT_THEME}
+                                        iconStyle="circle"
+                                        displayDataTypes={false}
+                                        quotesOnKeys={false}
+                                        onAdd={searchQuery ? undefined : handleJsonMutation}
+                                        onEdit={searchQuery ? undefined : handleJsonMutation}
+                                        onDelete={searchQuery ? undefined : handleJsonMutation}
+                                    />
+                                ) : (
+                                    <NoMatch>{searchQuery ? L.noMatchesMessage : L.noValidJsonMessage}</NoMatch>
+                                )}
+                            </ViewerArea>
+                        </>
+                    )}
+                </Panel>
+            )}
 
             <LoadJSONModal open={showLinkModal} onClose={() => setShowLinkModal(false)} onLoad={handleModalLoad} />
         </ToolWrap>

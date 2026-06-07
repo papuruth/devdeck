@@ -11,6 +11,7 @@ import {
     Difference,
     FormatSize,
     Http,
+    IntegrationInstructions,
     Link as LinkIcon,
     Lock,
     Notes,
@@ -23,6 +24,7 @@ import {
     SwapHoriz,
     TableChart,
     Tag,
+    Terminal,
     VpnKey
 } from "@mui/icons-material";
 import localization from "localization";
@@ -53,7 +55,10 @@ const {
     csvToJson,
     apiRequestBuilder,
     cssToTailwind,
-    smartFormatter
+    smartFormatter,
+    htmlToJsx,
+    encoderDecoder,
+    commandPlayground
 } = localization;
 
 export const TOOL_CATEGORIES = [
@@ -100,6 +105,32 @@ export const GLOBAL_CONSTANTS = {
             badge: "smart",
             icon: (
                 <AutoFixHigh
+                    fontSize="large"
+                    sx={{ fontSize: "5rem", width: { xs: "0.5em", sm: "0.5em", md: "1em" }, height: { xs: "0.5em", sm: "0.5em", md: "1em" } }}
+                />
+            )
+        },
+        {
+            label: htmlToJsx.pageTitle,
+            route: "/html-jsx",
+            description: "Convert HTML markup to valid JSX syntax with automatic class→className, event handlers, and self-closing tag conversions",
+            category: "developer",
+            badge: "new",
+            icon: (
+                <IntegrationInstructions
+                    fontSize="large"
+                    sx={{ fontSize: "5rem", width: { xs: "0.5em", sm: "0.5em", md: "1em" }, height: { xs: "0.5em", sm: "0.5em", md: "1em" } }}
+                />
+            )
+        },
+        {
+            label: encoderDecoder.pageTitle,
+            route: "/encoder-decoder",
+            description: "Encode and decode text using Base64, URL encoding, HTML entities, Unicode, hex, and binary formats",
+            category: "encoding",
+            badge: "new",
+            icon: (
+                <SwapHoriz
                     fontSize="large"
                     sx={{ fontSize: "5rem", width: { xs: "0.5em", sm: "0.5em", md: "1em" }, height: { xs: "0.5em", sm: "0.5em", md: "1em" } }}
                 />
@@ -295,6 +326,19 @@ export const GLOBAL_CONSTANTS = {
             badge: null,
             icon: (
                 <Tag
+                    fontSize="large"
+                    sx={{ fontSize: "5rem", width: { xs: "0.5em", sm: "0.5em", md: "1em" }, height: { xs: "0.5em", sm: "0.5em", md: "1em" } }}
+                />
+            )
+        },
+        {
+            label: commandPlayground.pageTitle,
+            route: "/command-playground",
+            description: "Paste any data and instantly detect its type — JSON, JWT, URL, Base64, UUID, hash, timestamp, and more",
+            category: "utilities",
+            badge: "wow",
+            icon: (
+                <Terminal
                     fontSize="large"
                     sx={{ fontSize: "5rem", width: { xs: "0.5em", sm: "0.5em", md: "1em" }, height: { xs: "0.5em", sm: "0.5em", md: "1em" } }}
                 />

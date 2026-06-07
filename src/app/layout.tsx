@@ -27,7 +27,7 @@ export const metadata: Metadata = {
         default: "DevDeck — Developer Toolbox",
         template: "%s"
     },
-    description: "A collection of 25+ free online developer tools. Base64, QR codes, image resizer, JWT decoder, regex tester, and more.",
+    description: "A collection of 28+ free online developer tools. Base64, QR codes, image resizer, JWT decoder, regex tester, and more.",
     authors: [{ name: "Papu Kumar" }],
     creator: "Papu Kumar",
     robots: { index: true, follow: true },

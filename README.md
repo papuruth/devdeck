@@ -1,10 +1,20 @@
 # DevDeck
 
-A free, open-source, all-in-one developer toolbox — 23 utilities available in a single progressive web app, with dark mode, search, offline support, and server-side rendering.
+A free, open-source, all-in-one developer toolbox — 28 utilities available in a single progressive web app, with dark mode, search, offline support, and server-side rendering.
 
 ---
 
 ## Tools
+
+### Developer Tools
+
+| Tool                  | Route              | Description                                                                                  |
+| --------------------- | ------------------ | -------------------------------------------------------------------------------------------- |
+| API Request Builder   | `/api-builder`     | Construct and send HTTP requests with custom headers and body, inspect JSON output            |
+| CSS → Tailwind        | `/css-tailwind`    | Convert CSS properties to Tailwind utility classes instantly with smart mapping              |
+| Smart Formatter       | `/smart-formatter` | Paste any data and auto-detect the format — JSON, JWT, URLs, Base64, UUID, timestamps, and more |
+| HTML → JSX            | `/html-jsx`        | Convert HTML markup to valid JSX with automatic className, event handlers, and void tags     |
+| Encoder / Decoder     | `/encoder-decoder` | Encode and decode text using Base64, URL encoding, HTML entities, Unicode, hex, and binary   |
 
 ### Image Tools
 
@@ -31,11 +41,10 @@ A free, open-source, all-in-one developer toolbox — 23 utilities available in 
 
 ### URL & Web
 
-| Tool                | Route            | Description                                                                        |
-| ------------------- | ---------------- | ---------------------------------------------------------------------------------- |
-| URL Validator       | `/url-validator` | Check HTTP status codes and strip tracking parameters from URLs                    |
-| URL Shortener       | `/url-shortener` | Shorten any long URL to a compact shareable link (via Short.io)                    |
-| API Request Builder | `/api-builder`   | Construct and send HTTP requests with custom headers and body, inspect JSON output |
+| Tool          | Route            | Description                                                     |
+| ------------- | ---------------- | --------------------------------------------------------------- |
+| URL Validator | `/url-validator` | Check HTTP status codes and strip tracking parameters from URLs |
+| URL Shortener | `/url-shortener` | Shorten any long URL to a compact shareable link (via Short.io) |
 
 ### Utilities
 
@@ -48,6 +57,7 @@ A free, open-source, all-in-one developer toolbox — 23 utilities available in 
 | Timestamp Converter   | `/timestamp`       | Convert Unix timestamps to human-readable dates and vice versa            |
 | Number Base Converter | `/number-base`     | Convert numbers between binary, octal, decimal, and hexadecimal           |
 | Lorem Ipsum           | `/lorem-ipsum`     | Generate placeholder text by paragraphs, sentences, or words              |
+| Command Playground    | `/command-playground` | Paste any data and instantly get routed to the right tool              |
 
 ---
 

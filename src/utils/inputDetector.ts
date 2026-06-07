@@ -55,6 +55,12 @@ export function detectInputType(text: string): DetectedInput | null {
         return { type: "uuid", label: "UUID", route: "/uuid-generator" };
     }
 
+    // ── Unix timestamp ───────────────────────────────────────────────────────
+    // 10-digit (seconds) or 13-digit (milliseconds) pure-integer strings.
+    if (/^\d{10}$/.test(trimmed) || /^\d{13}$/.test(trimmed)) {
+        return { type: "timestamp", label: "Unix Timestamp", route: "/timestamp" };
+    }
+
     // ── Hash (hex string of known digest length) ─────────────────────────────
     if (/^[0-9a-f]+$/i.test(trimmed)) {
         const len = trimmed.length;

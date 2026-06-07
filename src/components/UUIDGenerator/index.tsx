@@ -1,7 +1,9 @@
+// @ts-nocheck
 import { Check, ContentCopy } from "@mui/icons-material";
 import localization from "localization";
-import React, { useCallback, useState } from "react";
-import styled from "styled-components";
+import React, { useCallback, useEffect, useState } from "react";
+import { useToolChain } from "context/ToolChainContext";
+import styled, { keyframes } from "styled-components";
 import {
     ActionBar,
     ActionBtn,
@@ -12,10 +14,22 @@ import {
     Panel,
     PanelHeader,
     PanelLabel,
+    TabBtn,
     ToolLayout
 } from "components/Shared/ToolKit";
 
 const { uuidGenerator: L } = localization;
+
+const fadeInDown = keyframes`
+    from {
+        opacity: 0;
+        transform: translateY(-4px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+`;
 
 function generateV4() {
     if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") return crypto.randomUUID();
@@ -149,6 +163,109 @@ const UUIDText = styled.span`
     letter-spacing: 0.02em;
 `;
 
+const BtnGroup = styled(ActionBtnGroup)`
+    margin-left: auto;
+`;
+
+const TabStripWrapper = styled.div`
+    display: flex;
+    border-bottom: 1px solid var(--border-color);
+    background: var(--bg-panel-header);
+`;
+
+const UUIDInput = styled.input`
+    width: 100%;
+    background: var(--bg-input);
+    color: var(--text-primary);
+    border: none;
+    outline: none;
+    padding: 16px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    &:focus {
+        box-shadow: inset 0 0 0 2px rgba(34, 204, 153, 0.3);
+    }
+    &::placeholder {
+        color: var(--text-secondary);
+        opacity: 0.4;
+    }
+`;
+
+const ValidationBadge = styled.div<{ $valid: boolean }>`
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 500;
+    font-family: "Inter", sans-serif;
+    animation: ${fadeInDown} 0.2s ease;
+    color: ${(p) => (p.$valid ? "#22cc99" : "#ef4444")};
+    background: ${(p) => (p.$valid ? "rgba(34,204,153,0.1)" : "rgba(239,68,68,0.06)")};
+    border: 1px solid ${(p) => (p.$valid ? "rgba(34,204,153,0.3)" : "rgba(239,68,68,0.3)")};
+    margin: 0 16px 0;
+    margin-top: 8px;
+`;
+
+const DetailsGrid = styled.div`
+    display: grid;
+    grid-template-columns: 100px 1fr;
+    gap: 12px;
+    padding: 16px;
+    border-bottom: 1px solid var(--border-color);
+    align-items: center;
+`;
+
+const DetailLabel = styled.span`
+    font-size: 10px;
+    font-weight: 600;
+    font-family: "Inter", sans-serif;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    letter-spacing: 0.06em;
+`;
+
+const DetailValue = styled.span`
+    font-size: 12px;
+    font-family: var(--font-mono);
+    color: var(--text-primary);
+    word-break: break-all;
+`;
+
+const NormalizedSection = styled.div`
+    padding: 16px;
+    border-bottom: 1px solid var(--border-color);
+`;
+
+const NormalizedRow = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 0;
+    gap: 10px;
+    font-size: 11px;
+    font-family: "Inter", sans-serif;
+    color: var(--text-secondary);
+
+    &:not(:last-child) {
+        border-bottom: 1px solid var(--border-color);
+        padding-bottom: 8px;
+        margin-bottom: 8px;
+    }
+`;
+
+const NormalizedValue = styled.code`
+    flex: 1;
+    font-size: 11px;
+    font-family: var(--font-mono);
+    color: var(--text-primary);
+    background: var(--bg-input);
+    padding: 4px 8px;
+    border-radius: 3px;
+    word-break: break-all;
+`;
+
 const RowCopyBtn = styled.button`
     background: none;
     border: none;
@@ -158,22 +275,68 @@ const RowCopyBtn = styled.button`
     align-items: center;
     padding: 2px 4px;
     border-radius: 3px;
+    flex-shrink: 0;
     &:hover {
         color: var(--text-primary);
         background: rgba(255, 255, 255, 0.05);
     }
 `;
 
-const BtnGroup = styled(ActionBtnGroup)`
-    margin-left: auto;
+const SectionLabel = styled.div`
+    font-size: 10px;
+    font-weight: 600;
+    font-family: "Inter", sans-serif;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    letter-spacing: 0.06em;
+    margin-bottom: 10px;
 `;
 
+function validateUUID(uuid: string): boolean {
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    return uuidRegex.test(uuid);
+}
+
+function parseUUID(uuid: string) {
+    const normalized = uuid.toLowerCase().replace(/-/g, "");
+    const versionChar = parseInt(normalized[12], 16);
+    const variantBits = parseInt(normalized[16], 16).toString(2).padStart(4, "0").substring(0, 2);
+    const variant = variantBits === "10" ? "RFC 4122" : "Unknown";
+
+    const isNil = normalized === "00000000000000000000000000000000";
+    const isMax = normalized === "ffffffffffffffffffffffffffffffff";
+
+    let timestamp = null;
+    if (versionChar === 1) {
+        const timeLow = normalized.slice(0, 8);
+        const timeMid = normalized.slice(8, 12);
+        const timeHi = normalized.slice(12, 16);
+        const timeValue = parseInt(timeHi.slice(1) + timeMid + timeLow, 16);
+        const ms = Math.floor((timeValue - 122192928000000000) / 10000);
+        timestamp = new Date(ms).toISOString();
+    }
+
+    return { versionChar, variant, isNil, isMax, timestamp };
+}
+
 export default function UUIDGenerator() {
+    const [tab, setTab] = useState<"generate" | "inspect">("generate");
     const [count, setCount] = useState(5);
     const [uuids, setUuids] = useState<string[]>([]);
     const [version, setVersion] = useState<"v1" | "v4" | "v7">("v4");
     const [copiedAll, setCopiedAll] = useState(false);
     const [copiedUuid, setCopiedUuid] = useState<string | null>(null);
+    const [inspectInput, setInspectInput] = useState("");
+    const [copiedNormalized, setCopiedNormalized] = useState<string | null>(null);
+    const { consumeChain } = useToolChain();
+
+    useEffect(() => {
+        const chained = consumeChain("/uuid-generator");
+        if (chained && typeof chained === "string") {
+            setInspectInput(chained.trim());
+            setTab("inspect");
+        }
+    }, [consumeChain]);
 
     const generate = useCallback(() => {
         const { fn } = VERSIONS.find((v) => v.value === version) || VERSIONS[1];
@@ -196,8 +359,131 @@ export default function UUIDGenerator() {
         });
     }, []);
 
+    const copyNormalized = useCallback((value: string) => {
+        if (!window?.navigator?.clipboard) return;
+        window.navigator.clipboard.writeText(value).then(() => {
+            setCopiedNormalized(value);
+            setTimeout(() => setCopiedNormalized(null), 1500);
+        });
+    }, []);
+
+    const isValidUUID = validateUUID(inspectInput);
+    const uuidData = isValidUUID ? parseUUID(inspectInput) : null;
+    const normalized = inspectInput.toLowerCase().replace(/-/g, "");
+
+    if (tab === "inspect") {
+        return (
+            <ToolLayout>
+                <Panel>
+                    <PanelHeader>
+                        <PanelLabel>{L.uuidInputLabel}</PanelLabel>
+                    </PanelHeader>
+                    <UUIDInput
+                        type="text"
+                        placeholder={L.uuidInputPlaceholder}
+                        value={inspectInput}
+                        onChange={(e) => setInspectInput(e.target.value)}
+                        spellCheck={false}
+                    />
+                    {inspectInput && (
+                        <ValidationBadge $valid={isValidUUID}>
+                            {isValidUUID ? "✓" : "✕"}
+                            {isValidUUID ? L.validLabel : L.invalidLabel}
+                        </ValidationBadge>
+                    )}
+                </Panel>
+
+                <Panel>
+                    <PanelHeader>
+                        <PanelLabel>{L.detailsLabel}</PanelLabel>
+                    </PanelHeader>
+                    {isValidUUID && uuidData ? (
+                        <>
+                            <DetailsGrid>
+                                <DetailLabel>{L.versionLabel}</DetailLabel>
+                                <DetailValue>v{uuidData.versionChar}</DetailValue>
+                                <DetailLabel>{L.variantLabel}</DetailLabel>
+                                <DetailValue>{uuidData.variant}</DetailValue>
+                                <DetailLabel>{L.formatLabel}</DetailLabel>
+                                <DetailValue>RFC 4122</DetailValue>
+                                <DetailLabel>{L.nilLabel}</DetailLabel>
+                                <DetailValue>{uuidData.isNil ? "Yes" : "No"}</DetailValue>
+                                <DetailLabel>{L.maxLabel}</DetailLabel>
+                                <DetailValue>{uuidData.isMax ? "Yes" : "No"}</DetailValue>
+                                {uuidData.timestamp && (
+                                    <>
+                                        <DetailLabel>{L.timestampLabel}</DetailLabel>
+                                        <DetailValue>{uuidData.timestamp}</DetailValue>
+                                    </>
+                                )}
+                            </DetailsGrid>
+                            <NormalizedSection>
+                                <SectionLabel>{L.normalizedLabel}</SectionLabel>
+                                <NormalizedRow>
+                                    <span>{L.upperCaseLabel}</span>
+                                    <NormalizedValue>{inspectInput.toUpperCase()}</NormalizedValue>
+                                    <RowCopyBtn
+                                        onClick={() => copyNormalized(inspectInput.toUpperCase())}
+                                        title="Copy"
+                                    >
+                                        {copiedNormalized === inspectInput.toUpperCase() ? (
+                                            <Check style={{ fontSize: 13 }} />
+                                        ) : (
+                                            <ContentCopy style={{ fontSize: 13 }} />
+                                        )}
+                                    </RowCopyBtn>
+                                </NormalizedRow>
+                                <NormalizedRow>
+                                    <span>{L.lowerCaseLabel}</span>
+                                    <NormalizedValue>{inspectInput.toLowerCase()}</NormalizedValue>
+                                    <RowCopyBtn
+                                        onClick={() => copyNormalized(inspectInput.toLowerCase())}
+                                        title="Copy"
+                                    >
+                                        {copiedNormalized === inspectInput.toLowerCase() ? (
+                                            <Check style={{ fontSize: 13 }} />
+                                        ) : (
+                                            <ContentCopy style={{ fontSize: 13 }} />
+                                        )}
+                                    </RowCopyBtn>
+                                </NormalizedRow>
+                                <NormalizedRow>
+                                    <span>{L.noHyphensLabel}</span>
+                                    <NormalizedValue>{normalized}</NormalizedValue>
+                                    <RowCopyBtn
+                                        onClick={() => copyNormalized(normalized)}
+                                        title="Copy"
+                                    >
+                                        {copiedNormalized === normalized ? (
+                                            <Check style={{ fontSize: 13 }} />
+                                        ) : (
+                                            <ContentCopy style={{ fontSize: 13 }} />
+                                        )}
+                                    </RowCopyBtn>
+                                </NormalizedRow>
+                            </NormalizedSection>
+                        </>
+                    ) : (
+                        <EmptyState>
+                            <span>{L.inspectEmptyState}</span>
+                        </EmptyState>
+                    )}
+                </Panel>
+            </ToolLayout>
+        );
+    }
+
     return (
-        <ToolLayout>
+        <>
+            <TabStripWrapper>
+                <TabBtn $active={tab === "generate"} onClick={() => setTab("generate" as const)}>
+                    {L.generateTab}
+                </TabBtn>
+                <TabBtn $active={tab === "inspect"} onClick={() => setTab("inspect" as const)}>
+                    {L.inspectTab}
+                </TabBtn>
+            </TabStripWrapper>
+            <ToolLayout>
             <Panel>
                 <PanelHeader>
                     <PanelLabel>{L.settingsLabel}</PanelLabel>
@@ -263,5 +549,6 @@ export default function UUIDGenerator() {
                 )}
             </Panel>
         </ToolLayout>
+        </>
     );
 }

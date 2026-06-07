@@ -1,7 +1,7 @@
 "use client";
 
 import { CallSplit } from "@mui/icons-material";
-import { Button, ListItemIcon, ListItemText, MenuItem, MenuList, Paper, Popover, Typography } from "@mui/material";
+import { Button, ListItemIcon, ListItemText, MenuItem, MenuList, Paper, Popover, Tooltip, Typography } from "@mui/material";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useToolChain } from "context/ToolChainContext";
@@ -42,29 +42,33 @@ export default function SendToButton({ value, targets = [] }: SendToButtonProps)
 
     return (
         <>
-            <Button
-                size="small"
-                variant="outlined"
-                startIcon={<CallSplit style={{ fontSize: 11 }} />}
-                onClick={handleOpen}
-                sx={{
-                    borderColor: "rgba(34,204,153,0.35)",
-                    color: "#22cc99",
-                    fontSize: "11px",
-                    fontWeight: 500,
-                    letterSpacing: "0.04em",
-                    padding: "8px 14px",
-                    minHeight: "36px",
-                    lineHeight: 1.5,
-                    textTransform: "none",
-                    borderRadius: "var(--radius-btn, 6px)",
-                    fontFamily: "Inter, sans-serif",
-                    "& .MuiButton-startIcon": { marginRight: "5px" },
-                    "&:hover": { borderColor: "#22cc99", background: "rgba(34,204,153,0.08)" }
-                }}
-            >
-                Send to…
-            </Button>
+            <Tooltip title="Send output to another tool">
+                <span>
+                    <Button
+                        size="small"
+                        variant="outlined"
+                        startIcon={<CallSplit style={{ fontSize: 11 }} />}
+                        onClick={handleOpen}
+                        sx={{
+                            borderColor: "rgba(34,204,153,0.35)",
+                            color: "#22cc99",
+                            fontSize: "11px",
+                            fontWeight: 500,
+                            letterSpacing: "0.04em",
+                            padding: "8px 14px",
+                            minHeight: "36px",
+                            lineHeight: 1.5,
+                            textTransform: "none",
+                            borderRadius: "var(--radius-btn, 6px)",
+                            fontFamily: "Inter, sans-serif",
+                            "& .MuiButton-startIcon": { marginRight: "5px" },
+                            "&:hover": { borderColor: "#22cc99", background: "rgba(34,204,153,0.08)" }
+                        }}
+                    >
+                        Send to…
+                    </Button>
+                </span>
+            </Tooltip>
 
             <Popover
                 open={Boolean(anchor)}

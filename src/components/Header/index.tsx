@@ -1,6 +1,6 @@
 "use client";
 
-import { GitHub } from "@mui/icons-material";
+import { Close, GitHub } from "@mui/icons-material";
 import SearchIcon from "@mui/icons-material/Search";
 import { Box, IconButton, Tooltip, useMediaQuery, useTheme } from "@mui/material";
 import AppBar from "@mui/material/AppBar";
@@ -14,11 +14,13 @@ import colors from "styles/colors";
 import { GLOBAL_CONSTANTS } from "utils/globalConstants";
 import { useAppDispatch } from "utils/hooks/redux";
 import { useColorMode } from "context/ColorModeContext";
+import { useToolChain } from "context/ToolChainContext";
 import { toggleCommandPaletteAction } from "./HeaderAction";
-import { BlogNavLink, NavDivider, PaletteTrigger, StyledContainer, TriggerKbd, TriggerKbdGroup, TriggerPlaceholder } from "./styles";
+import { BlogNavLink, ChainPill, ChainPillClose, NavDivider, PaletteTrigger, StyledContainer, TriggerKbd, TriggerKbdGroup, TriggerPlaceholder } from "./styles";
 
 export default function Header({ themeMode, isMac }: { themeMode: string; isMac: boolean }) {
     const { mode } = useColorMode();
+    const { chain, clearChain } = useToolChain();
     const dispatch = useAppDispatch();
     const [scrolled, setScrolled] = useState(false);
     const [macKbd, setMacKbd] = useState(isMac);
@@ -27,6 +29,12 @@ export default function Header({ themeMode, isMac }: { themeMode: string; isMac:
     const isBlogActive = pathname?.startsWith("/blog") ?? false;
     const theme = useTheme();
     const isCompact = useMediaQuery(theme.breakpoints.down("sm"));
+
+    const targetToolLabel = React.useMemo(() => {
+        if (!chain) return null;
+        const tool = GLOBAL_CONSTANTS.OPERATIONS_ITEMS.find((t) => t.route === chain.targetRoute);
+        return tool?.label || "Unknown Tool";
+    }, [chain]);
 
     useEffect(() => {
         const onScroll = () => setScrolled(window.scrollY > 10);
@@ -55,13 +63,21 @@ export default function Header({ themeMode, isMac }: { themeMode: string; isMac:
                         gap: 0
                     }}
                 >
-                    {/* Left: Logo + Blog nav */}
+                    {/* Left: Logo + Blog nav + Chain pill */}
                     <Box sx={{ display: "flex", alignItems: "center", gap: { xs: "8px", sm: "16px" }, flexGrow: 1, minWidth: 0 }}>
                         <DevDeckLogo compact={isCompact} />
                         <BlogNavLink $active={isBlogActive} onClick={() => router.push("/blog")} aria-label="Blog and Guides">
                             <span style={{ fontSize: "0.9rem", lineHeight: 1 }}>📘</span>
                             Blog
                         </BlogNavLink>
+                        {chain && targetToolLabel && (
+                            <ChainPill sx={{ display: { xs: "none", md: "flex" } }}>
+                                <span>Output → {targetToolLabel}</span>
+                                <ChainPillClose onClick={clearChain} aria-label="Clear chain">
+                                    <Close />
+                                </ChainPillClose>
+                            </ChainPill>
+                        )}
                     </Box>
 
                     {/* Right: Search | Theme | GitHub */}

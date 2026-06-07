@@ -1,0 +1,114 @@
+name: Feature Request
+description: Suggest a new tool, an improvement to an existing one, or a change to DevDeck's core experience.
+title: "[Feature]: "
+labels: ["enhancement", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Have an idea? We'd love to hear it. The more clearly you describe the problem you're trying to solve, the easier it is to build the right thing.
+
+  - type: dropdown
+    id: type
+    attributes:
+      label: Request Type
+      options:
+        - New tool
+        - Improvement to an existing tool
+        - UI / UX improvement
+        - Performance improvement
+        - PWA / offline improvement
+        - Accessibility improvement
+        - Other
+    validations:
+      required: true
+
+  - type: dropdown
+    id: tool
+    attributes:
+      label: Related Tool (if applicable)
+      description: Leave as "N/A" for new tool requests or app-wide suggestions.
+      options:
+        - N/A
+        - Command Playground
+        - Smart Formatter
+        - JSON Viewer
+        - JWT Toolkit
+        - Encoder / Decoder
+        - HTML → JSX
+        - CSS → Tailwind
+        - API Request Builder
+        - Base64 Text
+        - Base64 Image
+        - Hash Generator
+        - Password Tools
+        - UUID Generator
+        - Timestamp Converter
+        - Regex Tester
+        - Text Case Converter
+        - Text Diff
+        - Word Counter
+        - CSV to JSON
+        - YAML ↔ JSON
+        - Number Base Converter
+        - Lorem Ipsum
+        - Color Converter
+        - QR Code Generator
+        - Image Resizer
+        - Aspect Ratio Calculator
+        - URL Validator
+        - URL Shortener
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem does this solve?
+      description: Describe the workflow pain point or gap this would address. Focus on the problem, not the solution.
+      placeholder: |
+        When debugging API responses I often need to format a JSON blob and then immediately validate it against a schema. Right now I have to use two separate tools — JSON Viewer and then manually write the schema check elsewhere.
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed Solution
+      description: Describe what you'd like to see. Be as specific as you can.
+      placeholder: |
+        Add a "Validate Schema" tab to the JSON Viewer. Paste a JSON Schema (draft-07 or 2020-12) into a second panel and the tool shows which fields pass or fail validation inline.
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives Considered
+      description: Other approaches you've thought about or tools you've used to work around the gap.
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: How often do you hit this gap?
+      options:
+        - Daily — blocks me regularly
+        - Weekly — comes up often
+        - Occasionally — nice to have
+        - Rare — edge case but real
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: contribution
+    attributes:
+      label: Contribution
+      options:
+        - label: I'm willing to submit a PR for this feature.
+        - label: I can help with design or UX feedback if needed.
+
+  - type: textarea
+    id: extra
+    attributes:
+      label: Additional Context
+      description: Mockups, links to similar tools, related issues, or anything else that would help.

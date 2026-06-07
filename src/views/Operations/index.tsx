@@ -38,7 +38,10 @@ const TOOL_BLOG_SLUG: Record<string, string> = {
     "/csv-json": "csv-to-json-converter",
     "/api-builder": "api-request-builder",
     "/css-tailwind": "css-to-tailwind-converter",
-    "/smart-formatter": "smart-formatter"
+    "/smart-formatter": "smart-formatter",
+    "/html-jsx": "html-jsx",
+    "/encoder-decoder": "encoder-decoder",
+    "/command-playground": "command-playground"
 };
 
 function ToolFallback() {
@@ -75,6 +78,9 @@ const YAMLJSONConverter = dynamic(() => import("components/YAMLJSONConverter"), 
 const APIRequestBuilder = dynamic(() => import("components/APIRequestBuilder"), { loading, ssr: false });
 const CSSToTailwind = dynamic(() => import("components/CSSToTailwind"), { loading, ssr: false });
 const SmartFormatter = dynamic(() => import("components/SmartFormatter"), { loading, ssr: false });
+const HTMLToJSX = dynamic(() => import("components/HTMLToJSX"), { loading, ssr: false });
+const EncoderDecoder = dynamic(() => import("components/EncoderDecoder"), { loading, ssr: false });
+const CommandPlayground = dynamic(() => import("components/CommandPlayground"), { loading, ssr: false });
 
 export default function Operations() {
     const pathname = usePathname();
@@ -112,7 +118,10 @@ export default function Operations() {
             csvToJson,
             apiRequestBuilder,
             cssToTailwind,
-            smartFormatter
+            smartFormatter,
+            htmlToJsx,
+            encoderDecoder,
+            commandPlayground
         } = localization;
         switch (pathname) {
             case "/base64-image":
@@ -165,6 +174,12 @@ export default function Operations() {
                 return { title: cssToTailwind.pageTitle, component: CSSToTailwind };
             case "/smart-formatter":
                 return { title: smartFormatter.pageTitle, component: SmartFormatter };
+            case "/html-jsx":
+                return { title: htmlToJsx.pageTitle, component: HTMLToJSX };
+            case "/encoder-decoder":
+                return { title: encoderDecoder.pageTitle, component: EncoderDecoder };
+            case "/command-playground":
+                return { title: commandPlayground.pageTitle, component: CommandPlayground };
             default:
                 return null;
         }

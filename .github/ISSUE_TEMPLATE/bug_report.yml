@@ -1,0 +1,145 @@
+name: Bug Report
+description: Something is broken or behaving unexpectedly in DevDeck.
+title: "[Bug]: "
+labels: ["bug", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report a bug. Fill out as much as you can — the more context, the faster we can fix it.
+
+  - type: dropdown
+    id: tool
+    attributes:
+      label: Affected Tool
+      description: Which tool is the bug in? Select "General / App" for layout, navigation, PWA, or search issues.
+      options:
+        - General / App
+        - Command Playground
+        - Smart Formatter
+        - JSON Viewer
+        - JWT Toolkit
+        - Encoder / Decoder
+        - HTML → JSX
+        - CSS → Tailwind
+        - API Request Builder
+        - Base64 Text
+        - Base64 Image
+        - Hash Generator
+        - Password Tools
+        - UUID Generator
+        - Timestamp Converter
+        - Regex Tester
+        - Text Case Converter
+        - Text Diff
+        - Word Counter
+        - CSV to JSON
+        - YAML ↔ JSON
+        - Number Base Converter
+        - Lorem Ipsum
+        - Color Converter
+        - QR Code Generator
+        - Image Resizer
+        - Aspect Ratio Calculator
+        - URL Validator
+        - URL Shortener
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: What happened?
+      description: A clear description of the bug. What did you see vs. what did you expect?
+      placeholder: |
+        When I paste a JWT into the Command Playground and click "Open →", the JWT Toolkit opens but the token field is empty.
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to Reproduce
+      description: Exact steps to trigger the bug.
+      placeholder: |
+        1. Go to /command-playground
+        2. Paste a valid JWT (e.g. eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...)
+        3. Click "Open →" on the JWT Toolkit suggestion
+        4. See the JWT Toolkit open with an empty input
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected Behavior
+      description: What should have happened?
+      placeholder: The JWT Toolkit should open with the token pre-filled and decoded.
+    validations:
+      required: true
+
+  - type: textarea
+    id: sample_input
+    attributes:
+      label: Sample Input (if applicable)
+      description: Paste the exact data that triggers the bug. Redact anything sensitive.
+      render: text
+
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Severity
+      options:
+        - Low — cosmetic or minor annoyance
+        - Medium — feature partially broken, workaround exists
+        - High — feature completely broken, no workaround
+        - Critical — data loss or security concern
+    validations:
+      required: true
+
+  - type: input
+    id: browser
+    attributes:
+      label: Browser & Version
+      placeholder: Chrome 125, Firefox 126, Safari 17.4, etc.
+    validations:
+      required: true
+
+  - type: input
+    id: os
+    attributes:
+      label: OS
+      placeholder: macOS 15, Windows 11, Ubuntu 24.04, iOS 17, Android 14
+    validations:
+      required: true
+
+  - type: dropdown
+    id: pwa
+    attributes:
+      label: Installed as PWA?
+      options:
+        - "No — running in browser tab"
+        - "Yes — installed as PWA"
+        - Not sure
+    validations:
+      required: true
+
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots or Screen Recording
+      description: Drag and drop images or a GIF/video here. Especially helpful for visual bugs.
+
+  - type: textarea
+    id: console
+    attributes:
+      label: Console Errors
+      description: Open DevTools → Console and paste any errors shown at the time of the bug.
+      render: text
+
+  - type: textarea
+    id: extra
+    attributes:
+      label: Additional Context
+      description: Anything else that might help — related issues, when the bug started, edge cases you found.

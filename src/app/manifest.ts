@@ -4,7 +4,7 @@ export default function manifest(): MetadataRoute.Manifest {
     return {
         name: "DevDeck — Developer Toolbox",
         short_name: "DevDeck",
-        description: "25+ free developer tools in a single progressive web app — JSON, JWT, Base64, Regex, and more.",
+        description: "28+ free developer tools in a single progressive web app — JSON, JWT, Base64, Regex, and more.",
         start_url: "/",
         scope: "/",
         display: "standalone",
@@ -39,7 +39,7 @@ export default function manifest(): MetadataRoute.Manifest {
                 sizes: "390x844",
                 type: "image/png",
                 form_factor: "narrow",
-                label: "DevDeck on mobile — 25+ tools at your fingertips"
+                label: "DevDeck on mobile — 28+ tools at your fingertips"
             },
             {
                 src: "/assets/images/og-preview.png",

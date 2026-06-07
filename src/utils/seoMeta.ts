@@ -3,8 +3,8 @@ export const SEO_META: Record<string, SeoMeta> = {
     "/": {
         title: "DevDeck — All Your Dev Tools. One Command Away.",
         description:
-            "DevDeck is a free, fast developer toolbox with 22+ tools. Format JSON, decode JWT, generate UUIDs, convert Base64, and more — all in your browser.",
-        about: "DevDeck gives developers instant access to 22+ utilities in a single progressive web app. No sign-up, no data sent to servers — everything runs locally in your browser.",
+            "DevDeck is a free, fast developer toolbox with 28+ tools. Format JSON, decode JWT, generate UUIDs, convert Base64, and more — all in your browser.",
+        about: "DevDeck gives developers instant access to 28+ utilities in a single progressive web app. No sign-up, no data sent to servers — everything runs locally in your browser.",
         keywords: "developer tools, online tools, devtools, toolbox, free developer utilities"
     },
     "/json-viewer": {
@@ -158,6 +158,22 @@ export const SEO_META: Record<string, SeoMeta> = {
         keywords: "css to tailwind converter, tailwind classes, css to tailwind, convert css to tailwind, tailwind utility classes, css converter"
     },
 
+    "/html-jsx": {
+        title: "HTML → JSX Converter — Convert HTML to JSX React Code | DevDeck",
+        description:
+            "Convert HTML markup to JSX syntax instantly. Handles class→className, event handlers, self-closing tags, boolean attributes, and style objects — ready to paste into React components.",
+        about: "HTML to JSX Converter transforms HTML snippets into valid JSX code. It automatically converts HTML attributes (class, for, onclick), event handlers, style strings to style objects, and ensures proper JSX syntax for use in React, Next.js, or other JSX-enabled frameworks.",
+        keywords: "html to jsx converter, jsx converter, html to react, convert html to jsx, jsx syntax converter, react html converter"
+    },
+
+    "/encoder-decoder": {
+        title: "Encoder / Decoder — Base64, URL, Hex, Unicode, Binary Converter | DevDeck",
+        description:
+            "Encode and decode text using Base64, URL encoding, HTML entities, Unicode escapes, hex, and binary formats. All processing is instant and local.",
+        about: "Encoder/Decoder is a universal text transformation tool with six encoding formats: Base64, URL encoding, HTML entities, Unicode escapes, hexadecimal, and binary. Switch between encode and decode modes instantly for any format — perfect for debugging, data preparation, and format conversion.",
+        keywords: "encoder decoder, base64 encoder, url encoder, hex encoder, unicode converter, text encoder online, encoding tool"
+    },
+
     "/smart-formatter": {
         title: "Smart Formatter — Auto-Detect & Format Any Data | DevDeck",
         description:
@@ -294,5 +310,11 @@ export const SEO_META: Record<string, SeoMeta> = {
         title: "CSS to Tailwind Converter — Convert CSS Properties to Tailwind Classes | DevDeck",
         description: "Convert CSS to Tailwind utility classes instantly. Learn how CSS properties map to Tailwind equivalents and how to use arbitrary values for custom designs.",
         keywords: "css to tailwind, tailwind converter, css to tailwind converter, tailwind classes, tailwind utility classes, convert css to tailwind online"
+    },
+    "/command-playground": {
+        title: "Command Playground — Smart Data Detection Tool | DevDeck",
+        description: "Paste any data and DevDeck automatically detects what you're working with — JSON, JWT, URLs, Base64, hashes, and more. Instantly launch the right tool for the job.",
+        about: "Command Playground uses intelligent detection to identify your data type (JSON, JWT, URL, Base64, UUID, hash, Unix timestamp, CSV, and HTML) and suggest the best DevDeck tool to process it. No manual tool selection needed — just paste and go.",
+        keywords: "command playground, data detector, smart detection, json detector, jwt decoder, url validator, data type detection, developer tools"
     }
 };

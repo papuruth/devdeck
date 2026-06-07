@@ -1,4 +1,4 @@
-// Blog data for all 22 DevDeck tools
+// Blog data for DevDeck tools (28 tools exist; blog posts cover 28)
 // Shape: slug → { slug, title, metaDescription, metaKeywords, intro, sections[], cta, relatedSlugs[], faq[] }
 
 const blogData = {
@@ -793,7 +793,7 @@ const blogData = {
         title: "Regex Tester — Test Regular Expressions Online",
         metaDescription: "Test regular expressions with live match highlighting. Supports JavaScript regex flags. Free on DevDeck.",
         metaKeywords: "regex tester, regular expression tester, regex online, test regex, regexp validator, regex debugger",
-        intro: "Regular expressions are powerful but notoriously hard to write and debug. Regex Tester shows live match highlighting as you type the pattern, so you instantly see what your regex does — and catches mistakes before they hit production.",
+        intro: "Regular expressions are powerful but notoriously hard to write and debug. DevDeck's Regex Tester has two modes: a live Tester that highlights matches as you type, and a Generator that builds regex patterns from plain-English descriptions — so you can test patterns you already know and create ones you don't.",
         sections: [
             {
                 heading: "What is a Regex Tester?",
@@ -804,28 +804,34 @@ const blogData = {
                 body: "Regex syntax is dense and error-prone. A small typo creates a pattern that matches nothing — or worse, matches everything. Real-time visual feedback shows exactly what your pattern captures, catches syntax errors immediately, and lets you iterate without rerunning code."
             },
             {
+                heading: "Two Tabs: Tester and Generator",
+                body: "The Tester tab is the classic experience: enter a pattern, set flags, paste text, and matches light up instantly. The Generator tab lets you describe what you want in plain English — like 'email address' or 'ISO date' — and the tool returns a ready-to-use regex pattern with a plain-language explanation of each part."
+            },
+            {
                 heading: "Key Benefits",
                 list: [
                     "Live match highlighting as you type",
                     "Shows all captures and groups",
                     "Supports flags: g, i, m, s",
                     "Syntax error messages shown immediately",
-                    "No page reload — instant feedback"
+                    "Generator tab: describe the pattern, get the regex",
+                    "Transfer generated regex directly to the Tester tab"
                 ]
             },
             {
                 heading: "How to Use Regex Tester",
                 steps: [
-                    "Enter your regex pattern (without slashes)",
-                    "Set flags (global, case-insensitive, multiline, etc.)",
-                    "Paste test text",
-                    "Matches highlight in real time",
-                    "Adjust pattern until you get the expected matches"
+                    "Switch to the Tester tab to test an existing pattern",
+                    "Enter your regex pattern (without slashes) and set flags",
+                    "Paste test text — matches highlight in real time",
+                    "Or switch to the Generator tab",
+                    "Type a plain-English description of the pattern you need",
+                    "Click 'Use in Tester' to transfer the generated pattern for further testing"
                 ]
             },
             {
                 heading: "Example Use Case",
-                body: "Writing a validation regex for email addresses. Enter the pattern, paste a list of test emails (valid and invalid), and the highlighter shows which ones match. Adjust the pattern until valid emails highlight and invalid ones don't."
+                body: "Writing a validation regex for email addresses. Switch to Generator, type 'email address', copy the generated pattern, then switch to Tester and paste a list of test emails (valid and invalid). The highlighter shows which ones match — adjust the pattern until only valid emails highlight."
             },
             {
                 heading: "Tips",
@@ -833,7 +839,8 @@ const blogData = {
                     "Use ^ and $ anchors to match full string, not just a substring",
                     "The g flag finds all matches, not just the first",
                     "Use (?:...) for non-capturing groups",
-                    "Escape special characters like . * + ? with backslash"
+                    "Escape special characters like . * + ? with backslash",
+                    "Use the Generator for common patterns (UUID, ISO date, phone, email) instead of writing from scratch"
                 ]
             }
         ],
@@ -1152,7 +1159,7 @@ const blogData = {
         title: "UUID Generator — Generate UUID v4 Online",
         metaDescription: "Generate one or multiple UUID v4 values with a single click. Copy to clipboard instantly. Free on DevDeck.",
         metaKeywords: "uuid generator, guid generator, uuid v4, random uuid, unique id generator online, universally unique identifier",
-        intro: "UUIDs are the standard way to generate unique identifiers without a central authority. UUID v4 is randomly generated, making collisions practically impossible — perfect for database primary keys, file names, session IDs, and API resources.",
+        intro: "UUIDs are the standard way to generate unique identifiers without a central authority. DevDeck's UUID Generator has two modes: a Generator tab to create one or many UUID v4 values instantly, and an Inspect tab to validate and parse any UUID you already have — showing its version, variant, and format.",
         sections: [
             {
                 heading: "What is a UUID?",
@@ -1163,27 +1170,33 @@ const blogData = {
                 body: "Sequential integer IDs expose information (how many records exist, the order they were created). They also create challenges in distributed systems where multiple nodes insert records simultaneously. UUIDs solve both: they're opaque and can be generated independently on any client without coordination."
             },
             {
+                heading: "Two Tabs: Generator and Inspect",
+                body: "The Generator tab creates UUID v4 values in bulk using the browser's native crypto.randomUUID() — cryptographically secure and RFC 4122 compliant. The Inspect tab accepts an existing UUID and tells you its version (v1–v5), variant, and whether the format is valid — useful for debugging IDs that came from an external system or an unfamiliar library."
+            },
+            {
                 heading: "Key Benefits",
                 list: [
                     "Generate single or bulk UUIDs (up to 100 at once)",
                     "RFC 4122 compliant UUID v4",
                     "Uses browser's native crypto.randomUUID()",
+                    "Inspect tab validates any UUID and shows version and variant",
                     "Copy individually or all at once",
-                    "Free with no account"
+                    "Works with tool chaining — paste a UUID from another tool directly"
                 ]
             },
             {
                 heading: "How to Use UUID Generator",
                 steps: [
-                    "Click Generate for one UUID",
-                    "Set count for bulk generation",
+                    "Generator tab: click Generate for one UUID, or set a count for bulk",
                     "Copy individual UUIDs or click Copy All",
-                    "Paste into your code, database, or config"
+                    "Paste into your code, database, or config",
+                    "Inspect tab: paste any UUID string",
+                    "The tool shows version, variant, and whether the format is valid"
                 ]
             },
             {
                 heading: "Example Use Case",
-                body: "Seeding a database with test records. Each record needs a unique ID before insert (so foreign keys can be set up ahead of time). Generate 50 UUIDs at once, copy all, paste into the seed script."
+                body: "Seeding a database with test records. Each record needs a unique ID before insert (so foreign keys can be set up ahead of time). Generate 50 UUIDs at once, copy all, paste into the seed script. Later, use the Inspect tab to verify that IDs returned by an external API are valid v4 UUIDs."
             },
             {
                 heading: "Tips",
@@ -1191,7 +1204,8 @@ const blogData = {
                     "UUID v4 is the most common — use it unless you have a specific reason for v1 or v5",
                     "UUIDs are case-insensitive — both uppercase and lowercase are valid",
                     "Storing UUIDs in databases: use a UUID type column or CHAR(36)",
-                    "UUID v1 includes timestamp and MAC address — UUID v4 is preferable for privacy"
+                    "UUID v1 includes timestamp and MAC address — UUID v4 is preferable for privacy",
+                    "Use the Inspect tab to debug IDs that fail validation in your backend — it shows exactly why"
                 ]
             }
         ],
@@ -1521,6 +1535,291 @@ const blogData = {
                 a: "Yes. Shorthand values are expanded to the correct Tailwind directional classes (margin: 10px 20px → my-10 mx-20). Duplicate values are collapsed automatically."
             }
         ]
+    },
+
+    "smart-formatter": {
+        slug: "smart-formatter",
+        title: "Smart Formatter — Auto-Detect & Format Any Data",
+        metaDescription: "Paste any data and Smart Formatter auto-detects the type — JSON, JWT, URL, UUID, Base64, timestamp, CSV, HTML, and more — then formats it instantly. Free on DevDeck.",
+        metaKeywords: "smart formatter, auto detect format, json formatter, jwt decoder, base64 decoder, url formatter, data formatter online, universal formatter",
+        intro: "Smart Formatter is a universal data formatter that detects what you've pasted and formats it correctly — without you having to know which tool to reach for. JSON gets pretty-printed, JWTs get decoded, URLs get parsed, UUIDs get validated, timestamps get converted. One tool, every format.",
+        sections: [
+            {
+                heading: "What is Smart Formatter?",
+                body: "Smart Formatter analyzes any text you paste and identifies the data type automatically. It then applies the appropriate formatting or decoding operation and renders a clean, structured output. Think of it as a universal clipboard formatter — paste anything and it figures out the rest."
+            },
+            {
+                heading: "Why Use Smart Formatter?",
+                body: "Developers constantly switch between specialized tools: a JSON viewer here, a JWT decoder there, a Base64 decoder somewhere else. Smart Formatter eliminates that friction. Paste the data once and get the right output immediately — no mental overhead of selecting the right tool first."
+            },
+            {
+                heading: "Supported Data Types",
+                list: [
+                    "JSON — pretty-printed with syntax highlighting",
+                    "JWT — header, payload, and signature decoded",
+                    "cURL — command parsed and formatted",
+                    "URL — query params broken out into key/value pairs",
+                    "UUID — validated with version and variant shown",
+                    "Unix timestamp — converted to human-readable date",
+                    "Base64 — decoded to plain text",
+                    "Hash strings — identified (MD5, SHA-1, SHA-256, SHA-512)",
+                    "CSV — parsed into a structured preview",
+                    "HTML — indented and formatted",
+                    "Hex color — shown as a color swatch",
+                    "IP address — displayed with annotation"
+                ]
+            },
+            {
+                heading: "How to Use Smart Formatter",
+                steps: [
+                    "Paste any data into the input panel",
+                    "Smart Formatter detects the type and formats it instantly",
+                    "Review the formatted output",
+                    "For complex types (JSON, JWT, CSV), use the 'Send to' button to open the dedicated tool with data pre-filled",
+                    "Copy the formatted result to clipboard"
+                ]
+            },
+            {
+                heading: "Example Use Case",
+                body: "You copy a JWT from an Authorization header in your browser DevTools. Paste it into Smart Formatter — it detects the JWT, decodes all three parts (header, payload, signature section), and shows the claims. You can then click 'Send to JWT Toolkit' to open the full JWT tool if you need to inspect signatures or generate a new token."
+            },
+            {
+                heading: "Tips",
+                list: [
+                    "Works great as a first-pass formatter — paste anything you copy from logs, API responses, or DevTools",
+                    "Use 'Send to' for deeper analysis — Smart Formatter routes you to the right specialized tool with data already loaded",
+                    "Timestamps are detected for both 10-digit (seconds) and 13-digit (milliseconds) Unix values",
+                    "Minified JSON is auto-pretty-printed — no need to manually format before pasting"
+                ]
+            }
+        ],
+        cta: { label: "Try Smart Formatter →", toolRoute: "/smart-formatter" },
+        relatedSlugs: ["json-viewer", "jwt-decoder", "encoder-decoder", "command-playground"],
+        faq: [
+            { q: "Is Smart Formatter free?", a: "Yes, completely free with no signup required." },
+            { q: "Does it send my data to a server?", a: "No. All detection and formatting runs locally in your browser. Nothing is transmitted." },
+            {
+                q: "What if it detects the wrong type?",
+                a: "Detection is sequential and prioritized — JWT before Base64, for example. Edge cases can fool the detector. For ambiguous data, use the dedicated tool directly (e.g. JSON Viewer for large JSON)."
+            },
+            {
+                q: "Can I use Smart Formatter for large payloads?",
+                a: "Yes for most types. Very large JSON (many MB) is routed to the JSON Viewer which is optimized for large data browsing."
+            }
+        ]
+    },
+
+    "html-jsx": {
+        slug: "html-jsx",
+        title: "HTML to JSX Converter — Convert HTML for React",
+        metaDescription: "Convert HTML markup to valid JSX instantly. Automatically handles className, htmlFor, event handlers, void element self-closing, and more. Free on DevDeck.",
+        metaKeywords: "html to jsx converter, html jsx, class to classname, convert html react, jsx converter online, html react converter",
+        intro: "Copying HTML into a React component always requires manual cleanup — class becomes className, for becomes htmlFor, onclick becomes onClick, and void elements need self-closing tags. HTML to JSX Converter handles all of that automatically, showing a transformation count so you know exactly what changed.",
+        sections: [
+            {
+                heading: "What is HTML to JSX Conversion?",
+                body: "JSX is React's HTML-like syntax, but it's not HTML. JSX uses JavaScript attribute names, camelCase event handlers, and strict XML rules for void elements. Converting HTML to JSX by hand is tedious and error-prone. HTML to JSX Converter automates every transformation so the output is valid JSX the moment you paste."
+            },
+            {
+                heading: "What Gets Transformed?",
+                list: [
+                    "class → className (all occurrences)",
+                    "for → htmlFor (on label elements)",
+                    "tabindex → tabIndex",
+                    "onclick → onClick, onchange → onChange, onsubmit → onSubmit, and all other HTML event attributes",
+                    "Void elements (br, img, input, hr, meta, link) → self-closed with />",
+                    "Style attribute values left in place — manual conversion to object syntax is noted"
+                ]
+            },
+            {
+                heading: "Why Use HTML to JSX Converter?",
+                body: "Frontend developers frequently copy HTML from static sites, design handoffs, documentation, or UI libraries and need to drop it into React components. The converter eliminates all manual renaming and turns a multi-minute task into an instant paste-and-go."
+            },
+            {
+                heading: "How to Use HTML to JSX",
+                steps: [
+                    "Paste your HTML markup into the left panel",
+                    "The JSX output appears in the right panel instantly",
+                    "A transformation count shows how many attributes and elements were changed",
+                    "Click Copy to copy the JSX to clipboard",
+                    "Paste directly into your React component"
+                ]
+            },
+            {
+                heading: "Example Use Case",
+                body: "You're implementing a design from a Figma handoff that provided HTML. The snippet has class attributes, onclick handlers, and self-closing img tags without the slash. Paste into HTML to JSX Converter — all class attributes become className, onclick becomes onClick, and img tags are self-closed. The output is paste-ready JSX."
+            },
+            {
+                heading: "Tips",
+                list: [
+                    "Paste full component trees, not just individual tags — the converter handles nested structures",
+                    "style='...' inline styles are passed through — you'll still need to manually convert them to object syntax ({ style={{ color: 'red' }} })",
+                    "Check the transformation count — a count of 0 means the HTML may already be valid JSX",
+                    "Works well for Bootstrap, Tailwind, or any plain HTML snippets destined for React"
+                ]
+            }
+        ],
+        cta: { label: "Try HTML → JSX Converter →", toolRoute: "/html-jsx" },
+        relatedSlugs: ["smart-formatter", "css-to-tailwind-converter", "text-case-converter", "json-viewer"],
+        faq: [
+            { q: "Is HTML to JSX Converter free?", a: "Yes, completely free with no signup required." },
+            { q: "Does it store my HTML?", a: "No. All conversion runs in your browser. Nothing is sent to a server." },
+            {
+                q: "Does it handle inline styles?",
+                a: "Inline style strings are preserved as-is. JSX requires style to be a JavaScript object ({ color: 'red' }) rather than a string — that conversion still needs to be done manually."
+            },
+            {
+                q: "What about custom HTML attributes?",
+                a: "Standard HTML attributes are transformed. Custom data-* attributes are passed through unchanged since they're valid in JSX."
+            },
+            {
+                q: "Does it support SVG attributes?",
+                a: "Common SVG attributes like viewBox and xmlns are passed through. Full SVG-to-JSX conversion with fill/stroke → className mapping is not currently supported."
+            }
+        ]
+    },
+
+    "encoder-decoder": {
+        slug: "encoder-decoder",
+        title: "Encoder / Decoder — Base64, URL, HTML Entities & More",
+        metaDescription: "Encode and decode text using Base64, URL encoding, HTML entities, Unicode, hex, and binary. Switch between encode and decode mode instantly. Free on DevDeck.",
+        metaKeywords: "base64 encoder decoder, url encoder decoder, html entity encoder, unicode encoder, hex encoder, binary encoder online, text encoder decoder",
+        intro: "Encoder / Decoder is a multi-format encoding tool that covers every encoding scheme developers regularly encounter — Base64, URL percent-encoding, HTML entities, Unicode escape sequences, hexadecimal, and binary. Switch between encode and decode with a toggle, switch encoding formats with tabs, and get the result instantly.",
+        sections: [
+            {
+                heading: "What is Encoder / Decoder?",
+                body: "Many data formats require encoding to safely transmit text through systems that expect a restricted character set. URL encoding ensures query parameters don't break URLs. Base64 lets binary data travel through text-only channels. HTML entity encoding prevents XSS. Encoder / Decoder handles all of these in one unified interface."
+            },
+            {
+                heading: "Supported Encoding Formats",
+                list: [
+                    "Base64 — encode/decode text to the Base64 alphabet (btoa/atob)",
+                    "URL — percent-encode and decode special characters for safe use in URLs",
+                    "HTML Entities — encode characters like <, >, &, \" to their HTML entity equivalents",
+                    "Unicode — convert text to and from \\uXXXX Unicode escape sequences",
+                    "Hex — encode text as hexadecimal byte sequences",
+                    "Binary — convert text to and from binary (8-bit ASCII representation)"
+                ]
+            },
+            {
+                heading: "Encode vs Decode Mode",
+                body: "The tool has a single Encode / Decode toggle at the top. Switch to Encode to transform plain text into the selected format; switch to Decode to reverse the operation. The active tab (Base64, URL, HTML Entities, etc.) determines which encoding is applied."
+            },
+            {
+                heading: "How to Use Encoder / Decoder",
+                steps: [
+                    "Select the encoding format tab (Base64, URL, HTML Entities, Unicode, Hex, Binary)",
+                    "Toggle between Encode and Decode mode",
+                    "Type or paste text into the input panel",
+                    "The output panel shows the result instantly",
+                    "Click Copy to copy the encoded or decoded text"
+                ]
+            },
+            {
+                heading: "Example Use Cases",
+                body: "Encoding an API key in Base64 for an Authorization header. Decoding a percent-encoded URL to read the query parameters. Encoding user-generated HTML content before inserting it into a database. Converting a Unicode string to escape sequences for a JSON config. All of these are handled by switching tabs."
+            },
+            {
+                heading: "Tips",
+                list: [
+                    "Use URL encoding for query parameter values, not full URLs — encodeURIComponent is correct here",
+                    "Base64 output contains +, /, and = characters — use URL-safe Base64 (replace + with - and / with _) if embedding in URLs",
+                    "HTML entity encoding is the right choice for user-generated content going into HTML — it prevents XSS",
+                    "Unicode escape sequences are useful for embedding special characters in JavaScript string literals",
+                    "Hex encoding is useful for debugging binary data or generating predictable byte sequences"
+                ]
+            }
+        ],
+        cta: { label: "Try Encoder / Decoder →", toolRoute: "/encoder-decoder" },
+        relatedSlugs: ["base64-text-encoder", "smart-formatter", "hash-generator", "url-shortener"],
+        faq: [
+            { q: "Is Encoder / Decoder free?", a: "Yes, completely free with no signup required." },
+            { q: "Does it store my input?", a: "No. All encoding and decoding runs locally in your browser. Nothing is sent to a server." },
+            {
+                q: "What is the difference between Encoder/Decoder and Base64 Text?",
+                a: "Base64 Text focuses specifically on Base64 with extra options (like URL-safe mode). Encoder/Decoder covers Base64 plus five other formats in a unified interface — choose whichever fits your workflow."
+            },
+            {
+                q: "Why does Base64 decoding fail on some inputs?",
+                a: "Base64 requires input length to be a multiple of 4. Inputs without padding (=) may fail. Also, URL-safe Base64 uses - and _ instead of + and / — replace them before decoding if you received a URL-safe encoded value."
+            },
+            {
+                q: "Can I encode non-ASCII characters?",
+                a: "Yes. The tool handles UTF-8 text. Non-ASCII characters are first UTF-8 encoded, then Base64/hex/binary encoded."
+            }
+        ]
+    },
+
+    "command-playground": {
+        slug: "command-playground",
+        title: "Command Playground — Smart Input Router for Developers",
+        metaDescription: "Paste any developer data and Command Playground detects the type and routes you to the right tool — JSON, JWT, URL, UUID, Base64, timestamp, and more. Free on DevDeck.",
+        metaKeywords: "command playground, developer tool router, smart paste tool, detect json jwt url uuid, developer toolbox, devdeck playground",
+        intro: "Command Playground is DevDeck's smart routing layer. Paste any data — a JSON blob, a JWT token, a URL, a UUID, a Base64 string, a Unix timestamp — and it instantly detects what you've pasted and surfaces the best matching tool, ranked by confidence. No more guessing which tool to open.",
+        sections: [
+            {
+                heading: "What is Command Playground?",
+                body: "Command Playground is a universal entry point for the DevDeck toolbox. Instead of manually navigating to the right tool, you paste data and the playground identifies what it is. It shows the best-matched tool at the top (ranked #1) followed by other possible matches. A single click opens the matched tool with your data pre-loaded."
+            },
+            {
+                heading: "How Detection Works",
+                body: "Command Playground runs a sequential set of pattern checks against your input: JWT (three dot-separated Base64 segments), cURL commands, URLs (http/https), JSON objects or arrays, UUIDs (RFC 4122 format), Unix timestamps (10 or 13-digit integers), known hash lengths (MD5/SHA-1/SHA-256/SHA-512), and Base64 strings. The first check that matches becomes the top suggestion."
+            },
+            {
+                heading: "Supported Data Types",
+                list: [
+                    "JSON — routes to JSON Viewer",
+                    "JWT — routes to JWT Toolkit",
+                    "URL — routes to URL Validator",
+                    "UUID — routes to UUID Generator (Inspect tab)",
+                    "Base64 — routes to Encoder/Decoder",
+                    "Unix timestamp — routes to Timestamp Converter",
+                    "Hash (MD5/SHA-1/SHA-256/SHA-512) — routes to Hash Generator",
+                    "cURL command — routes to API Request Builder"
+                ]
+            },
+            {
+                heading: "Example Chips",
+                body: "The input panel includes six pre-fill chips (JSON, JWT, URL, UUID, Base64, Timestamp) that load a real sample of each data type. This lets you test detection without having sample data at hand — click a chip, see the result, then open the matched tool."
+            },
+            {
+                heading: "How to Use Command Playground",
+                steps: [
+                    "Paste any data into the input box",
+                    "The top suggestion shows the best-matched tool with a 'Best match' badge",
+                    "Secondary suggestions show alternative tools in ranked order",
+                    "Click 'Open →' to launch the matched tool with your data pre-filled",
+                    "Or click an example chip to try it with sample data first"
+                ]
+            },
+            {
+                heading: "Tips",
+                list: [
+                    "The playground shows recently used tools when the input is empty — quick access without typing",
+                    "Use example chips to verify detection behavior for each supported type",
+                    "If detection suggests the wrong tool, the secondary suggestions often contain the right one",
+                    "Works best with clean data — extra whitespace and surrounding text may affect detection"
+                ]
+            }
+        ],
+        cta: { label: "Try Command Playground →", toolRoute: "/command-playground" },
+        relatedSlugs: ["smart-formatter", "json-viewer", "jwt-decoder", "encoder-decoder"],
+        faq: [
+            { q: "Is Command Playground free?", a: "Yes, completely free with no signup required." },
+            { q: "Does it store my input?", a: "No. All detection runs locally in your browser. Nothing is sent to a server." },
+            {
+                q: "What happens when I click 'Open →'?",
+                a: "The matched tool opens and your pasted data is automatically pre-filled into the relevant input field. For JSON Viewer this means the editor is populated; for UUID Generator the Inspect tab opens with your UUID; for JWT Toolkit the token is decoded immediately."
+            },
+            {
+                q: "What if my data matches multiple types?",
+                a: "Detection is ordered by specificity — JWT is checked before Base64 because a JWT is also valid Base64. The ranking reflects confidence. If the top match isn't what you expected, check the secondary suggestions."
+            },
+            {
+                q: "Can I use Command Playground as my default starting point?",
+                a: "Yes. Bookmark /command-playground and start every session by pasting whatever data you have. It eliminates the step of deciding which DevDeck tool to open."
+            }
+        ]
     }
 };
 
@@ -1551,5 +1850,9 @@ export const blogList = [
     blogData["url-parser"],
     blogData["image-resizer"],
     blogData["color-converter"],
-    blogData["aspect-ratio-calculator"]
+    blogData["aspect-ratio-calculator"],
+    blogData["smart-formatter"],
+    blogData["html-jsx"],
+    blogData["encoder-decoder"],
+    blogData["command-playground"]
 ];

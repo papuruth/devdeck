@@ -95,7 +95,7 @@ Before building anything new, audit the 7 planned tools against what already exi
 
 ---
 
-## 1.1 API Request Builder — NEW (`/api-builder`)
+## 1.1 API Request Builder — NEW (`/api-builder`) ✅ COMPLETE
 
 **Why:** The single most-requested developer utility. Drives repeat usage every time a dev tests an endpoint.
 
@@ -299,7 +299,7 @@ cssToTailwind: {
 
 ---
 
-## 1.4 Smart Formatter — NEW (`/smart-formatter`)
+## 1.4 Smart Formatter — NEW (`/smart-formatter`) ✅ COMPLETE
 
 **Why:** The `inputDetector.js` and `smartInput` localization already exist — this is the dedicated UI that exposes them as a tool. Drives discovery of other tools.
 
@@ -376,7 +376,7 @@ smartFormatter: {
 
 ---
 
-## 2.1 Encoder / Decoder Hub — NEW (`/encoder-decoder`)
+## 2.1 Encoder / Decoder Hub — NEW (`/encoder-decoder`) ✅ COMPLETE
 
 **Why:** Base64 Text covers one encoding. This hub covers the full spectrum — a reference tool devs bookmark permanently.
 
@@ -443,7 +443,7 @@ encoderDecoder: {
 
 ---
 
-## 2.2 JSON Schema Validator — EXPAND JSON Viewer (`/json-viewer`)
+## 2.2 JSON Schema Validator — EXPAND JSON Viewer (`/json-viewer`) ✅ COMPLETE
 
 **Why:** JSON Viewer already validates syntax. Adding schema validation is one tab away from a complete JSON development tool.
 
@@ -492,7 +492,7 @@ schemaEmptyState: "Enter JSON data and a schema to validate"
 
 ---
 
-## 2.3 HTML → JSX Converter — NEW (`/html-jsx`)
+## 2.3 HTML → JSX Converter — NEW (`/html-jsx`) ✅ COMPLETE
 
 **Why:** React devs constantly paste HTML from design tools and need to fix `class` → `className`, inline styles, etc. Unique to DevDeck.
 
@@ -556,7 +556,7 @@ htmlToJsx: {
 
 ---
 
-## 2.4 UUID Tools — EXPAND UUID Generator (`/uuid-generator`)
+## 2.4 UUID Tools — EXPAND UUID Generator (`/uuid-generator`) ✅ COMPLETE
 
 **Why:** UUID Generator already exists. An Inspector tab makes it a complete UUID workbench. Zero new routing.
 
@@ -625,7 +625,7 @@ noHyphensLabel: "No Hyphens"
 
 ---
 
-## 3.1 Regex Toolkit — EXPAND Regex Tester (`/regex-tester`)
+## 3.1 Regex Toolkit — EXPAND Regex Tester (`/regex-tester`) ✅ COMPLETE
 
 **Why:** Regex Tester already has a solid UI. A Generator tab turns it into a complete regex workstation. Differentiated from every other toolbox.
 
@@ -692,7 +692,7 @@ emptyStateMessage: "Describe what you want to match"
 
 ---
 
-## 3.2 Command Playground — NEW (`/command-playground`)
+## 3.2 Command Playground — NEW (`/command-playground`) ✅ COMPLETE
 
 **Why:** A dedicated discovery layer for DevDeck tools. The Command Palette (Cmd+K) is for navigation; the Playground is for data-first discovery. Different use case. Drives exploration.
 
@@ -761,7 +761,7 @@ commandPlayground: {
 
 ---
 
-## 3.3 Tool Chaining — ENHANCE VISIBILITY (no new route)
+## 3.3 Tool Chaining — ENHANCE VISIBILITY (no new route) ✅ COMPLETE
 
 **Why:** `ToolChainContext.js` is fully implemented but invisible to users. Making chaining discoverable is a Phase 3 differentiator.
 
@@ -821,7 +821,7 @@ commandPlayground: {
 | Package | Used By               | Why                                                       | Status |
 | ------- | --------------------- | --------------------------------------------------------- | ------ |
 | `jose`  | JWT Toolkit Generator | Pure JS JOSE — signing HS256/HS384/HS512/RS256 in browser | ✅ Installed (v6.2.3) |
-| `ajv`   | JSON Schema Validator | Industry-standard JSON schema validator, tree-shakes well | Pending |
+| `ajv`   | JSON Schema Validator | Industry-standard JSON schema validator, tree-shakes well | ✅ Installed (v8.20.0) |
 
 No other new dependencies required — all other conversions use browser-native APIs or pure JS.
 
@@ -869,6 +869,31 @@ Expansions that boost existing pages' keywords:
 - **SEO:** 6 new routes indexed; existing expanded tools see keyword count increase
 
 ---
+
+---
+
+# Phase 4 — What's Next
+
+All three phases are complete. Tools already confirmed in the codebase (`/text-diff`, `/yaml-json`, `/timestamp`, `/color-converter`, `/csv-json`, `/lorem-ipsum`, `/word-counter`, `/number-base`) are **already shipped**. The remaining gaps:
+
+---
+
+## 4.1 Cron Expression Builder — NEW (`/cron-builder`) ⬅ next candidate
+
+**Why:** Differentiating — no other tool in the catalog covers this. Devs constantly forget cron syntax and there's no browser-based builder with a premium UI.
+
+- Visual checkbox grid (minute / hour / day-of-month / month / day-of-week)
+- Human-readable plain-English description auto-generated
+- Show next 5 scheduled run times
+- Bidirectional: paste a cron string → populates the visual builder
+
+---
+
+## 4.2 Smart Editor Upgrade (Backlog #11)
+
+**Scope: High — affects every tool**
+
+Replace every `CodeArea` / `InputArea` with a CodeMirror 6 or Monaco-based smart editor: syntax highlighting, line numbers, auto-indent, bracket matching. Needs a shared `SmartEditor` wrapper before rollout. Should be done as a dedicated sprint — not mixed with feature work.
 
 ---
 

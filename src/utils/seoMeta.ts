@@ -311,6 +311,26 @@ export const SEO_META: Record<string, SeoMeta> = {
         description: "Convert CSS to Tailwind utility classes instantly. Learn how CSS properties map to Tailwind equivalents and how to use arbitrary values for custom designs.",
         keywords: "css to tailwind, tailwind converter, css to tailwind converter, tailwind classes, tailwind utility classes, convert css to tailwind online"
     },
+    "/blog/smart-formatter": {
+        title: "Smart Formatter — Auto-Detect & Format Any Data Instantly | DevDeck",
+        description: "Paste any data and Smart Formatter auto-detects the type — JSON, JWT, URL, CSV, HTML, timestamps, hashes, and more — then formats or decodes it in one click.",
+        keywords: "smart formatter, data formatter, auto detect data type, json formatter, jwt decoder, url parser, csv formatter, format data online, developer tools"
+    },
+    "/blog/html-jsx": {
+        title: "HTML to JSX Converter — Transform HTML into React JSX Online | DevDeck",
+        description: "Convert HTML to valid JSX instantly. Handles class→className, for→htmlFor, camelCase events, self-closing void elements, and inline style objects automatically.",
+        keywords: "html to jsx, html jsx converter, convert html to react, jsx online, className converter, react component from html, html jsx online"
+    },
+    "/blog/encoder-decoder": {
+        title: "Encoder / Decoder — Base64, URL, HTML Entities & More | DevDeck",
+        description: "Encode and decode text using Base64, URL encoding, HTML entities, Unicode escapes, hex, and binary — all in one browser-based tool with six dedicated tabs.",
+        keywords: "encoder decoder, base64 encoder, url encoder, html entity encoder, unicode encoder, hex encoder, binary encoder, encode decode online"
+    },
+    "/blog/command-playground": {
+        title: "Command Playground — Paste Data, Detect Type, Launch the Right Tool | DevDeck",
+        description: "Command Playground auto-detects JSON, JWT, URLs, UUIDs, Base64, hashes, timestamps, and more — then instantly routes you to the right DevDeck tool. No manual navigation needed.",
+        keywords: "command playground, data type detector, smart detection, json detector, jwt decoder, url parser, developer tools, paste and detect, devdeck"
+    },
     "/command-playground": {
         title: "Command Playground — Smart Data Detection Tool | DevDeck",
         description: "Paste any data and DevDeck automatically detects what you're working with — JSON, JWT, URLs, Base64, hashes, and more. Instantly launch the right tool for the job.",

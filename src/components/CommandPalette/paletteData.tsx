@@ -309,8 +309,11 @@ const RELATED_TOOLS = {
     "/lorem-ipsum": ["/word-counter", "/text-case"],
     "/csv-json": ["/json-viewer", "/yaml-json"],
     "/api-builder": ["/json-viewer", "/jwt-decoder", "/url-validator", "/hash-generator"],
-    "/css-tailwind": ["/smart-formatter", "/color-converter", "/json-viewer", "/yaml-json"],
-    "/smart-formatter": ["/json-viewer", "/jwt-decoder", "/base64-text", "/uuid-generator", "/hash-generator", "/timestamp"]
+    "/css-tailwind": ["/html-jsx", "/smart-formatter", "/color-converter", "/json-viewer"],
+    "/smart-formatter": ["/command-playground", "/json-viewer", "/jwt-decoder", "/base64-text", "/encoder-decoder", "/hash-generator"],
+    "/html-jsx": ["/css-tailwind", "/encoder-decoder", "/smart-formatter", "/text-case"],
+    "/encoder-decoder": ["/base64-text", "/smart-formatter", "/hash-generator", "/url-validator", "/jwt-decoder"],
+    "/command-playground": ["/smart-formatter", "/json-viewer", "/jwt-decoder", "/encoder-decoder", "/base64-text"]
 };
 
 export function getRelatedToolEntries(currentRoute: string): PaletteEntry[] {

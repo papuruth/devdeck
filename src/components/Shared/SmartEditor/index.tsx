@@ -214,6 +214,20 @@ const Wrap = styled.div`
     &:focus-within {
         box-shadow: inset 0 0 0 2px rgba(34, 204, 153, 0.3);
     }
+
+    &.stretch-height {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+
+        .cm-editor {
+            flex: 1;
+        }
+        .cm-scroller {
+            flex: 1;
+            overflow: auto;
+        }
+    }
 `;
 
 /* ─── SmartEditor ───────────────────────────────────────── */
@@ -228,6 +242,7 @@ interface SmartEditorProps {
     maxHeight?: string;
     autoFocus?: boolean;
     style?: React.CSSProperties;
+    stretchHeight?: boolean;
 }
 
 export function SmartEditor({
@@ -239,7 +254,8 @@ export function SmartEditor({
     minHeight = "260px",
     maxHeight,
     autoFocus = false,
-    style
+    style,
+    stretchHeight = false
 }: SmartEditorProps) {
     const [isDark, setIsDark] = useState(false);
 
@@ -268,7 +284,7 @@ export function SmartEditor({
     const isRich = language !== "text";
 
     return (
-        <Wrap style={style}>
+        <Wrap style={style} className={stretchHeight ? "stretch-height" : undefined}>
             <CodeMirror
                 value={value}
                 onChange={onChange ? (val) => onChange(val) : undefined}

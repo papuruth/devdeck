@@ -926,58 +926,78 @@ const blogData = {
 
     "text-diff-checker": {
         slug: "text-diff-checker",
-        title: "Text Diff Tool — Compare Two Texts Online",
-        metaDescription: "Compare two text blocks with word-level diff highlighting. See additions and deletions at a glance. Free on DevDeck.",
-        metaKeywords: "text diff, compare text online, diff tool, text compare, find differences in text, text comparison",
-        intro: "Spotting differences between two versions of text — code, config, documents — is tedious without tooling. Text Diff highlights exactly what changed between two inputs, word by word.",
+        title: "Diffchecker Online — Compare Two Files with Split, Unified & Merge",
+        metaDescription: "Free diffchecker that compares two text files side-by-side or unified. Highlights added, removed, and changed lines. Merge changes hunk by hunk. Works for JSON, code, configs, and documents.",
+        metaKeywords: "text diff, diffchecker, diff checker, compare two files, json diff, compare text online, diff tool, unified diff, split diff, merge changes, online diff checker, code diff",
+        intro: "Spotting differences between two versions of text — code, JSON, config files, or documents — is tedious without the right tool. DevDeck's diffchecker shows exactly what changed, line by line, with split view alignment, merge controls, and inline word-level highlighting.",
         sections: [
             {
-                heading: "What is a Text Diff Tool?",
-                body: "A diff tool compares two text inputs and highlights what's been added, removed, or changed. Added content appears in green, removed content in red. This makes it immediately clear what changed without reading both versions line by line."
+                heading: "What Is a Diffchecker?",
+                body: "A diffchecker compares two text inputs and highlights every addition, deletion, and unchanged line. Added lines appear in green, removed lines in red. Unlike reading two files side by side manually, a diff tool makes changes impossible to miss — even a single character difference is immediately visible."
             },
             {
-                heading: "Why Use a Text Diff Tool?",
-                body: "Code reviews, document version comparison, config file auditing, and debugging copy-paste errors all benefit from diff tooling. Without it, you read both versions manually and miss subtle differences. A visual diff spots them instantly."
-            },
-            {
-                heading: "Key Benefits",
+                heading: "Three View Modes",
                 list: [
-                    "Word-level diff highlighting",
-                    "Added text in green, removed in red",
-                    "Handles multi-line text blocks",
-                    "Instant comparison — no page reload",
-                    "100% client-side"
+                    "Split view: two panels side by side with aligned blank rows so every change sits at the same vertical position — identical to Diffchecker.com's layout",
+                    "Unified view: a single panel showing both sides with dual line number columns (original left, modified right) — supports hunk merge just like split view",
+                    "Inline view: a single block with word-level or character-level highlights directly inside the text"
                 ]
             },
             {
-                heading: "How to Use Text Diff",
+                heading: "Hunk-Based Merge (Cherry-Pick Changes)",
+                body: "Unlike basic diff tools that only show differences, DevDeck lets you merge changes one hunk at a time. Click any highlighted line in Split view or Unified view to activate that hunk. A merge bar appears near the clicked line showing a two-column preview of the removed and added content, 'Change N of M' navigation, and merge buttons. Use 'Use original ←' to push the left side into the modified panel, or 'Use modified →' to accept the right side into the original. After merging, the bar automatically advances to the next hunk. This lets you review and selectively apply changes without accepting the entire diff."
+            },
+            {
+                heading: "Auto-Prettify for JSON",
+                body: "Paste minified or unformatted JSON and click Prettify — the tool detects JSON automatically and formats both panels with 2-space indentation before running the diff. This makes JSON diffs far more readable since structural changes align at the property level rather than being buried in a single-line blob."
+            },
+            {
+                heading: "How to Use the Diffchecker",
                 steps: [
-                    "Paste the original text in the left panel",
-                    "Paste the modified text in the right panel",
-                    "Differences highlight automatically",
-                    "Green = added, Red = removed"
+                    "Paste the original text in the left (Original) panel",
+                    "Paste the modified text in the right (Modified) panel",
+                    "Differences highlight automatically — green = added, red = removed",
+                    "Switch between Split, Unified, or Inline view using the toggle",
+                    "In Split or Unified view, click any highlighted line to open the merge bar",
+                    "Use Prettify to auto-format JSON before comparing",
+                    "Copy Diff exports changed lines as +/- prefixed text; Copy Patch exports unified diff format"
                 ]
             },
             {
-                heading: "Example Use Case",
-                body: "Two developers edited the same config file in different branches. Paste both versions into Text Diff — the changes are highlighted immediately: a changed API URL in one line, a new environment variable added, a comment removed. No manual line-by-line reading needed."
+                heading: "Common Use Cases",
+                list: [
+                    "JSON API response comparison — spot added or removed fields between versions",
+                    "Config file auditing — compare .env, YAML, or TOML files across environments",
+                    "Code review — paste two versions of a function to see what changed",
+                    "Document revision — compare draft vs final to catch edits",
+                    "AI output comparison — diff two LLM responses to see how prompts affect output",
+                    "Log file analysis — compare log snapshots to find new errors"
+                ]
             },
             {
-                heading: "Tips",
+                heading: "Diff Tool vs Git Diff",
+                body: "Git diff is the right tool for comparing file history tracked in a repository. DevDeck's diffchecker is better for ad-hoc comparisons: when you don't have Git history, when comparing clipboard content, when reviewing AI outputs, or when you need to merge individual changes interactively. The Copy Patch button exports a standard unified diff patch that can be applied with `git apply` or `patch`."
+            },
+            {
+                heading: "Tips for Better Diffs",
                 list: [
-                    "For code diffs, Git is more appropriate — this tool is best for plain text",
-                    "Remove extra whitespace before comparing if formatting varies",
-                    "Useful for comparing AI-generated outputs with originals",
-                    "Good for catching typos between draft and final document versions"
+                    "Run Prettify before diffing JSON — structural diffs are much cleaner on formatted text",
+                    "Use Swap to quickly reverse which side is original and which is modified",
+                    "Switch to Inline + Words mode for prose documents where word-level changes matter more than line breaks",
+                    "Use Inline + Chars mode for single-line changes like URL or variable name diffs",
+                    "The similarity percentage in the stats bar tells you at a glance how much changed"
                 ]
             }
         ],
-        cta: { label: "Try Text Diff →", toolRoute: "/text-diff" },
-        relatedSlugs: ["text-case-converter", "word-counter", "regex-tester"],
+        cta: { label: "Open Diffchecker →", toolRoute: "/text-diff" },
+        relatedSlugs: ["json-viewer", "text-case-converter", "regex-tester"],
         faq: [
-            { q: "Is Text Diff free?", a: "Yes, completely free." },
-            { q: "Does it support line-level diff?", a: "Yes. The diff shows both word-level and line-level differences." },
-            { q: "Can I compare code with this tool?", a: "Yes for small snippets. For large codebases, use Git diff instead." }
+            { q: "Is this diffchecker free?", a: "Yes, completely free and runs 100% in your browser — nothing is sent to a server." },
+            { q: "Does it support JSON diff?", a: "Yes. Paste any JSON and use the Prettify button to format it before diffing. The diff then shows structural changes cleanly at the property level." },
+            { q: "What is the difference between split view and unified diff?", a: "Split view shows original and modified side by side in two panels with aligned blank rows so changes sit at the same vertical position. Unified diff shows both versions in a single panel with +/- prefixed lines and dual line number columns." },
+            { q: "What does the merge feature do?", a: "Clicking a changed line in Split or Unified view activates that hunk (contiguous block of changes). A merge bar appears showing a preview of the removed and added content, plus buttons to cherry-pick that hunk — accept the modified version into the original, or push the original version into the modified panel. Other hunks are unaffected. After each merge the bar advances to the next hunk automatically." },
+            { q: "Can I use this for code comparison?", a: "Yes for snippets and small files. For large codebases with Git history, use Git diff. For ad-hoc code comparisons without Git, this tool works well." },
+            { q: "What is Copy Patch?", a: "Copy Patch exports the diff in unified diff format — the same format as `git diff` output. You can apply it with `git apply` or the Unix `patch` command." }
         ]
     },
 

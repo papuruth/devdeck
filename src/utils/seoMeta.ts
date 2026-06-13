@@ -118,10 +118,10 @@ export const SEO_META: Record<string, SeoMeta> = {
         keywords: "yaml to json, json to yaml, yaml converter, yaml parser online, yaml formatter"
     },
     "/text-diff": {
-        title: "Text Diff Tool — Compare Two Texts Online | DevDeck",
-        description: "Compare two text blocks side-by-side with added and removed words highlighted. Line-level and word-level diff.",
-        about: "Text Diff highlights changes between two text inputs at the word level. Useful for comparing document revisions, code snippets, config files, or any plain text.",
-        keywords: "text diff, compare text online, diff tool, text compare, find differences in text"
+        title: "Text Diff & Diffchecker — Compare Two Files Online | DevDeck",
+        description: "Free online diffchecker. Compare two text files side-by-side with aligned blank rows, unified diff, and inline word/char highlighting. Merge changes hunk by hunk. Works with JSON, code, configs, and plain text.",
+        about: "DevDeck Text Diff is a premium diffchecker for comparing two text inputs. Split view shows aligned side-by-side differences with blank placeholder rows — just like Diffchecker. Unified view shows a single pane with dual line numbers. Inline view highlights word or character-level changes. Click any changed hunk to activate the merge bar: cherry-pick individual changes left or right without accepting the full diff. Also includes auto-prettify for JSON, swap panels, copy diff, and copy patch (unified diff format). 100% client-side.",
+        keywords: "text diff, diffchecker, diff checker, compare two files, compare text online, json diff, diff tool, text compare, find differences in text, line diff, file compare, online diff checker, code diff, diff checker online, text difference finder, unified diff, split diff, merge diff, diff checker free, compare files online, text comparison tool"
     },
     "/lorem-ipsum": {
         title: "Lorem Ipsum Generator — Placeholder Text Online | DevDeck",
@@ -267,9 +267,9 @@ export const SEO_META: Record<string, SeoMeta> = {
         keywords: "text case converter, camelcase converter, snake case, uppercase lowercase, title case, kebab case, pascal case"
     },
     "/blog/text-diff-checker": {
-        title: "Text Diff Tool — Compare Two Texts Online | DevDeck",
-        description: "Compare two text blocks with word-level diff highlighting. Learn how diff tools work and when to use them.",
-        keywords: "text diff, compare text online, diff tool, text compare, find differences in text, text comparison"
+        title: "Diffchecker & Text Diff Guide — Compare Two Files Online | DevDeck",
+        description: "Learn how online diff tools work: split view, unified diff, hunk-based merge, and when to use a diffchecker vs Git. Free on DevDeck.",
+        keywords: "text diff, diffchecker, diff checker, compare two files, json diff, compare text online, diff tool, text compare, unified diff, split diff, merge changes, online diff checker"
     },
     "/blog/timestamp-converter": {
         title: "Unix Timestamp Converter — Epoch to Date & Time | DevDeck",

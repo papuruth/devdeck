@@ -120,7 +120,12 @@ export const SEO_META: Record<string, SeoMeta> = {
     "/text-diff": {
         title: "Text Diff & Diffchecker — Compare Two Files Online | DevDeck",
         description: "Free online diffchecker. Compare two text files side-by-side with aligned blank rows, unified diff, and inline word/char highlighting. Merge changes hunk by hunk. Works with JSON, code, configs, and plain text.",
-        about: "DevDeck Text Diff is a premium diffchecker for comparing two text inputs. Split view shows aligned side-by-side differences with blank placeholder rows — just like Diffchecker. Unified view shows a single pane with dual line numbers. Inline view highlights word or character-level changes. Click any changed hunk to activate the merge bar: cherry-pick individual changes left or right without accepting the full diff. Also includes auto-prettify for JSON, swap panels, copy diff, and copy patch (unified diff format). 100% client-side.",
+        about: "DevDeck Text Diff is a premium diffchecker for comparing two text inputs."
+            + " Split view shows aligned side-by-side differences with blank placeholder rows — just like Diffchecker."
+            + " Unified view shows a single pane with dual line numbers."
+            + " Inline view highlights word or character-level changes."
+            + " Click any changed hunk to activate the merge bar: cherry-pick individual changes left or right."
+            + " Also includes auto-prettify for JSON, swap panels, copy diff, and copy patch. 100% client-side.",
         keywords: "text diff, diffchecker, diff checker, compare two files, compare text online, json diff, diff tool, text compare, find differences in text, line diff, file compare, online diff checker, code diff, diff checker online, text difference finder, unified diff, split diff, merge diff, diff checker free, compare files online, text comparison tool"
     },
     "/lorem-ipsum": {

@@ -2,17 +2,7 @@ import { diffLines, diffWords, diffChars, createPatch } from "diff";
 import localization from "localization";
 import React, { useMemo, useState, useCallback, useRef } from "react";
 import styled from "styled-components";
-import {
-    ActionBtn,
-    EmptyState,
-    MetaText,
-    ModeBtn,
-    ModeToggle,
-    Panel,
-    PanelHeader,
-    PanelLabel,
-    ToolLayout
-} from "components/Shared/ToolKit";
+import { ActionBtn, EmptyState, MetaText, ModeBtn, ModeToggle, Panel, PanelHeader, PanelLabel, ToolLayout } from "components/Shared/ToolKit";
 import { SmartEditor } from "components/Shared/SmartEditor";
 import { useCopyWithAnimation } from "utils/hooks/useCopyWithAnimation.hooks";
 import { styledMedia } from "styles/global";
@@ -170,18 +160,25 @@ const LineRow = styled.div<{
     }
 `;
 
+function lineNumColor(type?: "added" | "removed" | "unchanged"): string {
+    if (type === "added") return "rgba(34,204,153,0.7)";
+    if (type === "removed") return "rgba(239,68,68,0.7)";
+    return "var(--text-secondary)";
+}
+
+function lineSignColor(type?: "added" | "removed" | "unchanged"): string {
+    if (type === "added") return "#22cc99";
+    if (type === "removed") return "#ef4444";
+    return "transparent";
+}
+
 const LineNumber = styled.span<{ $type?: "added" | "removed" | "unchanged" }>`
     flex-shrink: 0;
     width: 40px;
     padding: 0 8px;
     text-align: right;
     font-size: 10px;
-    color: ${({ $type }) =>
-        $type === "added"
-            ? "rgba(34,204,153,0.7)"
-            : $type === "removed"
-              ? "rgba(239,68,68,0.7)"
-              : "var(--text-secondary)"};
+    color: ${({ $type }) => lineNumColor($type)};
     user-select: none;
     border-right: 1px solid var(--border-color);
     line-height: 1.8;
@@ -193,8 +190,7 @@ const LineSign = styled.span<{ $type?: "added" | "removed" | "unchanged" }>`
     width: 18px;
     text-align: center;
     font-size: 11px;
-    color: ${({ $type }) =>
-        $type === "added" ? "#22cc99" : $type === "removed" ? "#ef4444" : "transparent"};
+    color: ${({ $type }) => lineSignColor($type)};
     user-select: none;
     line-height: 1.8;
 `;
@@ -224,7 +220,9 @@ const MergeBarWrap = styled.div`
     background: var(--bg-surface);
     border: 1px solid var(--border-color);
     border-radius: var(--radius-panel);
-    box-shadow: 0 6px 28px rgba(0, 0, 0, 0.22), 0 1px 6px rgba(0,0,0,0.12);
+    box-shadow:
+        0 6px 28px rgba(0, 0, 0, 0.22),
+        0 1px 6px rgba(0, 0, 0, 0.12);
     backdrop-filter: blur(10px);
 `;
 
@@ -238,8 +236,8 @@ const HunkPreview = styled.div`
 `;
 
 const HunkPreviewPanel = styled.div<{ $side: "left" | "right" }>`
-    background: ${({ $side }) => $side === "left" ? "rgba(239,68,68,0.08)" : "rgba(34,204,153,0.08)"};
-    border: 1px solid ${({ $side }) => $side === "left" ? "rgba(239,68,68,0.25)" : "rgba(34,204,153,0.25)"};
+    background: ${({ $side }) => ($side === "left" ? "rgba(239,68,68,0.08)" : "rgba(34,204,153,0.08)")};
+    border: 1px solid ${({ $side }) => ($side === "left" ? "rgba(239,68,68,0.25)" : "rgba(34,204,153,0.25)")};
     border-radius: 5px;
     padding: 6px 8px;
     overflow: hidden;
@@ -249,7 +247,7 @@ const HunkPreviewLine = styled.div<{ $side: "left" | "right" }>`
     font-family: var(--font-mono);
     font-size: 10px;
     line-height: 1.6;
-    color: ${({ $side }) => $side === "left" ? "#fca5a5" : "#6ee7b7"};
+    color: ${({ $side }) => ($side === "left" ? "#fca5a5" : "#6ee7b7")};
     white-space: pre;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -293,7 +291,10 @@ const NavBtn = styled.button`
     border: 1px solid var(--border-color);
     border-radius: 6px;
     cursor: pointer;
-    transition: color 0.15s, border-color 0.15s, background 0.15s;
+    transition:
+        color 0.15s,
+        border-color 0.15s,
+        background 0.15s;
     &:hover:not(:disabled) {
         color: var(--text-primary);
         border-color: rgba(34, 204, 153, 0.45);
@@ -317,7 +318,10 @@ const DismissBtn = styled.button`
     border: 1px solid var(--border-color);
     border-radius: 50%;
     cursor: pointer;
-    transition: color 0.15s, border-color 0.15s, background 0.15s;
+    transition:
+        color 0.15s,
+        border-color 0.15s,
+        background 0.15s;
     &:hover {
         color: var(--text-primary);
         border-color: rgba(239, 68, 68, 0.45);
@@ -344,20 +348,15 @@ const MergeBtn = styled.button<{ $side: "left" | "right" }>`
     border-radius: 8px;
     cursor: pointer;
     transition: all 0.15s ease;
-    border: 1.5px solid
-        ${({ $side }) => ($side === "left" ? "rgba(239,68,68,0.5)" : "rgba(34,204,153,0.5)")};
+    border: 1.5px solid ${({ $side }) => ($side === "left" ? "rgba(239,68,68,0.5)" : "rgba(34,204,153,0.5)")};
     color: ${({ $side }) => ($side === "left" ? "#ef4444" : "#22cc99")};
-    background: ${({ $side }) =>
-        $side === "left" ? "rgba(239,68,68,0.08)" : "rgba(34,204,153,0.08)"};
+    background: ${({ $side }) => ($side === "left" ? "rgba(239,68,68,0.08)" : "rgba(34,204,153,0.08)")};
 
     &:hover {
-        background: ${({ $side }) =>
-            $side === "left" ? "rgba(239,68,68,0.18)" : "rgba(34,204,153,0.18)"};
+        background: ${({ $side }) => ($side === "left" ? "rgba(239,68,68,0.18)" : "rgba(34,204,153,0.18)")};
         border-color: ${({ $side }) => ($side === "left" ? "#ef4444" : "#22cc99")};
         transform: translateY(-1px);
-        box-shadow: 0 3px 10px
-            ${({ $side }) =>
-                $side === "left" ? "rgba(239,68,68,0.2)" : "rgba(34,204,153,0.2)"};
+        box-shadow: 0 3px 10px ${({ $side }) => ($side === "left" ? "rgba(239,68,68,0.2)" : "rgba(34,204,153,0.2)")};
     }
     &:active {
         transform: translateY(0);
@@ -491,7 +490,10 @@ const IconBtn = styled.button`
     border-radius: 6px;
     cursor: pointer;
     white-space: nowrap;
-    transition: color 0.15s, border-color 0.15s, background 0.15s;
+    transition:
+        color 0.15s,
+        border-color 0.15s,
+        background 0.15s;
     &:hover {
         color: var(--text-primary);
         border-color: rgba(34, 204, 153, 0.45);
@@ -520,7 +522,7 @@ const SAMPLE_ORIGINAL = JSON.stringify(
             cors: "^2.8.5",
             dotenv: "^16.0.3",
             mongoose: "^7.0.0",
-            "jsonwebtoken": "^9.0.0",
+            jsonwebtoken: "^9.0.0",
             axios: "^1.3.4"
         },
         devDependencies: {
@@ -564,7 +566,7 @@ const SAMPLE_MODIFIED = JSON.stringify(
             cors: "^2.8.5",
             dotenv: "^16.3.1",
             mongoose: "^8.0.0",
-            "jsonwebtoken": "^9.0.0",
+            jsonwebtoken: "^9.0.0",
             axios: "^1.5.0",
             zod: "^3.22.0",
             pino: "^8.15.0"
@@ -602,75 +604,73 @@ function buildLineDiff(original: string, modified: string): { lines: DiffLine[];
     let hunkId = 0;
     let prevWasChanged = false;
 
-    for (const change of changes) {
+    changes.forEach((change) => {
         const rawLines = change.value.split("\n");
         if (rawLines[rawLines.length - 1] === "") rawLines.pop();
 
         if (change.added || change.removed) {
-            if (!prevWasChanged) hunkId++;
+            if (!prevWasChanged) hunkId += 1;
             prevWasChanged = true;
         } else {
             prevWasChanged = false;
         }
 
         if (change.added) {
-            for (const l of rawLines) {
-                lines.push({ type: "added", content: l, lineNumRight: rightLine++, hunkId });
-            }
+            rawLines.forEach((l) => {
+                lines.push({ type: "added", content: l, lineNumRight: rightLine, hunkId });
+                rightLine += 1;
+            });
         } else if (change.removed) {
-            for (const l of rawLines) {
-                lines.push({ type: "removed", content: l, lineNumLeft: leftLine++, hunkId });
-            }
+            rawLines.forEach((l) => {
+                lines.push({ type: "removed", content: l, lineNumLeft: leftLine, hunkId });
+                leftLine += 1;
+            });
         } else {
-            for (const l of rawLines) {
-                lines.push({ type: "unchanged", content: l, lineNumLeft: leftLine++, lineNumRight: rightLine++ });
-            }
+            rawLines.forEach((l) => {
+                lines.push({ type: "unchanged", content: l, lineNumLeft: leftLine, lineNumRight: rightLine });
+                leftLine += 1;
+                rightLine += 1;
+            });
         }
-    }
+    });
 
     // Build hunks map
     const hunkMap = new Map<number, Hunk>();
-    for (const line of lines) {
-        if (line.hunkId == null) continue;
+    lines.forEach((line) => {
+        if (line.hunkId == null) return;
         if (!hunkMap.has(line.hunkId)) {
             hunkMap.set(line.hunkId, { id: line.hunkId, removedLines: [], addedLines: [] });
         }
         const hunk = hunkMap.get(line.hunkId)!;
         if (line.type === "removed") hunk.removedLines.push(line);
         else if (line.type === "added") hunk.addedLines.push(line);
-    }
+    });
 
     return { lines, hunks: Array.from(hunkMap.values()) };
 }
 
 function applyMergeRight(lines: DiffLine[], hunkId: number): string {
-    // Accept right (modified) into original: skip removed lines of this hunk, include added lines
-    const result: string[] = [];
-    for (const line of lines) {
-        if (line.type === "unchanged") {
-            result.push(line.content);
-        } else if (line.type === "removed") {
-            if (line.hunkId !== hunkId) result.push(line.content);
-        } else if (line.type === "added") {
-            if (line.hunkId === hunkId) result.push(line.content);
-        }
-    }
-    return result.join("\n");
+    return lines
+        .filter((line) => {
+            if (line.type === "unchanged") return true;
+            if (line.type === "removed") return line.hunkId !== hunkId;
+            if (line.type === "added") return line.hunkId === hunkId;
+            return false;
+        })
+        .map((line) => line.content)
+        .join("\n");
 }
 
 function applyMergeLeft(lines: DiffLine[], hunkId: number): string {
-    // Accept left (original) into modified: skip added lines of this hunk, include removed lines
-    const result: string[] = [];
-    for (const line of lines) {
-        if (line.type === "unchanged") {
-            result.push(line.content);
-        } else if (line.type === "added") {
-            if (line.hunkId !== hunkId) result.push(line.content);
-        } else if (line.type === "removed") {
-            if (line.hunkId === hunkId) result.push(line.content);
-        }
-    }
-    return result.join("\n");
+    return lines
+        .filter((line) => {
+            if (line.type === "unchanged") return true;
+            if (line.type === "added") return line.hunkId !== hunkId;
+            if (line.type === "removed") return line.hunkId === hunkId;
+            return false;
+        })
+        .map((line) => line.content)
+        .join("\n");
 }
 
 function buildInlineDiff(original: string, modified: string, mode: DiffMode) {
@@ -679,11 +679,18 @@ function buildInlineDiff(original: string, modified: string, mode: DiffMode) {
     return diffWords(original, modified);
 }
 
+function inlinePartPrefix(part: { added?: boolean; removed?: boolean }): string {
+    if (part.added) return "a";
+    if (part.removed) return "r";
+    return "u";
+}
+
 function renderInlineParts(parts: ReturnType<typeof diffWords>) {
     return parts.map((part, i) => {
-        if (part.added) return <InlineAdded key={i}>{part.value}</InlineAdded>;
-        if (part.removed) return <InlineRemoved key={i}>{part.value}</InlineRemoved>;
-        return <span key={i}>{part.value}</span>;
+        const key = `${inlinePartPrefix(part)}-${i}`;
+        if (part.added) return <InlineAdded key={key}>{part.value}</InlineAdded>;
+        if (part.removed) return <InlineRemoved key={key}>{part.value}</InlineRemoved>;
+        return <span key={key}>{part.value}</span>;
     });
 }
 
@@ -702,25 +709,24 @@ function buildSplitRows(lines: DiffLine[]): SplitRow[] {
         const line = lines[i];
         if (line.type === "unchanged") {
             rows.push({ left: line, right: line });
-            i++;
+            i += 1;
         } else {
-            // Collect the full hunk block
-            const hunkId = line.hunkId;
+            const { hunkId } = line;
             const removed: DiffLine[] = [];
             const added: DiffLine[] = [];
             while (i < lines.length && lines[i].hunkId === hunkId && lines[i].type !== "unchanged") {
                 if (lines[i].type === "removed") removed.push(lines[i]);
                 else added.push(lines[i]);
-                i++;
+                i += 1;
             }
             const maxLen = Math.max(removed.length, added.length);
-            for (let j = 0; j < maxLen; j++) {
+            Array.from({ length: maxLen }).forEach((_, j) => {
                 rows.push({
                     left: removed[j] ?? null,
                     right: added[j] ?? null,
                     hunkId
                 });
-            }
+            });
         }
     }
     return rows;
@@ -740,18 +746,7 @@ interface SplitDiffViewProps {
     onMergeRight: (hunkId: number) => void;
 }
 
-
-function SplitDiffView({
-    lines,
-    hunks,
-    activeHunk,
-    onHunkClick,
-    onDismiss,
-    onPrev,
-    onNext,
-    onMergeLeft,
-    onMergeRight
-}: SplitDiffViewProps) {
+function SplitDiffView({ lines, hunks, activeHunk, onHunkClick, onDismiss, onPrev, onNext, onMergeLeft, onMergeRight }: SplitDiffViewProps) {
     const splitRows = useMemo(() => buildSplitRows(lines), [lines]);
     const activeIdx = hunks.findIndex((h) => h.id === activeHunk);
     const wrapRef = useRef<HTMLDivElement>(null);
@@ -778,21 +773,23 @@ function SplitDiffView({
         const isActive = !isBlank && line!.hunkId === activeHunk;
         const hid = row.hunkId;
         const clickable = !isBlank && line!.type === "removed" && hid != null;
+        let rowType: "added" | "removed" | "unchanged" = "unchanged";
+        if (isBlank) rowType = "added";
+        else if (line!.type === "removed") rowType = "removed";
+        let signType: "added" | "removed" | "unchanged" = "unchanged";
+        if (!isBlank && line!.type === "removed") signType = "removed";
+        const key = `L-${hid ?? "u"}-${i}`;
         return (
             <LineRow
-                key={i}
-                $type={isBlank ? "added" : line!.type === "removed" ? "removed" : "unchanged"}
+                key={key}
+                $type={rowType}
                 $active={isActive}
                 $clickable={clickable}
                 $blank={isBlank}
                 onClick={clickable ? (e) => handleHunkClick(e, hid!) : undefined}
             >
-                <LineNumber $type={isBlank ? "added" : line!.type === "removed" ? "removed" : "unchanged"}>
-                    {isBlank ? " " : line!.lineNumLeft}
-                </LineNumber>
-                <LineSign $type={isBlank ? "unchanged" : line!.type === "removed" ? "removed" : "unchanged"}>
-                    {!isBlank && line!.type === "removed" ? "−" : " "}
-                </LineSign>
+                <LineNumber $type={rowType}>{isBlank ? " " : line!.lineNumLeft}</LineNumber>
+                <LineSign $type={signType}>{!isBlank && line!.type === "removed" ? "−" : " "}</LineSign>
                 <LineContent>{isBlank ? " " : line!.content}</LineContent>
             </LineRow>
         );
@@ -804,21 +801,23 @@ function SplitDiffView({
         const isActive = !isBlank && line!.hunkId === activeHunk;
         const hid = row.hunkId;
         const clickable = !isBlank && line!.type === "added" && hid != null;
+        let rowType: "added" | "removed" | "unchanged" = "unchanged";
+        if (isBlank) rowType = "removed";
+        else if (line!.type === "added") rowType = "added";
+        let signType: "added" | "removed" | "unchanged" = "unchanged";
+        if (!isBlank && line!.type === "added") signType = "added";
+        const key = `R-${hid ?? "u"}-${i}`;
         return (
             <LineRow
-                key={i}
-                $type={isBlank ? "removed" : line!.type === "added" ? "added" : "unchanged"}
+                key={key}
+                $type={rowType}
                 $active={isActive}
                 $clickable={clickable}
                 $blank={isBlank}
                 onClick={clickable ? (e) => handleHunkClick(e, hid!) : undefined}
             >
-                <LineNumber $type={isBlank ? "removed" : line!.type === "added" ? "added" : "unchanged"}>
-                    {isBlank ? " " : line!.lineNumRight}
-                </LineNumber>
-                <LineSign $type={isBlank ? "unchanged" : line!.type === "added" ? "added" : "unchanged"}>
-                    {!isBlank && line!.type === "added" ? "+" : " "}
-                </LineSign>
+                <LineNumber $type={rowType}>{isBlank ? " " : line!.lineNumRight}</LineNumber>
+                <LineSign $type={signType}>{!isBlank && line!.type === "added" ? "+" : " "}</LineSign>
                 <LineContent>{isBlank ? " " : line!.content}</LineContent>
             </LineRow>
         );
@@ -830,80 +829,79 @@ function SplitDiffView({
                 <DiffPanel>
                     <PanelHeader>
                         <PanelLabel style={{ fontSize: 11 }}>Original</PanelLabel>
-                        <MetaText style={{ color: "#ef4444" }}>
-                            -{lines.filter((l) => l.type === "removed").length} lines
-                        </MetaText>
+                        <MetaText style={{ color: "#ef4444" }}>-{lines.filter((l) => l.type === "removed").length} lines</MetaText>
                     </PanelHeader>
-                    <DiffScroll>
-                        {splitRows.map((row, i) => renderLeft(row, i))}
-                    </DiffScroll>
+                    <DiffScroll>{splitRows.map((row, i) => renderLeft(row, i))}</DiffScroll>
                 </DiffPanel>
 
                 <DiffPanel>
                     <PanelHeader>
                         <PanelLabel style={{ fontSize: 11 }}>Modified</PanelLabel>
-                        <MetaText style={{ color: "#22cc99" }}>
-                            +{lines.filter((l) => l.type === "added").length} lines
-                        </MetaText>
+                        <MetaText style={{ color: "#22cc99" }}>+{lines.filter((l) => l.type === "added").length} lines</MetaText>
                     </PanelHeader>
-                    <DiffScroll>
-                        {splitRows.map((row, i) => renderRight(row, i))}
-                    </DiffScroll>
+                    <DiffScroll>{splitRows.map((row, i) => renderRight(row, i))}</DiffScroll>
                 </DiffPanel>
             </SplitGrid>
 
-            {activeHunk !== null && (() => {
-                const hunk = hunks.find((h) => h.id === activeHunk);
-                return (
-                    <MergeBarWrap style={{ top: barY }}>
-                        <MergeNavRow>
-                            <NavBtn onClick={onPrev} disabled={activeIdx <= 0}>
-                                ↑ Prev
-                            </NavBtn>
-                            <MergeLabel>
-                                Change {activeIdx + 1} of {hunks.length}
-                            </MergeLabel>
-                            <NavBtn onClick={onNext} disabled={activeIdx >= hunks.length - 1}>
-                                Next ↓
-                            </NavBtn>
-                            <DismissBtn onClick={onDismiss} title="Dismiss">
-                                ×
-                            </DismissBtn>
-                        </MergeNavRow>
+            {activeHunk !== null &&
+                (() => {
+                    const hunk = hunks.find((h) => h.id === activeHunk);
+                    return (
+                        <MergeBarWrap style={{ top: barY }}>
+                            <MergeNavRow>
+                                <NavBtn onClick={onPrev} disabled={activeIdx <= 0}>
+                                    ↑ Prev
+                                </NavBtn>
+                                <MergeLabel>
+                                    Change {activeIdx + 1} of {hunks.length}
+                                </MergeLabel>
+                                <NavBtn onClick={onNext} disabled={activeIdx >= hunks.length - 1}>
+                                    Next ↓
+                                </NavBtn>
+                                <DismissBtn onClick={onDismiss} title="Dismiss">
+                                    ×
+                                </DismissBtn>
+                            </MergeNavRow>
 
-                        {hunk && (
-                            <HunkPreview>
-                                <HunkPreviewPanel $side="left">
-                                    {hunk.removedLines.length === 0
-                                        ? <HunkPreviewEmpty>— deleted —</HunkPreviewEmpty>
-                                        : hunk.removedLines.slice(0, 6).map((l, i) => (
-                                            <HunkPreviewLine key={i} $side="left">− {l.content}</HunkPreviewLine>
-                                        ))
-                                    }
-                                </HunkPreviewPanel>
-                                <HunkPreviewPanel $side="right">
-                                    {hunk.addedLines.length === 0
-                                        ? <HunkPreviewEmpty>— deleted —</HunkPreviewEmpty>
-                                        : hunk.addedLines.slice(0, 6).map((l, i) => (
-                                            <HunkPreviewLine key={i} $side="right">+ {l.content}</HunkPreviewLine>
-                                        ))
-                                    }
-                                </HunkPreviewPanel>
-                            </HunkPreview>
-                        )}
+                            {hunk && (
+                                <HunkPreview>
+                                    <HunkPreviewPanel $side="left">
+                                        {hunk.removedLines.length === 0 ? (
+                                            <HunkPreviewEmpty>— deleted —</HunkPreviewEmpty>
+                                        ) : (
+                                            hunk.removedLines.slice(0, 6).map((l, i) => (
+                                                <HunkPreviewLine key={l.lineNumLeft ?? l.lineNumRight ?? i} $side="left">
+                                                    − {l.content}
+                                                </HunkPreviewLine>
+                                            ))
+                                        )}
+                                    </HunkPreviewPanel>
+                                    <HunkPreviewPanel $side="right">
+                                        {hunk.addedLines.length === 0 ? (
+                                            <HunkPreviewEmpty>— deleted —</HunkPreviewEmpty>
+                                        ) : (
+                                            hunk.addedLines.slice(0, 6).map((l, i) => (
+                                                <HunkPreviewLine key={l.lineNumRight ?? l.lineNumLeft ?? i} $side="right">
+                                                    + {l.content}
+                                                </HunkPreviewLine>
+                                            ))
+                                        )}
+                                    </HunkPreviewPanel>
+                                </HunkPreview>
+                            )}
 
-                        <MergeActionsRow>
-                            <MergeBtn $side="left" onClick={() => onMergeLeft(activeHunk)}>
-                                ← Use original
-                            </MergeBtn>
-                            <MergeDivider />
-                            <MergeBtn $side="right" onClick={() => onMergeRight(activeHunk)}>
-                                Use modified →
-                            </MergeBtn>
-                        </MergeActionsRow>
-                    </MergeBarWrap>
-                );
-            })()}
+                            <MergeActionsRow>
+                                <MergeBtn $side="left" onClick={() => onMergeLeft(activeHunk)}>
+                                    ← Use original
+                                </MergeBtn>
+                                <MergeDivider />
+                                <MergeBtn $side="right" onClick={() => onMergeRight(activeHunk)}>
+                                    Use modified →
+                                </MergeBtn>
+                            </MergeActionsRow>
+                        </MergeBarWrap>
+                    );
+                })()}
         </SplitWrap>
     );
 }
@@ -922,17 +920,7 @@ interface UnifiedDiffViewProps {
     onMergeRight: (hunkId: number) => void;
 }
 
-function UnifiedDiffView({
-    lines,
-    hunks,
-    activeHunk,
-    onHunkClick,
-    onDismiss,
-    onPrev,
-    onNext,
-    onMergeLeft,
-    onMergeRight
-}: UnifiedDiffViewProps) {
+function UnifiedDiffView({ lines, hunks, activeHunk, onHunkClick, onDismiss, onPrev, onNext, onMergeLeft, onMergeRight }: UnifiedDiffViewProps) {
     const activeIdx = hunks.findIndex((h) => h.id === activeHunk);
     const wrapRef = useRef<HTMLDivElement>(null);
     const [barY, setBarY] = useState<number>(0);
@@ -957,13 +945,13 @@ function UnifiedDiffView({
                 <PanelLabel>Unified Diff</PanelLabel>
             </PanelHeader>
             <DiffScroll style={{ width: "100%" }}>
-                {lines.map((line, i) => {
+                {lines.map((line) => {
                     const isChanged = line.type !== "unchanged";
                     const hid = line.hunkId;
                     const isActive = isChanged && hid === activeHunk;
                     return (
                         <LineRow
-                            key={i}
+                            key={`${line.lineNumLeft ?? ""}-${line.lineNumRight ?? ""}-${line.type}`}
                             $type={line.type}
                             $active={isActive}
                             $clickable={isChanged && hid != null}
@@ -976,7 +964,11 @@ function UnifiedDiffView({
                                 {line.lineNumRight ?? ""}
                             </LineNumber>
                             <LineSign $type={line.type}>
-                                {line.type === "added" ? "+" : line.type === "removed" ? "−" : ""}
+                                {(() => {
+                                    if (line.type === "added") return "+";
+                                    if (line.type === "removed") return "−";
+                                    return "";
+                                })()}
                             </LineSign>
                             <LineContent>{line.content}</LineContent>
                         </LineRow>
@@ -984,46 +976,65 @@ function UnifiedDiffView({
                 })}
             </DiffScroll>
 
-            {activeHunk !== null && (() => {
-                const hunk = hunks.find((h) => h.id === activeHunk);
-                return (
-                    <MergeBarWrap style={{ top: barY }}>
-                        <MergeNavRow>
-                            <NavBtn onClick={onPrev} disabled={activeIdx <= 0}>↑ Prev</NavBtn>
-                            <MergeLabel>Change {activeIdx + 1} of {hunks.length}</MergeLabel>
-                            <NavBtn onClick={onNext} disabled={activeIdx >= hunks.length - 1}>Next ↓</NavBtn>
-                            <DismissBtn onClick={onDismiss} title="Dismiss">×</DismissBtn>
-                        </MergeNavRow>
+            {activeHunk !== null &&
+                (() => {
+                    const hunk = hunks.find((h) => h.id === activeHunk);
+                    return (
+                        <MergeBarWrap style={{ top: barY }}>
+                            <MergeNavRow>
+                                <NavBtn onClick={onPrev} disabled={activeIdx <= 0}>
+                                    ↑ Prev
+                                </NavBtn>
+                                <MergeLabel>
+                                    Change {activeIdx + 1} of {hunks.length}
+                                </MergeLabel>
+                                <NavBtn onClick={onNext} disabled={activeIdx >= hunks.length - 1}>
+                                    Next ↓
+                                </NavBtn>
+                                <DismissBtn onClick={onDismiss} title="Dismiss">
+                                    ×
+                                </DismissBtn>
+                            </MergeNavRow>
 
-                        {hunk && (
-                            <HunkPreview>
-                                <HunkPreviewPanel $side="left">
-                                    {hunk.removedLines.length === 0
-                                        ? <HunkPreviewEmpty>— deleted —</HunkPreviewEmpty>
-                                        : hunk.removedLines.slice(0, 6).map((l, i) => (
-                                            <HunkPreviewLine key={i} $side="left">− {l.content}</HunkPreviewLine>
-                                        ))
-                                    }
-                                </HunkPreviewPanel>
-                                <HunkPreviewPanel $side="right">
-                                    {hunk.addedLines.length === 0
-                                        ? <HunkPreviewEmpty>— deleted —</HunkPreviewEmpty>
-                                        : hunk.addedLines.slice(0, 6).map((l, i) => (
-                                            <HunkPreviewLine key={i} $side="right">+ {l.content}</HunkPreviewLine>
-                                        ))
-                                    }
-                                </HunkPreviewPanel>
-                            </HunkPreview>
-                        )}
+                            {hunk && (
+                                <HunkPreview>
+                                    <HunkPreviewPanel $side="left">
+                                        {hunk.removedLines.length === 0 ? (
+                                            <HunkPreviewEmpty>— deleted —</HunkPreviewEmpty>
+                                        ) : (
+                                            hunk.removedLines.slice(0, 6).map((l, i) => (
+                                                <HunkPreviewLine key={l.lineNumLeft ?? l.lineNumRight ?? i} $side="left">
+                                                    − {l.content}
+                                                </HunkPreviewLine>
+                                            ))
+                                        )}
+                                    </HunkPreviewPanel>
+                                    <HunkPreviewPanel $side="right">
+                                        {hunk.addedLines.length === 0 ? (
+                                            <HunkPreviewEmpty>— deleted —</HunkPreviewEmpty>
+                                        ) : (
+                                            hunk.addedLines.slice(0, 6).map((l, i) => (
+                                                <HunkPreviewLine key={l.lineNumRight ?? l.lineNumLeft ?? i} $side="right">
+                                                    + {l.content}
+                                                </HunkPreviewLine>
+                                            ))
+                                        )}
+                                    </HunkPreviewPanel>
+                                </HunkPreview>
+                            )}
 
-                        <MergeActionsRow>
-                            <MergeBtn $side="left" onClick={() => onMergeLeft(activeHunk)}>← Use original</MergeBtn>
-                            <MergeDivider />
-                            <MergeBtn $side="right" onClick={() => onMergeRight(activeHunk)}>Use modified →</MergeBtn>
-                        </MergeActionsRow>
-                    </MergeBarWrap>
-                );
-            })()}
+                            <MergeActionsRow>
+                                <MergeBtn $side="left" onClick={() => onMergeLeft(activeHunk)}>
+                                    ← Use original
+                                </MergeBtn>
+                                <MergeDivider />
+                                <MergeBtn $side="right" onClick={() => onMergeRight(activeHunk)}>
+                                    Use modified →
+                                </MergeBtn>
+                            </MergeActionsRow>
+                        </MergeBarWrap>
+                    );
+                })()}
         </UnifiedWrap>
     );
 }
@@ -1205,9 +1216,7 @@ export default function TextDiff() {
                         <PanelLabel>{L.originalLabel}</PanelLabel>
                         <ControlGroup style={{ gap: 6 }}>
                             {original && <MetaText>{original.length.toLocaleString()} chars</MetaText>}
-                            {original && (
-                                <IconBtn onClick={() => setOriginal(tryPrettify(original))}>{"{ }"} Prettify</IconBtn>
-                            )}
+                            {original && <IconBtn onClick={() => setOriginal(tryPrettify(original))}>{"{ }"} Prettify</IconBtn>}
                             <IconBtn onClick={() => uploadOrigRef.current?.click()}>↑ Upload</IconBtn>
                             <IconBtn onClick={() => openUrlModal("original")}>⊕ URL</IconBtn>
                         </ControlGroup>
@@ -1228,9 +1237,7 @@ export default function TextDiff() {
                         <PanelLabel>{L.modifiedLabel}</PanelLabel>
                         <ControlGroup style={{ gap: 6 }}>
                             {modified && <MetaText>{modified.length.toLocaleString()} chars</MetaText>}
-                            {modified && (
-                                <IconBtn onClick={() => setModified(tryPrettify(modified))}>{"{ }"} Prettify</IconBtn>
-                            )}
+                            {modified && <IconBtn onClick={() => setModified(tryPrettify(modified))}>{"{ }"} Prettify</IconBtn>}
                             <IconBtn onClick={() => uploadModRef.current?.click()}>↑ Upload</IconBtn>
                             <IconBtn onClick={() => openUrlModal("modified")}>⊕ URL</IconBtn>
                         </ControlGroup>
@@ -1251,13 +1258,25 @@ export default function TextDiff() {
                 <ControlsRow>
                     <ControlGroup>
                         <ModeToggle style={{ padding: "2px", gap: "1px" }}>
-                            <ModeBtn $active={viewMode === "split"} onClick={() => setViewMode("split")} style={{ padding: "5px 12px", fontSize: "11px" }}>
+                            <ModeBtn
+                                $active={viewMode === "split"}
+                                onClick={() => setViewMode("split")}
+                                style={{ padding: "5px 12px", fontSize: "11px" }}
+                            >
                                 Split
                             </ModeBtn>
-                            <ModeBtn $active={viewMode === "unified"} onClick={() => setViewMode("unified")} style={{ padding: "5px 12px", fontSize: "11px" }}>
+                            <ModeBtn
+                                $active={viewMode === "unified"}
+                                onClick={() => setViewMode("unified")}
+                                style={{ padding: "5px 12px", fontSize: "11px" }}
+                            >
                                 Unified
                             </ModeBtn>
-                            <ModeBtn $active={viewMode === "inline"} onClick={() => setViewMode("inline")} style={{ padding: "5px 12px", fontSize: "11px" }}>
+                            <ModeBtn
+                                $active={viewMode === "inline"}
+                                onClick={() => setViewMode("inline")}
+                                style={{ padding: "5px 12px", fontSize: "11px" }}
+                            >
                                 Inline
                             </ModeBtn>
                         </ModeToggle>
@@ -1265,7 +1284,12 @@ export default function TextDiff() {
                         {viewMode === "inline" && (
                             <ModeToggle style={{ padding: "2px", gap: "1px" }}>
                                 {MODES.map(({ id, label }) => (
-                                    <ModeBtn key={id} $active={diffMode === id} onClick={() => setDiffMode(id)} style={{ padding: "5px 10px", fontSize: "11px" }}>
+                                    <ModeBtn
+                                        key={id}
+                                        $active={diffMode === id}
+                                        onClick={() => setDiffMode(id)}
+                                        style={{ padding: "5px 10px", fontSize: "11px" }}
+                                    >
                                         {label}
                                     </ModeBtn>
                                 ))}
@@ -1282,7 +1306,14 @@ export default function TextDiff() {
                                 <ActionBtn onClick={handleCopyPatch}>{patchCopied ? "Copied!" : "Copy Patch"}</ActionBtn>
                             </>
                         )}
-                        <ActionBtn $danger onClick={() => { setOriginal(""); setModified(""); setActiveHunk(null); }}>
+                        <ActionBtn
+                            $danger
+                            onClick={() => {
+                                setOriginal("");
+                                setModified("");
+                                setActiveHunk(null);
+                            }}
+                        >
                             {L.clearAllBtn}
                         </ActionBtn>
                     </ControlGroup>
@@ -1297,7 +1328,9 @@ export default function TextDiff() {
                     <StatChip $color="var(--text-secondary)">{stats.unchanged} unchanged</StatChip>
                     {!hasDiff && <StatChip $color="#22cc99">✓ Identical</StatChip>}
                     {hasDiff && hunks.length > 0 && (
-                        <StatChip $color="var(--text-secondary)">{hunks.length} {hunks.length === 1 ? "hunk" : "hunks"}</StatChip>
+                        <StatChip $color="var(--text-secondary)">
+                            {hunks.length} {hunks.length === 1 ? "hunk" : "hunks"}
+                        </StatChip>
                     )}
                     <MatchBadge>{stats.similarity}% similar</MatchBadge>
                 </StatsBar>
@@ -1337,10 +1370,14 @@ export default function TextDiff() {
                             <PanelHeader>
                                 <PanelLabel>Inline Diff</PanelLabel>
                                 <MetaText>
-                                    <span style={{ color: "#22cc99" }}>+{inlineParts.filter((p) => p.added).reduce((n, p) => n + (p.count ?? 0), 0)}</span>
+                                    <span style={{ color: "#22cc99" }}>
+                                        +{inlineParts.filter((p) => p.added).reduce((n, p) => n + (p.count ?? 0), 0)}
+                                    </span>
                                     {" / "}
-                                    <span style={{ color: "#ef4444" }}>-{inlineParts.filter((p) => p.removed).reduce((n, p) => n + (p.count ?? 0), 0)}</span>
-                                    {" "}{diffMode}
+                                    <span style={{ color: "#ef4444" }}>
+                                        -{inlineParts.filter((p) => p.removed).reduce((n, p) => n + (p.count ?? 0), 0)}
+                                    </span>{" "}
+                                    {diffMode}
                                 </MetaText>
                             </PanelHeader>
                             <InlineDiffArea>{renderInlineParts(inlineParts)}</InlineDiffArea>
@@ -1377,9 +1414,7 @@ export default function TextDiff() {
             {urlModal !== null && (
                 <Overlay onClick={() => setUrlModal(null)}>
                     <ModalCard onClick={(e) => e.stopPropagation()}>
-                        <ModalTitle>
-                            Load from URL — {urlModal === "original" ? "Original" : "Modified"}
-                        </ModalTitle>
+                        <ModalTitle>Load from URL — {urlModal === "original" ? "Original" : "Modified"}</ModalTitle>
                         <ModalInput
                             autoFocus
                             placeholder="https://example.com/data.json"

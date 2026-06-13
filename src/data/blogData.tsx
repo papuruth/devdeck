@@ -945,7 +945,11 @@ const blogData = {
             },
             {
                 heading: "Hunk-Based Merge (Cherry-Pick Changes)",
-                body: "Unlike basic diff tools that only show differences, DevDeck lets you merge changes one hunk at a time. Click any highlighted line in Split view or Unified view to activate that hunk. A merge bar appears near the clicked line showing a two-column preview of the removed and added content, 'Change N of M' navigation, and merge buttons. Use 'Use original ←' to push the left side into the modified panel, or 'Use modified →' to accept the right side into the original. After merging, the bar automatically advances to the next hunk. This lets you review and selectively apply changes without accepting the entire diff."
+                body: "Unlike basic diff tools that only show differences, DevDeck lets you merge changes one hunk at a time."
+                    + " Click any highlighted line in Split or Unified view to activate that hunk. A merge bar appears showing"
+                    + " a preview of the removed and added content, 'Change N of M' navigation, and merge buttons."
+                    + " Use 'Use original ←' to push the left side into the modified panel, or 'Use modified →' to accept the right side."
+                    + " After merging, the bar automatically advances to the next hunk."
             },
             {
                 heading: "Auto-Prettify for JSON",

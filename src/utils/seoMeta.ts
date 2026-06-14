@@ -121,7 +121,7 @@ export const SEO_META: Record<string, SeoMeta> = {
         title: "Text Diff & Diffchecker — Compare Two Files Online | DevDeck",
         description: "Free online diffchecker. Compare two text files side-by-side with aligned blank rows, unified diff, and inline word/char highlighting. Merge changes hunk by hunk. Works with JSON, code, configs, and plain text.",
         about: "DevDeck Text Diff is a premium diffchecker for comparing two text inputs."
-            + " Split view shows aligned side-by-side differences with blank placeholder rows — just like Diffchecker."
+            + " Split view shows aligned side-by-side differences with blank placeholder rows."
             + " Unified view shows a single pane with dual line numbers."
             + " Inline view highlights word or character-level changes."
             + " Click any changed hunk to activate the merge bar: cherry-pick individual changes left or right."

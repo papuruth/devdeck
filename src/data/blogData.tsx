@@ -938,7 +938,7 @@ const blogData = {
             {
                 heading: "Three View Modes",
                 list: [
-                    "Split view: two panels side by side with aligned blank rows so every change sits at the same vertical position — identical to Diffchecker.com's layout",
+                    "Split view: two panels side by side with aligned blank rows so every change sits at the same vertical position",
                     "Unified view: a single panel showing both sides with dual line number columns (original left, modified right) — supports hunk merge just like split view",
                     "Inline view: a single block with word-level or character-level highlights directly inside the text"
                 ]

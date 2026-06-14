@@ -96,7 +96,6 @@ const SplitWrap = styled.div`
     flex-direction: column;
     gap: 0;
     position: relative;
-    padding-bottom: 220px;
 `;
 
 const SplitGrid = styled.div`
@@ -395,7 +394,6 @@ const UnifiedWrap = styled(Panel)`
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding-bottom: 220px;
 `;
 
 const InlineDiffArea = styled.div`
@@ -758,8 +756,7 @@ function SplitDiffView({ lines, hunks, activeHunk, onHunkClick, onDismiss, onPre
                 const rect = wrapRef.current.getBoundingClientRect();
                 const wrapTop = rect.top + window.scrollY;
                 const rawY = e.clientY + window.scrollY - wrapTop + 12;
-                // clamp so bar stays inside SplitWrap (padding-bottom gives the space)
-                const maxY = rect.height - 220 - 16;
+                const maxY = rect.height - 16;
                 setBarY(Math.min(Math.max(0, rawY), maxY));
             }
             onHunkClick(hid);
@@ -931,7 +928,7 @@ function UnifiedDiffView({ lines, hunks, activeHunk, onHunkClick, onDismiss, onP
                 const rect = wrapRef.current.getBoundingClientRect();
                 const wrapTop = rect.top + window.scrollY;
                 const rawY = e.clientY + window.scrollY - wrapTop + 12;
-                const maxY = rect.height - 220 - 16;
+                const maxY = rect.height - 16;
                 setBarY(Math.min(Math.max(0, rawY), maxY));
             }
             onHunkClick(hid);

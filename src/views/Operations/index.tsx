@@ -205,7 +205,7 @@ export default function Operations() {
                 <StepperNavigation currentView={title} category={category} />
                 <StyledHeroContent>
                     <Box>
-                        <Typography variant="h5" sx={{ lineHeight: 1.2, fontWeight: 700 }}>
+                        <Typography variant="h5" component="h1" sx={{ lineHeight: 1.2, fontWeight: 700 }}>
                             {title}
                         </Typography>
                         {currentItem?.description && (

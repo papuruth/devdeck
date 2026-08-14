@@ -1940,6 +1940,1568 @@ const blogData = {
                 a: "The preview computes run times from the current moment in your local timezone. It does not account for DST transitions or leap seconds. For production systems, always validate in the scheduler's own timezone settings."
             }
         ]
+    },
+
+    "what-is-base64-encoding": {
+        slug: "what-is-base64-encoding",
+        title: "What Is Base64 Encoding? A Developer's Guide",
+        metaDescription:
+            "Base64 encoding converts binary data into a safe ASCII string. Learn how it works, where it's used in web development, and when to use it.",
+        metaKeywords: "what is base64, base64 encoding explained, base64 how it works, base64 character set, base64 padding",
+        intro: "Base64 encoding turns binary data into a string of printable ASCII characters. It's used everywhere in web development — HTTP authentication, JWTs, data URIs, email attachments — and understanding how it works helps you use it correctly.",
+        sections: [
+            {
+                heading: "Why Base64 Exists",
+                body: "Many protocols — HTTP headers, SMTP email, XML, JSON — were designed to carry text, not raw binary. Binary data contains bytes that look like control characters and can corrupt transmission. Base64 solves this by representing any byte sequence using only 64 safe ASCII characters: A–Z, a–z, 0–9, +, and /."
+            },
+            {
+                heading: "How Base64 Encoding Works",
+                body: "The encoder reads 3 bytes (24 bits) of input at a time and splits them into four 6-bit groups. Each group maps to one of 64 characters. Because 3 input bytes produce 4 output characters, Base64 expands data by exactly 33%. If the input length isn't divisible by 3, = padding characters are added to complete the final group."
+            },
+            {
+                heading: "The Base64 Character Set",
+                list: [
+                    "A–Z → values 0–25",
+                    "a–z → values 26–51",
+                    "0–9 → values 52–61",
+                    "+ → value 62",
+                    "/ → value 63",
+                    "= → padding (not a data character)"
+                ]
+            },
+            {
+                heading: "Base64URL — The URL-Safe Variant",
+                body: "Standard Base64 uses + and / which are special characters in URLs. Base64URL replaces + with - and / with _ to produce strings safe in query parameters and HTTP headers without percent-encoding. JWT tokens use Base64URL for their header and payload sections."
+            },
+            {
+                heading: "Where Base64 Is Used in Web Development",
+                list: [
+                    "HTTP Basic Authentication — credentials are Base64-encoded before being sent in the Authorization header",
+                    "JWT tokens — header and payload are Base64URL-encoded JSON",
+                    "Data URIs — images and fonts embedded directly in HTML or CSS",
+                    "Email attachments — MIME encodes binary attachments as Base64 for SMTP transport",
+                    "API payloads — binary data (certificates, keys, images) transmitted in JSON"
+                ]
+            },
+            {
+                heading: "What Base64 Is Not",
+                body: "Base64 is encoding, not encryption. It is trivially reversible — anyone can decode it with a single function call. Never use Base64 to 'hide' credentials or sensitive data. HTTP Basic Auth encodes credentials in Base64 but requires HTTPS for actual security."
+            },
+            {
+                heading: "Base64 in JavaScript",
+                body: "Browsers provide two built-in functions: `btoa(string)` encodes to Base64, and `atob(base64string)` decodes it. For binary data like ArrayBuffers, you need to convert bytes manually before passing to btoa. Node.js uses `Buffer.from(data).toString('base64')` for encoding and `Buffer.from(str, 'base64')` for decoding."
+            }
+        ],
+        cta: { label: "Try Base64 Image Converter →", toolRoute: "/base64-image" },
+        relatedSlugs: ["base64-image-converter", "base64-text-encoder", "how-to-decode-base64-image", "base64-data-urls-explained"],
+        faq: [
+            {
+                q: "Is Base64 the same as encryption?",
+                a: "No. Base64 is encoding — it transforms binary into text using a fixed, public algorithm. Anyone can decode it instantly. Encryption uses a secret key and is designed to be irreversible without that key."
+            },
+            {
+                q: "Why does Base64 output end with = or ==?",
+                a: "The = characters are padding. Base64 processes input in 3-byte chunks. If the input doesn't divide evenly by 3, one or two = characters pad the final output group to a multiple of 4 characters."
+            },
+            {
+                q: "What is the size overhead of Base64?",
+                a: "Base64 increases data size by approximately 33%. Three bytes of input become four Base64 characters. For a 100KB image, the Base64 output will be around 133KB."
+            },
+            {
+                q: "What is the difference between Base64 and Base64URL?",
+                a: "Base64URL replaces + with - and / with _ to produce output safe in URLs and HTTP headers. JWT tokens use Base64URL. Standard Base64 uses + and / which need percent-encoding in URLs."
+            },
+            {
+                q: "Can browsers decode Base64 natively?",
+                a: "Yes. `atob()` decodes a Base64 string and `btoa()` encodes one. These are available in all modern browsers and in Node.js environments."
+            }
+        ]
+    },
+
+    "how-to-decode-base64-image": {
+        slug: "how-to-decode-base64-image",
+        title: "How to Decode a Base64 Image — Step-by-Step Guide",
+        metaDescription:
+            "Learn how to decode a Base64-encoded image back to a viewable file. Covers data URI structure, browser tools, JavaScript decoding, and common errors.",
+        metaKeywords: "decode base64 image, base64 image decode, base64 to image, convert base64 to image, base64 image decoder",
+        intro: "A Base64-encoded image is a text string that represents image binary data. Decoding it reveals the original image. This guide explains what a Base64 image looks like, how to decode it using a browser tool or JavaScript, and how to fix common decoding errors.",
+        sections: [
+            {
+                heading: "What a Base64 Image Looks Like",
+                body: "A Base64 image is typically a data URI — a long string that starts with `data:image/png;base64,` followed by the encoded image data. The prefix tells the browser the media type and encoding. The actual image data begins after the comma and looks like a stream of letters, numbers, and symbols: `iVBORw0KGgoAAAANSUhEUgAA...`"
+            },
+            {
+                heading: "Anatomy of a Base64 Data URI",
+                list: [
+                    "`data:` — the URI scheme",
+                    "`image/png` — the MIME type (could also be image/jpeg, image/webp, image/gif, image/svg+xml)",
+                    "`;base64,` — declares that the data is Base64-encoded",
+                    "everything after the comma — the actual Base64-encoded image bytes"
+                ]
+            },
+            {
+                heading: "How to Decode Using DevDeck",
+                steps: [
+                    "Open the Base64 Image Converter tool",
+                    "Switch to the Decode tab",
+                    "Paste the full Base64 string (with or without the `data:image/...;base64,` prefix)",
+                    "The decoded image appears instantly in the preview panel",
+                    "Download the image file if needed"
+                ]
+            },
+            {
+                heading: "How to Decode in JavaScript",
+                body: "To decode a Base64 image in the browser, strip the data URI prefix, then use `atob()` to convert to a binary string, then convert to a Uint8Array and create a Blob. Example: strip the prefix with `str.split(',')[1]`, then `atob(base64str)` gives you the raw bytes. To display it, create a Blob with the correct MIME type and use `URL.createObjectURL()`. In Node.js, `Buffer.from(base64str, 'base64')` gives you the raw bytes directly."
+            },
+            {
+                heading: "Supported Image Formats",
+                list: [
+                    "PNG — `data:image/png;base64,`",
+                    "JPEG — `data:image/jpeg;base64,`",
+                    "WebP — `data:image/webp;base64,`",
+                    "GIF — `data:image/gif;base64,`",
+                    "SVG — `data:image/svg+xml;base64,`"
+                ]
+            },
+            {
+                heading: "Common Decoding Errors",
+                list: [
+                    "Invalid Base64 string — check for whitespace or line breaks in the middle of the string; Base64 must be a continuous string",
+                    "Missing MIME type prefix — if your decoder requires a data URI, make sure the `data:image/...;base64,` prefix is present",
+                    "Truncated string — a Base64 string must have a length divisible by 4 (padded with =); truncated strings will fail",
+                    "Wrong MIME type — if the image doesn't display correctly, try changing the MIME type in the prefix to match the actual format",
+                    "Extra characters — copy-pasting from some tools adds unwanted quotes or newlines; strip these before decoding"
+                ]
+            },
+            {
+                heading: "Using a Decoded Image in HTML or CSS",
+                body: "Once you have the data URI, use it anywhere a URL is accepted. In HTML: `<img src=\"data:image/png;base64,...\">`. In CSS: `background-image: url('data:image/png;base64,...')`. The browser renders it without making an HTTP request. For large images this is inefficient — prefer external URLs for images over a few KB."
+            }
+        ],
+        cta: { label: "Decode a Base64 Image →", toolRoute: "/base64-image" },
+        relatedSlugs: ["base64-image-converter", "what-is-base64-encoding", "base64-data-urls-explained", "base64-text-encoder"],
+        faq: [
+            {
+                q: "Can I decode a Base64 image without software?",
+                a: "Yes. Paste the Base64 string into DevDeck's Base64 Image Converter — no installation needed. It decodes entirely in your browser."
+            },
+            {
+                q: "Do I need the data:image/...;base64, prefix to decode?",
+                a: "Not always. Many tools accept the raw Base64 string without the prefix. DevDeck's converter handles both formats."
+            },
+            {
+                q: "Why does my decoded image appear corrupted?",
+                a: "The most common causes are a truncated string, whitespace in the middle, or a mismatched MIME type in the data URI prefix. Check that the full string was copied and try stripping any line breaks."
+            },
+            {
+                q: "How do I get a Base64 string from an existing image file?",
+                a: "Use DevDeck's Base64 Image Converter in encode mode — drop the image file and it produces the full data URI instantly."
+            }
+        ]
+    },
+
+    "base64-data-urls-explained": {
+        slug: "base64-data-urls-explained",
+        title: "Base64 Data URLs Explained — How They Work and When to Use Them",
+        metaDescription:
+            "Data URLs embed files directly into HTML or CSS using Base64. Learn the syntax, browser support, performance trade-offs, and the right situations to use them.",
+        metaKeywords: "base64 data url, data uri, data url image, base64 data uri, embed image base64 html css",
+        intro: "A data URL is a URI scheme that lets you embed file content directly inside an HTML document or CSS stylesheet. Instead of a path to an external file, the file's content — encoded as Base64 — is written inline. This eliminates one HTTP request but comes with trade-offs worth understanding.",
+        sections: [
+            {
+                heading: "Data URL Syntax",
+                body: "The format is: `data:[<mediatype>][;base64],<data>`. The media type is a MIME type like `image/png` or `font/woff2`. The `;base64` flag tells the browser the data is Base64-encoded. Everything after the comma is the encoded content. Example: `data:image/svg+xml;base64,PHN2ZyB4bWxucz0...`"
+            },
+            {
+                heading: "Where Data URLs Are Used",
+                list: [
+                    "HTML `<img src>` — embed images without a separate file request",
+                    "CSS `background-image: url(...)` — inline background images in stylesheets",
+                    "CSS `@font-face src` — embed web fonts directly in CSS",
+                    "HTML `<a href download>` — generate downloadable files purely in JavaScript",
+                    "Email templates — many email clients block external images; data URLs are sometimes used for small inline images",
+                    "Canvas toDataURL() — export canvas drawings as Base64 images"
+                ]
+            },
+            {
+                heading: "Browser Support",
+                body: "Data URLs are supported in all modern browsers and have been since IE8 (with a 32KB size limit at the time). There are no meaningful browser compatibility concerns for standard use cases today. However, some environments restrict data URL navigation for security reasons — for example, clicking a link with `href='data:text/html,...'` is blocked in some browsers to prevent phishing."
+            },
+            {
+                heading: "Performance Trade-offs",
+                list: [
+                    "Eliminates one HTTP request — beneficial for small assets where the request overhead exceeds the data size",
+                    "Increases HTML/CSS file size by ~33% — the Base64 overhead travels in the document instead of a cached file",
+                    "Cannot be cached independently — external image files are cached by the browser; a data URL is part of the document and cannot be cached separately",
+                    "Blocks rendering — large inline data URLs in the HTML increase initial parse time",
+                    "Not shared across pages — an external image file cached once is reused everywhere; a data URL is re-parsed on every page load"
+                ]
+            },
+            {
+                heading: "When Data URLs Make Sense",
+                list: [
+                    "Small icons under 2–3KB where the HTTP request overhead is comparable to the data size",
+                    "SVG icons that are already text (though inline SVG is often more maintainable)",
+                    "Email templates where external images are blocked",
+                    "Single-file HTML deliverables (dashboards, reports) with no external dependencies",
+                    "Generated download links in browser-based tools (no server needed)"
+                ]
+            },
+            {
+                heading: "When to Use External URLs Instead",
+                list: [
+                    "Images larger than 5KB — the caching benefit of an external file outweighs the request overhead",
+                    "Images used on multiple pages — external files are cached once and reused",
+                    "Performance-critical pages — inline data increases document parse time",
+                    "CDN-served assets — CDNs compress and cache files more efficiently than inline data"
+                ]
+            },
+            {
+                heading: "Generating Data URLs in JavaScript",
+                body: "The canvas API's `toDataURL()` method returns a data URL for the canvas content. For arbitrary files, use FileReader: `reader.readAsDataURL(file)` produces a data URL for any File or Blob. This is how DevDeck's Base64 Image Converter encodes dropped image files — the browser converts the file locally and produces the data URI with no server involved."
+            }
+        ],
+        cta: { label: "Create a Base64 Data URL →", toolRoute: "/base64-image" },
+        relatedSlugs: ["base64-image-converter", "what-is-base64-encoding", "how-to-decode-base64-image", "base64-vs-binary-images"],
+        faq: [
+            {
+                q: "Is a data URL the same as a data URI?",
+                a: "The terms are used interchangeably. URI (Uniform Resource Identifier) is the technically correct term; URL (Uniform Resource Locator) is widely used in practice. Both refer to the same `data:...` scheme."
+            },
+            {
+                q: "Do data URLs work in all browsers?",
+                a: "Yes, all modern browsers support data URLs for images, CSS, and fonts. There are no significant compatibility issues for standard use cases."
+            },
+            {
+                q: "Why shouldn't I use data URLs for large images?",
+                a: "Large data URLs increase HTML or CSS file size by ~33%, cannot be cached by the browser independently, and block rendering. External images served via CDN are almost always faster for anything over a few KB."
+            },
+            {
+                q: "Can I use a data URL in a CSS file?",
+                a: "Yes. You can use data URLs in CSS `background-image: url('data:image/png;base64,...')` and in `@font-face src` declarations. The same performance trade-offs apply."
+            },
+            {
+                q: "How do I convert an image to a data URL?",
+                a: "Use DevDeck's Base64 Image Converter — drop your image and it produces the complete data URI instantly. Or in JavaScript, use `FileReader.readAsDataURL(file)` or `canvas.toDataURL()`."
+            }
+        ]
+    },
+
+    "how-to-format-json": {
+        slug: "how-to-format-json",
+        title: "How to Format JSON — Pretty Print and Structure JSON Data",
+        metaDescription:
+            "Learn how to format and pretty-print JSON data for readability. Covers indentation, structure, online tools, and formatting in JavaScript, Python, and command line.",
+        metaKeywords: "how to format json, pretty print json, json formatter, json beautify, format json online",
+        intro: "Raw JSON from an API or log file is often a single compressed line with no whitespace. Formatting it — adding indentation and line breaks — makes it readable and easier to debug. This guide covers how to format JSON using an online tool, JavaScript, Python, and the command line.",
+        sections: [
+            {
+                heading: "What JSON Formatting Does",
+                body: "Formatting JSON adds consistent indentation and line breaks to make the structure visible. The data is identical before and after formatting — only whitespace changes. A formatter takes `{\"name\":\"Alice\",\"age\":30}` and produces the same data spread across multiple lines with two or four spaces of indentation per nesting level."
+            },
+            {
+                heading: "Format JSON Online",
+                steps: [
+                    "Open DevDeck's JSON Viewer & Formatter",
+                    "Paste your JSON into the input panel",
+                    "The formatter validates and pretty-prints the JSON instantly",
+                    "Copy the formatted output or download it"
+                ]
+            },
+            {
+                heading: "Format JSON in JavaScript",
+                body: "Use `JSON.stringify()` with the third argument to control indentation. `JSON.stringify(data, null, 2)` formats with 2-space indentation. `JSON.stringify(data, null, 4)` uses 4 spaces. The second argument is a replacer (null means include everything). To format a JSON string you've received: `JSON.stringify(JSON.parse(jsonString), null, 2)` — parse first, then re-stringify with formatting."
+            },
+            {
+                heading: "Format JSON in Python",
+                body: "Use the `json` module: `import json; print(json.dumps(data, indent=2))`. To format a JSON file: `python3 -m json.tool input.json`. This reads the file, validates it, and prints formatted JSON to stdout. Pipe to a file to save: `python3 -m json.tool input.json > formatted.json`."
+            },
+            {
+                heading: "Format JSON from the Command Line",
+                list: [
+                    "`cat file.json | python3 -m json.tool` — built-in Python formatter",
+                    "`cat file.json | jq '.'` — jq is the standard JSON command-line processor",
+                    "`echo '{\"a\":1}' | jq '.'` — format an inline JSON string",
+                    "`jq '.' file.json > formatted.json` — format and save to a new file"
+                ]
+            },
+            {
+                heading: "Compact vs Pretty-Printed JSON",
+                body: "Compact JSON (`{\"a\":1,\"b\":2}`) is smaller and faster to transmit over a network. Pretty-printed JSON is larger but human-readable. APIs typically return compact JSON for efficiency. When debugging, use a formatter to expand it. When writing JSON configuration files that humans edit, pretty-printed is standard. Most JSON parsers accept both formats equally — the choice is purely about readability vs. size."
+            },
+            {
+                heading: "Sorting Keys When Formatting",
+                body: "Some formatters can sort object keys alphabetically. This is useful for comparing two JSON objects or for keeping configuration files consistent. In Python: `json.dumps(data, indent=2, sort_keys=True)`. In jq: `jq -S '.' file.json` (the -S flag sorts keys). Sorted keys make diff output cleaner when JSON files are version-controlled."
+            }
+        ],
+        cta: { label: "Format JSON Online →", toolRoute: "/json-viewer" },
+        relatedSlugs: ["json-viewer", "how-to-validate-json", "json-syntax-guide", "common-json-errors"],
+        faq: [
+            {
+                q: "Does formatting change JSON data?",
+                a: "No. Formatting only adds whitespace — indentation and line breaks. The data values, keys, and structure are identical before and after formatting."
+            },
+            {
+                q: "What indentation should I use for JSON?",
+                a: "Two spaces is the most common convention. Four spaces is also common. Tabs work but can cause inconsistency across editors. Pick one and be consistent within a project."
+            },
+            {
+                q: "Why does my JSON fail to format?",
+                a: "Formatting fails if the JSON is invalid — usually a missing comma, extra comma, unquoted key, or mismatched bracket. A JSON validator will show you the exact error and line."
+            },
+            {
+                q: "Can I format JSON with comments?",
+                a: "Standard JSON does not support comments. If your file has comments (like in a tsconfig.json or VS Code settings file), it's technically JSONC (JSON with Comments), not valid JSON. A standard formatter will reject it."
+            }
+        ]
+    },
+
+    "how-to-validate-json": {
+        slug: "how-to-validate-json",
+        title: "How to Validate JSON — Find and Fix JSON Errors",
+        metaDescription:
+            "Learn how to validate JSON and find syntax errors. Covers common JSON mistakes, online validators, JavaScript validation, and JSON Schema validation.",
+        metaKeywords: "validate json, json validator, json syntax error, json validation, check json valid",
+        intro: "Invalid JSON is one of the most common causes of broken API integrations and configuration errors. A single missing comma or unquoted key makes the entire document unparseable. This guide explains how to validate JSON, find errors quickly, and understand what went wrong.",
+        sections: [
+            {
+                heading: "What Makes JSON Invalid",
+                list: [
+                    "Trailing comma after the last item in an object or array — `{\"a\": 1,}` is invalid",
+                    "Single quotes instead of double quotes — `{'a': 1}` is invalid; keys and strings must use double quotes",
+                    "Unquoted keys — `{a: 1}` is invalid; all keys must be quoted strings",
+                    "Missing comma between items — `{\"a\": 1 \"b\": 2}` is invalid",
+                    "Comments — `// comment` and `/* comment */` are not valid JSON",
+                    "Undefined or NaN values — JSON supports only null, not JavaScript's undefined or NaN",
+                    "Mismatched brackets — every `{` needs a `}`, every `[` needs a `]`",
+                    "Unescaped special characters in strings — newlines, tabs, and backslashes must be escaped"
+                ]
+            },
+            {
+                heading: "Validate JSON Online",
+                steps: [
+                    "Open DevDeck's JSON Viewer & Formatter",
+                    "Paste your JSON into the input panel",
+                    "Invalid JSON shows an error immediately with the line and character position",
+                    "Fix the error and re-paste — or use the formatter's error highlighting to locate the issue"
+                ]
+            },
+            {
+                heading: "Validate JSON in JavaScript",
+                body: "The simplest approach is a try/catch around `JSON.parse()`: wrap the parse call in try/catch, and if it throws, the JSON is invalid. The error message usually includes the position of the problem. For production code that needs structured validation (checking that the right fields exist with the right types), use a JSON Schema validator like Ajv or Zod."
+            },
+            {
+                heading: "Validate JSON from the Command Line",
+                list: [
+                    "`cat file.json | python3 -m json.tool` — prints the error with line number if invalid",
+                    "`jq '.' file.json` — jq exits with an error and message if the JSON is invalid",
+                    "`node -e \"require('./file.json')\"` — Node.js throws a SyntaxError on invalid JSON"
+                ]
+            },
+            {
+                heading: "JSON Schema Validation",
+                body: "Basic JSON validation only checks syntax. JSON Schema validation checks structure — required fields, data types, value ranges, allowed values. A schema defines what valid data looks like: `{ \"type\": \"object\", \"required\": [\"name\"], \"properties\": { \"name\": { \"type\": \"string\" }, \"age\": { \"type\": \"integer\" } } }`. Libraries like Ajv (JavaScript) or jsonschema (Python) validate data against a schema and report which fields are missing or wrong."
+            },
+            {
+                heading: "Reading JSON Error Messages",
+                body: "Most parsers report the position of the first error they encounter. A message like `Unexpected token } at position 42` means the parser hit a `}` where it didn't expect one — usually a missing comma or value before it. Count characters from the start (or use an editor with character position display) to find line 42. Fix the error, re-validate — subsequent errors may disappear once the first is resolved."
+            }
+        ],
+        cta: { label: "Validate JSON Online →", toolRoute: "/json-viewer" },
+        relatedSlugs: ["json-viewer", "how-to-format-json", "json-syntax-guide", "common-json-errors"],
+        faq: [
+            {
+                q: "Is JSON5 valid JSON?",
+                a: "No. JSON5 is a superset of JSON that adds comments, trailing commas, and unquoted keys. A standard JSON parser will reject JSON5. Use a JSON5-specific parser if you're working with JSON5 files."
+            },
+            {
+                q: "Why does my JSON look valid but still fail to parse?",
+                a: "Common causes: invisible Unicode characters copied from a document editor, a BOM (byte order mark) at the start of the file, or encoding issues in special characters. Paste into a validator that shows character codes to inspect."
+            },
+            {
+                q: "Can I have comments in JSON?",
+                a: "No. Standard JSON does not support comments. If you need comments in a JSON-like config file, use JSONC (supported by VS Code settings), JSON5, or YAML. Some tools (like TypeScript's tsconfig.json) accept JSONC silently."
+            },
+            {
+                q: "What is the difference between JSON validation and JSON Schema validation?",
+                a: "JSON validation checks syntax — is this a parseable JSON document? JSON Schema validation checks content — does this JSON have the right fields, types, and values? Both are useful; schema validation is needed when you want to enforce a data contract."
+            }
+        ]
+    },
+
+    "json-syntax-guide": {
+        slug: "json-syntax-guide",
+        title: "JSON Syntax Guide — Complete Reference for Developers",
+        metaDescription:
+            "A complete JSON syntax reference. Covers data types, objects, arrays, strings, numbers, booleans, null, nesting, and escaping rules with examples.",
+        metaKeywords: "json syntax, json reference, json data types, json object, json array, json string, json number",
+        intro: "JSON (JavaScript Object Notation) has a small, strict syntax. Six data types, two container structures, and a handful of escaping rules — that's the entire specification. This guide is a complete reference you can bookmark and return to whenever you need to remember an exact rule.",
+        sections: [
+            {
+                heading: "JSON Data Types",
+                list: [
+                    "String — `\"hello\"` — must use double quotes",
+                    "Number — `42`, `3.14`, `-7`, `1.5e10` — no NaN or Infinity",
+                    "Boolean — `true` or `false` — lowercase only",
+                    "Null — `null` — lowercase only",
+                    "Object — `{\"key\": value}` — unordered key-value pairs",
+                    "Array — `[value, value]` — ordered list of values"
+                ]
+            },
+            {
+                heading: "Objects",
+                body: "An object is an unordered collection of key-value pairs wrapped in curly braces. Keys must be strings in double quotes. A colon separates each key from its value. Pairs are separated by commas. There must be no trailing comma after the last pair. Example: `{\"name\": \"Alice\", \"age\": 30, \"active\": true}`. Values can be any JSON type including another object or array."
+            },
+            {
+                heading: "Arrays",
+                body: "An array is an ordered list of values wrapped in square brackets. Values are separated by commas. No trailing comma after the last value. Values in an array can be any JSON type and can be mixed: `[1, \"two\", true, null, {\"key\": \"value\"}, [3, 4]]`. Arrays are zero-indexed when accessed in code."
+            },
+            {
+                heading: "Strings",
+                body: "JSON strings must be wrapped in double quotes (not single quotes). Special characters inside strings must be escaped with a backslash: `\\\"` for a literal quote, `\\\\` for a backslash, `\\/` for a forward slash, `\\n` for newline, `\\r` for carriage return, `\\t` for tab, `\\uXXXX` for a Unicode code point. Control characters (bytes 0x00–0x1F) must be escaped — you cannot include a literal newline inside a JSON string."
+            },
+            {
+                heading: "Numbers",
+                body: "JSON numbers can be integers (`42`), decimals (`3.14`), or use scientific notation (`1.5e10`, `2.5E-3`). Negative numbers use a leading minus: `-42`. JSON does not support: leading zeros (`042`), hexadecimal (`0xFF`), Infinity, or NaN. If your data has these values, encode them as strings or use a different format."
+            },
+            {
+                heading: "Nesting",
+                body: "JSON supports unlimited nesting of objects and arrays. An object value can be another object, an array value can be an object, and so on. Deep nesting is valid but can make data harder to work with. Most JSON parsers handle arbitrary nesting depth, though extremely deep nesting may hit stack limits in some environments."
+            },
+            {
+                heading: "Whitespace",
+                body: "Whitespace — spaces, tabs, newlines, carriage returns — is allowed between any JSON tokens. It has no semantic meaning. `{\"a\":1}` and `{ \"a\" : 1 }` are equivalent. JSON parsers skip whitespace between tokens. Inside strings, whitespace is part of the string value and is not ignored."
+            },
+            {
+                heading: "Complete Example",
+                body: "A realistic JSON document: an object with string, number, boolean, null, nested object, and array values: `{\"id\": 1, \"name\": \"Alice\", \"email\": \"alice@example.com\", \"age\": 30, \"active\": true, \"address\": null, \"scores\": [95, 87, 92], \"profile\": {\"bio\": \"Developer\", \"public\": false}}`."
+            }
+        ],
+        cta: { label: "View and Format JSON →", toolRoute: "/json-viewer" },
+        relatedSlugs: ["json-viewer", "how-to-format-json", "how-to-validate-json", "common-json-errors"],
+        faq: [
+            {
+                q: "Does JSON support comments?",
+                a: "No. Standard JSON has no comment syntax. JSONC and JSON5 are supersets that add comment support, but standard JSON parsers reject them."
+            },
+            {
+                q: "Can JSON keys be duplicated?",
+                a: "The JSON specification does not prohibit duplicate keys, but behavior is undefined — parsers may use the first value, the last value, or throw an error. In practice, avoid duplicate keys."
+            },
+            {
+                q: "What is the difference between null and undefined in JSON?",
+                a: "JSON only has `null`. JavaScript's `undefined` has no JSON equivalent — if you try to serialize `undefined`, `JSON.stringify()` either omits the key (in objects) or converts it to `null` (in arrays)."
+            },
+            {
+                q: "Is JSON case-sensitive?",
+                a: "Yes. Keys are case-sensitive strings: `\"Name\"` and `\"name\"` are different keys. The literal values `true`, `false`, and `null` must be lowercase — `True` and `NULL` are invalid JSON."
+            },
+            {
+                q: "What encoding does JSON use?",
+                a: "JSON text is defined as Unicode. UTF-8 is by far the most common encoding in practice. The JSON specification (RFC 8259) mandates UTF-8 for JSON transmitted over a network."
+            }
+        ]
+    },
+
+    "common-json-errors": {
+        slug: "common-json-errors",
+        title: "Common JSON Errors and How to Fix Them",
+        metaDescription:
+            "The most frequent JSON syntax errors — trailing commas, single quotes, unquoted keys, and more — with exact fixes and how to avoid them.",
+        metaKeywords: "json errors, json syntax errors, json parsing error, json unexpected token, json trailing comma, json single quotes",
+        intro: "Most JSON errors are caused by a small set of syntax mistakes. The parser message tells you where the error is, but not always what to fix. This guide covers the most common JSON errors, what causes them, and the exact change needed to fix each one.",
+        sections: [
+            {
+                heading: "Trailing Comma",
+                body: "One of the most common errors: a comma after the last item in an object or array. `{\"a\": 1, \"b\": 2,}` — the comma after `2` is invalid. Arrays: `[1, 2, 3,]` — the comma after `3` is invalid. JavaScript allows trailing commas; JSON does not. Fix: remove the last comma before the closing `}` or `]`."
+            },
+            {
+                heading: "Single Quotes Instead of Double Quotes",
+                body: "JSON requires double quotes for strings and keys. Single quotes are not valid. `{'name': 'Alice'}` is invalid JSON. Fix: replace all single quotes with double quotes: `{\"name\": \"Alice\"}`. This is common when JSON is hand-written or copied from JavaScript object literals."
+            },
+            {
+                heading: "Unquoted Keys",
+                body: "JavaScript object literals allow unquoted keys: `{name: 'Alice'}`. JSON does not — all keys must be double-quoted strings: `{\"name\": \"Alice\"}`. Copying a JS object literal into a JSON file is a frequent source of this error."
+            },
+            {
+                heading: "Comments",
+                body: "Standard JSON does not support comments. `// line comment` and `/* block comment */` both cause a parse error. Fix: remove all comments. If you need to annotate a JSON file, consider using JSONC (JSON with Comments, supported by VS Code and some parsers), JSON5, or YAML instead."
+            },
+            {
+                heading: "Undefined, NaN, and Infinity",
+                body: "JSON's number type does not include NaN or Infinity. `undefined` has no JSON equivalent. If your data contains these values, `JSON.stringify()` converts `undefined` to nothing (in objects) or `null` (in arrays), and converts `NaN` and `Infinity` to `null`. If you need to represent these in JSON, use a string: `\"NaN\"`, `\"Infinity\"`, or `\"undefined\"`."
+            },
+            {
+                heading: "Mismatched or Missing Brackets",
+                body: "Every `{` needs a matching `}`, and every `[` needs a matching `]`. A missing closing bracket causes an error at the end of the document: `Unexpected end of JSON input`. A mismatched bracket causes an error at the mismatch point. Use a formatter or editor with bracket matching to find these visually."
+            },
+            {
+                heading: "Unescaped Special Characters in Strings",
+                body: "Literal newlines and control characters inside JSON strings are invalid. If a string value contains a line break, it must be escaped as `\\n`. A literal tab must be `\\t`. A literal double quote must be `\\\"`. A literal backslash must be `\\\\`. Copy-pasting multi-line text into a JSON string is a common source of this error."
+            },
+            {
+                heading: "Leading Zeros on Numbers",
+                body: "JSON does not allow leading zeros on numbers: `042` is invalid. Use `42`. This also applies to zero itself: `0` is valid, but `00` is not. Hexadecimal numbers (`0xFF`) are also not valid JSON — convert to decimal."
+            }
+        ],
+        cta: { label: "Validate and Fix JSON →", toolRoute: "/json-viewer" },
+        relatedSlugs: ["json-viewer", "json-syntax-guide", "how-to-validate-json", "how-to-format-json"],
+        faq: [
+            {
+                q: "What does 'Unexpected token' mean in a JSON error?",
+                a: "It means the parser encountered a character it didn't expect at that position. Common causes: a missing comma before it, a trailing comma before a bracket, or an invalid value like `undefined` or `NaN`."
+            },
+            {
+                q: "What does 'Unexpected end of JSON input' mean?",
+                a: "The document ended before the JSON structure was complete — usually a missing closing bracket or brace. Check that every `{` has a `}` and every `[` has a `]`."
+            },
+            {
+                q: "Can I use a linter to catch JSON errors automatically?",
+                a: "Yes. Most editors (VS Code, JetBrains) validate `.json` files automatically and highlight errors inline. ESLint with the json plugin can validate JSON files in a CI pipeline."
+            },
+            {
+                q: "Why does JSON.parse() succeed in one environment but fail in another?",
+                a: "Some environments are more lenient than others — for example, Node.js's `require()` for `.json` files and some JSON5 parsers accept trailing commas. Use a strict validator (or `JSON.parse()` itself) to check true JSON compliance."
+            }
+        ]
+    },
+
+    "json-vs-json5": {
+        slug: "json-vs-json5",
+        title: "JSON vs JSON5 — What's the Difference?",
+        metaDescription:
+            "Compare JSON and JSON5. JSON5 adds comments, trailing commas, unquoted keys, and single quotes to standard JSON. Learn when each format is appropriate.",
+        metaKeywords: "json vs json5, json5 vs json, json5 explained, json5 features, json5 support",
+        intro: "JSON5 is a superset of JSON that adds several features developers often wish standard JSON had: comments, trailing commas, unquoted keys, single quotes, and more. Understanding the difference helps you choose the right format and know when standard JSON parsers will reject your files.",
+        sections: [
+            {
+                heading: "What JSON5 Adds to Standard JSON",
+                list: [
+                    "Comments — both `//` line comments and `/* */` block comments",
+                    "Trailing commas — allowed after the last item in objects and arrays",
+                    "Unquoted keys — object keys don't need quotes if they're valid identifiers",
+                    "Single-quoted strings — in addition to double-quoted strings",
+                    "Multi-line strings — strings can span multiple lines using backslash continuation",
+                    "Hexadecimal numbers — `0xFF` is valid",
+                    "Leading and trailing decimal points — `.5` and `5.` are valid numbers",
+                    "Infinity and NaN — `Infinity`, `-Infinity`, and `NaN` are valid number values",
+                    "Plus sign on numbers — `+1` is valid"
+                ]
+            },
+            {
+                heading: "Where JSON5 Is Used",
+                body: "JSON5 is used in configuration files where human editing is common and strict JSON parsing is unnecessary. Notable examples: Babel configuration (`babel.config.json5`), Rollup, and various developer tooling configs. VS Code's `settings.json` and TypeScript's `tsconfig.json` use JSONC (JSON with Comments) — similar to JSON5 but only adds comment support, not the other features."
+            },
+            {
+                heading: "Standard JSON — When to Use It",
+                list: [
+                    "API request and response bodies — parsers on both ends expect strict JSON",
+                    "Data interchange between systems — JSON is the universal standard",
+                    "Database storage — most databases store and query strict JSON",
+                    "Any context where you don't control the parser",
+                    "REST APIs, GraphQL responses, webhook payloads"
+                ]
+            },
+            {
+                heading: "JSON5 — When to Use It",
+                list: [
+                    "Human-edited configuration files where comments are helpful",
+                    "Build tool configs where trailing commas reduce diff noise",
+                    "Internal tooling where you control both the writer and reader",
+                    "Development-only files that won't cross a network boundary"
+                ]
+            },
+            {
+                heading: "Compatibility Warning",
+                body: "Standard JSON parsers (`JSON.parse()` in JavaScript, Python's `json.loads()`, most API clients) will reject JSON5. If you write JSON5 and send it to an API or parse it with a standard library, you'll get a parse error. Always use strict JSON for data that crosses a system boundary. Use JSON5 only when you control the parser and have explicitly installed a JSON5 library."
+            },
+            {
+                heading: "Parsing JSON5 in JavaScript",
+                body: "Install the `json5` npm package: `npm install json5`. Then: `import JSON5 from 'json5'; const data = JSON5.parse(text);`. The API mirrors the built-in `JSON` object — `JSON5.parse()` and `JSON5.stringify()` work the same way. For configuration files in Node.js tooling, many tools have built-in JSON5 support and handle parsing automatically."
+            }
+        ],
+        cta: { label: "View and Format JSON →", toolRoute: "/json-viewer" },
+        relatedSlugs: ["json-viewer", "json-syntax-guide", "how-to-validate-json", "common-json-errors"],
+        faq: [
+            {
+                q: "Is JSON5 backward compatible with JSON?",
+                a: "Yes. Every valid JSON document is also valid JSON5. JSON5 only adds new features on top of JSON — it does not change existing JSON syntax."
+            },
+            {
+                q: "Can I use JSON5 in a REST API?",
+                a: "You shouldn't. API clients expect standard JSON. The `Content-Type: application/json` header signals strict JSON. Use JSON5 only for configuration files where you control both sides of the parser."
+            },
+            {
+                q: "Does Node.js support JSON5 natively?",
+                a: "No. Node.js's built-in `JSON.parse()` and `require()` for `.json` files use standard JSON parsing. Install the `json5` npm package to parse JSON5 in Node.js."
+            },
+            {
+                q: "What is JSONC?",
+                a: "JSONC (JSON with Comments) is a variant used by VS Code and TypeScript that adds comment support to standard JSON. It's a smaller extension than JSON5 — comments only, no trailing commas or other features."
+            }
+        ]
+    },
+
+    "what-is-a-rest-api": {
+        slug: "what-is-a-rest-api",
+        title: "What Is a REST API? A Developer's Guide",
+        metaDescription:
+            "Learn what a REST API is, how it works, and the key concepts — HTTP methods, resources, endpoints, status codes, and request/response structure.",
+        metaKeywords: "what is a rest api, rest api explained, rest api guide, rest api http, rest api endpoints",
+        intro: "A REST API is the most common way for web services to communicate. When your app fetches user data, submits a form, or loads a product catalog, it's almost certainly talking to a REST API. This guide explains what REST is, how requests and responses work, and the key concepts every developer needs to know.",
+        sections: [
+            {
+                heading: "What REST Means",
+                body: "REST stands for Representational State Transfer. It's an architectural style for designing network APIs, defined by Roy Fielding in 2000. A REST API exposes resources — users, orders, products — at URLs called endpoints. Clients interact with resources using standard HTTP methods. REST is not a protocol or a standard — it's a set of constraints that, when followed, produce predictable, scalable APIs."
+            },
+            {
+                heading: "Resources and Endpoints",
+                body: "In REST, everything is a resource. A user is a resource, a product is a resource, an order is a resource. Each resource has a URL called an endpoint. Endpoints are nouns, not verbs: `/users`, `/products/42`, `/orders/7/items`. The action is expressed by the HTTP method, not the URL. A well-designed REST API makes the resource structure intuitive from the URL alone."
+            },
+            {
+                heading: "HTTP Methods",
+                list: [
+                    "GET — retrieve a resource or list of resources. No body. Safe and idempotent.",
+                    "POST — create a new resource. Body contains the new resource data.",
+                    "PUT — replace a resource entirely. Body contains the complete updated resource.",
+                    "PATCH — partially update a resource. Body contains only the changed fields.",
+                    "DELETE — remove a resource. Usually no body.",
+                    "HEAD — like GET but returns only headers, no body. Used to check existence or metadata.",
+                    "OPTIONS — returns allowed methods for a URL. Used in CORS preflight requests."
+                ]
+            },
+            {
+                heading: "HTTP Status Codes",
+                list: [
+                    "200 OK — request succeeded",
+                    "201 Created — resource created (response to POST)",
+                    "204 No Content — succeeded but no body (common for DELETE)",
+                    "400 Bad Request — client sent invalid data",
+                    "401 Unauthorized — authentication required",
+                    "403 Forbidden — authenticated but not allowed",
+                    "404 Not Found — resource does not exist",
+                    "409 Conflict — state conflict (e.g. duplicate resource)",
+                    "422 Unprocessable Entity — valid JSON but fails validation",
+                    "429 Too Many Requests — rate limit exceeded",
+                    "500 Internal Server Error — server-side failure"
+                ]
+            },
+            {
+                heading: "Request and Response Structure",
+                body: "A REST request has four parts: the method (GET, POST, etc.), the URL (the endpoint), headers (Content-Type, Authorization, etc.), and optionally a body (JSON for POST/PUT/PATCH). The response has a status code, headers, and a body — typically JSON. Most REST APIs use `Content-Type: application/json` for both requests and responses."
+            },
+            {
+                heading: "Authentication",
+                body: "REST APIs use several authentication patterns. API keys are passed in a header (`X-API-Key: ...`) or query parameter. Bearer tokens (including JWTs) go in the Authorization header: `Authorization: Bearer <token>`. Basic Auth sends `Authorization: Basic <base64(user:pass)>`. OAuth 2.0 uses temporary access tokens obtained through an authorization flow. Always use HTTPS — credentials in headers are visible to anyone who can intercept the request without it."
+            },
+            {
+                heading: "Testing REST API Requests",
+                body: "Before writing code, test your API requests manually to understand the request format and response structure. DevDeck's API Request Builder lets you send HTTP requests directly in the browser — set the method, URL, headers, and body, then inspect the response. This is faster than writing code and helps you debug authentication and payload issues before integrating into your application."
+            }
+        ],
+        cta: { label: "Test REST API Requests →", toolRoute: "/api-builder" },
+        relatedSlugs: ["api-request-builder", "http-methods-explained", "how-to-test-api-endpoints"],
+        faq: [
+            {
+                q: "What is the difference between REST and SOAP?",
+                a: "SOAP is an older protocol that uses XML and has strict standards for message format, error handling, and security. REST is an architectural style that uses HTTP and typically JSON. REST is simpler, more flexible, and now far more widely used for new APIs."
+            },
+            {
+                q: "What is the difference between REST and GraphQL?",
+                a: "REST uses multiple endpoints, one per resource type. GraphQL uses a single endpoint where the client specifies exactly which fields it needs. GraphQL reduces over-fetching and under-fetching but adds complexity. Most public APIs are REST; GraphQL is common in internal APIs with complex, nested data requirements."
+            },
+            {
+                q: "Does a REST API have to use JSON?",
+                a: "No. REST can use any data format — XML, YAML, plain text. But JSON has become the de facto standard because it's lightweight, human-readable, and natively supported in JavaScript."
+            },
+            {
+                q: "What makes an API RESTful?",
+                a: "A RESTful API follows the REST constraints: stateless communication, resource-based URLs, standard HTTP methods for actions, and a uniform interface. Many APIs called 'REST' are technically REST-like but not fully RESTful — for practical purposes, the term means HTTP APIs with JSON."
+            }
+        ]
+    },
+
+    "http-methods-explained": {
+        slug: "http-methods-explained",
+        title: "HTTP Request Methods Explained — GET, POST, PUT, PATCH, DELETE",
+        metaDescription:
+            "Understand HTTP methods — GET, POST, PUT, PATCH, DELETE, HEAD, and OPTIONS. Learn when to use each method and what to expect in the response.",
+        metaKeywords: "http methods, get post put patch delete, http request methods, rest api methods, http verbs",
+        intro: "HTTP methods tell a server what action to take on a resource. Every REST API request uses one of a handful of methods — GET, POST, PUT, PATCH, DELETE — and choosing the right one is fundamental to building and consuming APIs correctly.",
+        sections: [
+            {
+                heading: "GET — Retrieve Data",
+                body: "GET requests a resource from the server. It should not modify data. GET requests have no body — all parameters go in the URL (path or query string). Responses are cached by browsers and CDNs. GET is idempotent — calling it multiple times has the same result as calling it once. Use GET to fetch a list of items (`GET /users`), a single item (`GET /users/42`), or search results (`GET /users?role=admin`)."
+            },
+            {
+                heading: "POST — Create a Resource",
+                body: "POST sends data to create a new resource. The body contains the new resource data as JSON (or form data). The server assigns the resource's ID and returns it in the response. POST is not idempotent — calling it twice creates two resources. A successful POST typically returns 201 Created with the created resource in the body and a Location header pointing to the new resource's URL."
+            },
+            {
+                heading: "PUT — Replace a Resource",
+                body: "PUT replaces an existing resource entirely with the data in the request body. The client must send the complete resource — any fields omitted in the body are removed from the resource. PUT is idempotent — calling it multiple times produces the same result. Use PUT when you're replacing the entire state of a resource. A successful PUT typically returns 200 OK or 204 No Content."
+            },
+            {
+                heading: "PATCH — Partially Update a Resource",
+                body: "PATCH applies a partial update — only the fields in the request body are changed. Fields not included remain unchanged. PATCH is more efficient than PUT when updating one or two fields of a large resource. PATCH should be idempotent by design, though the spec does not strictly require it. A successful PATCH returns 200 OK (with the updated resource) or 204 No Content."
+            },
+            {
+                heading: "DELETE — Remove a Resource",
+                body: "DELETE removes the specified resource. It typically has no request body. A successful DELETE usually returns 204 No Content (no body) or 200 OK (with a success message). DELETE is idempotent — deleting an already-deleted resource should return 404, but the server state is the same whether you called it once or ten times."
+            },
+            {
+                heading: "HEAD and OPTIONS",
+                body: "HEAD is identical to GET but returns only the response headers, no body. Use it to check if a resource exists, get its metadata, or check the Content-Length before downloading. OPTIONS returns the HTTP methods the server supports for a given URL. Browsers send an OPTIONS preflight request before cross-origin requests to check CORS permissions."
+            },
+            {
+                heading: "Idempotency and Safety",
+                body: "A safe method doesn't modify server state: GET, HEAD, OPTIONS. An idempotent method produces the same server state regardless of how many times it's called: GET, HEAD, OPTIONS, PUT, DELETE. POST and PATCH are neither safe nor idempotent by default. These properties matter for retry logic — if a network request fails, you can safely retry an idempotent method. Retrying a non-idempotent POST may create duplicate resources."
+            }
+        ],
+        cta: { label: "Test HTTP Requests →", toolRoute: "/api-builder" },
+        relatedSlugs: ["api-request-builder", "what-is-a-rest-api", "how-to-test-api-endpoints"],
+        faq: [
+            {
+                q: "When should I use PUT vs PATCH?",
+                a: "Use PUT to replace an entire resource. Use PATCH to update specific fields. If you only need to change one field of a large object, PATCH is more efficient and less error-prone — you won't accidentally clear fields you forgot to include."
+            },
+            {
+                q: "Can a GET request have a body?",
+                a: "Technically yes, but it's bad practice and many servers and proxies ignore it. GET parameters should go in the URL query string. If you need to send a complex query body, consider using POST to a search endpoint."
+            },
+            {
+                q: "What's the difference between 401 and 403?",
+                a: "401 Unauthorized means the request lacks valid authentication — the server doesn't know who you are. 403 Forbidden means the server knows who you are but you're not allowed to access that resource."
+            },
+            {
+                q: "Why does my browser send an OPTIONS request before POST?",
+                a: "That's a CORS preflight request. The browser checks with the server that the cross-origin POST is allowed before actually sending it. The server's response to OPTIONS tells the browser which origins, methods, and headers are permitted."
+            }
+        ]
+    },
+
+    "how-to-test-api-endpoints": {
+        slug: "how-to-test-api-endpoints",
+        title: "How to Test API Endpoints Online — Without Writing Code",
+        metaDescription:
+            "Learn how to test REST API endpoints directly in your browser. Covers sending GET, POST, PUT, DELETE requests, setting headers, authentication, and inspecting responses.",
+        metaKeywords: "test api endpoints, api testing online, test rest api, api request tester, http request builder online",
+        intro: "Testing API endpoints before writing code saves significant debugging time. Sending a raw HTTP request lets you see exactly what the server expects and returns — before wiring it into your application. This guide covers how to test API endpoints online without any tools to install.",
+        sections: [
+            {
+                heading: "Why Test API Endpoints Manually",
+                list: [
+                    "Understand the exact request format an API expects before coding",
+                    "Debug authentication errors without runtime context obscuring the issue",
+                    "Verify what a response looks like before writing deserialization code",
+                    "Reproduce a bug with a minimal request independent of your application code",
+                    "Explore an undocumented API by inspecting its actual behavior"
+                ]
+            },
+            {
+                heading: "Send a GET Request",
+                steps: [
+                    "Open DevDeck's API Request Builder",
+                    "Select GET from the method dropdown",
+                    "Enter the endpoint URL — e.g. `https://api.example.com/users`",
+                    "Add any required headers (Authorization, API-Key, etc.)",
+                    "Click Send and inspect the response body, status code, and headers"
+                ]
+            },
+            {
+                heading: "Send a POST Request with JSON Body",
+                steps: [
+                    "Select POST from the method dropdown",
+                    "Enter the endpoint URL",
+                    "Add a Content-Type header: `application/json`",
+                    "Add your Authorization header if required",
+                    "Paste your JSON body in the request body panel",
+                    "Click Send — check for 201 Created and the response body"
+                ]
+            },
+            {
+                heading: "Setting Authentication Headers",
+                list: [
+                    "Bearer token (JWT) — add header `Authorization` with value `Bearer <your-token>`",
+                    "API key in header — add the header name specified in the API docs (e.g. `X-API-Key`) with your key as the value",
+                    "Basic Auth — add header `Authorization` with value `Basic <base64(username:password)>`",
+                    "API key in query param — append `?api_key=your-key` to the URL"
+                ]
+            },
+            {
+                heading: "Reading the Response",
+                body: "The response has three parts to check: the status code, the headers, and the body. Status 200–299 means success. 400 means you sent a bad request — read the body for details. 401/403 means authentication failed. 404 means the resource doesn't exist. 500 means the server crashed. The response body usually contains the resource data (on success) or an error message (on failure) as JSON."
+            },
+            {
+                heading: "Debugging Common API Errors",
+                list: [
+                    "400 Bad Request — check your JSON body for syntax errors; check required fields",
+                    "401 Unauthorized — your token is missing, expired, or malformed; check the Authorization header format",
+                    "403 Forbidden — you're authenticated but lack permission; check API key scopes or token claims",
+                    "404 Not Found — check the URL path; resource ID may not exist",
+                    "415 Unsupported Media Type — missing or wrong Content-Type header; add `Content-Type: application/json`",
+                    "429 Too Many Requests — you've hit the rate limit; wait before retrying",
+                    "CORS error — the API may not support browser-based requests; check the API docs for CORS policy"
+                ]
+            },
+            {
+                heading: "A Note on CORS",
+                body: "CORS (Cross-Origin Resource Sharing) is a browser security policy that blocks requests to a different domain than the current page. If an API doesn't explicitly allow your origin, browser-based tools will show a CORS error — even if the API works fine from a server or mobile app. This is a browser restriction, not an API bug. If you encounter CORS errors, the API may need to be tested from a server-side tool or a CORS proxy."
+            }
+        ],
+        cta: { label: "Test API Endpoints →", toolRoute: "/api-builder" },
+        relatedSlugs: ["api-request-builder", "what-is-a-rest-api", "http-methods-explained"],
+        faq: [
+            {
+                q: "Do I need to install anything to test APIs with DevDeck?",
+                a: "No. DevDeck's API Request Builder runs entirely in the browser — no installation, no account required."
+            },
+            {
+                q: "Why do I get a CORS error when testing an API?",
+                a: "CORS errors are browser security restrictions that block requests to different domains unless the server explicitly allows it. Some APIs are only designed to be called from servers, not browsers. Try the API from a server-side environment if you consistently hit CORS errors."
+            },
+            {
+                q: "Can I send requests with a custom JSON body?",
+                a: "Yes. Select POST, PUT, or PATCH, add a Content-Type: application/json header, and paste or type your JSON body. DevDeck sends the body exactly as entered."
+            },
+            {
+                q: "How do I test a DELETE endpoint?",
+                a: "Select DELETE from the method dropdown, enter the resource URL (e.g. `/users/42`), add your authorization header, and send. A successful DELETE typically returns 204 No Content with an empty body."
+            }
+        ]
+    },
+
+    "how-to-convert-css-to-tailwind": {
+        slug: "how-to-convert-css-to-tailwind",
+        title: "How to Convert CSS to Tailwind — Complete Guide",
+        metaDescription:
+            "Learn how to convert custom CSS properties to Tailwind utility classes. Covers spacing, typography, colors, flexbox, grid, borders, shadows, and arbitrary values.",
+        metaKeywords: "convert css to tailwind, css to tailwind guide, tailwind classes from css, tailwind utility classes, css tailwind conversion",
+        intro: "Migrating from custom CSS to Tailwind means replacing property-value pairs with utility classes. Most CSS properties map directly to a Tailwind class — once you know the naming pattern, conversions become fast and predictable. This guide covers the full conversion process and the patterns that come up most often.",
+        sections: [
+            {
+                heading: "How Tailwind's Naming Pattern Works",
+                body: "Tailwind class names follow a consistent formula: `property-value`. For spacing, `p-4` means `padding: 1rem` (4 × 0.25rem). For colors, `text-blue-500` means the blue color at shade 500. For layout, `flex` means `display: flex`. Once you internalize the scale and naming convention, you can predict most class names without looking them up."
+            },
+            {
+                heading: "Spacing — Margin and Padding",
+                list: [
+                    "`margin: 1rem` → `m-4`",
+                    "`margin-top: 0.5rem` → `mt-2`",
+                    "`margin-left: auto` → `ml-auto`",
+                    "`padding: 1.5rem` → `p-6`",
+                    "`padding-left: 1rem; padding-right: 1rem` → `px-4`",
+                    "`padding-top: 0.75rem; padding-bottom: 0.75rem` → `py-3`",
+                    "Tailwind's default scale: 1 = 0.25rem, 2 = 0.5rem, 4 = 1rem, 8 = 2rem"
+                ]
+            },
+            {
+                heading: "Typography",
+                list: [
+                    "`font-size: 0.875rem` → `text-sm`",
+                    "`font-size: 1rem` → `text-base`",
+                    "`font-size: 1.25rem` → `text-xl`",
+                    "`font-weight: 600` → `font-semibold`",
+                    "`font-weight: 700` → `font-bold`",
+                    "`line-height: 1.5` → `leading-normal`",
+                    "`text-align: center` → `text-center`",
+                    "`color: #6b7280` → `text-gray-500`",
+                    "`text-transform: uppercase` → `uppercase`",
+                    "`letter-spacing: 0.05em` → `tracking-wide`"
+                ]
+            },
+            {
+                heading: "Display and Flexbox",
+                list: [
+                    "`display: flex` → `flex`",
+                    "`display: inline-flex` → `inline-flex`",
+                    "`flex-direction: column` → `flex-col`",
+                    "`justify-content: center` → `justify-center`",
+                    "`justify-content: space-between` → `justify-between`",
+                    "`align-items: center` → `items-center`",
+                    "`align-items: flex-start` → `items-start`",
+                    "`flex-wrap: wrap` → `flex-wrap`",
+                    "`gap: 1rem` → `gap-4`",
+                    "`flex: 1` → `flex-1`"
+                ]
+            },
+            {
+                heading: "Width, Height, and Sizing",
+                list: [
+                    "`width: 100%` → `w-full`",
+                    "`width: 100vw` → `w-screen`",
+                    "`max-width: 1280px` → `max-w-7xl`",
+                    "`height: 100vh` → `h-screen`",
+                    "`min-height: 100vh` → `min-h-screen`",
+                    "`width: 2rem` → `w-8`",
+                    "`height: 2rem` → `h-8`"
+                ]
+            },
+            {
+                heading: "Borders and Shadows",
+                list: [
+                    "`border: 1px solid` → `border`",
+                    "`border-radius: 0.25rem` → `rounded`",
+                    "`border-radius: 0.5rem` → `rounded-lg`",
+                    "`border-radius: 9999px` → `rounded-full`",
+                    "`border-color: #e5e7eb` → `border-gray-200`",
+                    "`box-shadow: 0 1px 3px rgba(0,0,0,0.1)` → `shadow`",
+                    "`box-shadow: 0 10px 25px rgba(0,0,0,0.1)` → `shadow-xl`"
+                ]
+            },
+            {
+                heading: "Arbitrary Values for Non-Standard CSS",
+                body: "When your CSS value doesn't match a Tailwind scale value exactly, use arbitrary values with square bracket notation: `width: 347px` → `w-[347px]`, `color: #1a2b3c` → `text-[#1a2b3c]`, `padding: 13px` → `p-[13px]`. Arbitrary values work for any property and let you use Tailwind's other utilities alongside one-off custom values without writing separate CSS."
+            }
+        ],
+        cta: { label: "Convert CSS to Tailwind →", toolRoute: "/css-tailwind" },
+        relatedSlugs: ["css-to-tailwind-converter", "css-to-tailwind-examples", "common-css-to-tailwind-patterns", "tailwind-responsive-design"],
+        faq: [
+            {
+                q: "Does every CSS property have a Tailwind equivalent?",
+                a: "Most common properties do. For anything without a direct class, use Tailwind's arbitrary value syntax: `property-[value]`, like `w-[347px]` or `text-[#abc123]`."
+            },
+            {
+                q: "What is Tailwind's spacing scale?",
+                a: "Tailwind's default spacing scale is based on 0.25rem increments. `1` = 0.25rem, `2` = 0.5rem, `4` = 1rem, `8` = 2rem, `16` = 4rem. So `p-4` means `padding: 1rem`."
+            },
+            {
+                q: "Can I use a tool to convert CSS to Tailwind automatically?",
+                a: "Yes. DevDeck's CSS → Tailwind Converter maps 120+ CSS properties to their Tailwind equivalents. Paste your CSS and get Tailwind classes instantly."
+            },
+            {
+                q: "What about CSS custom properties (variables)?",
+                a: "CSS custom properties (`--color: red`) don't have direct Tailwind equivalents. You can reference them using arbitrary values: `text-[var(--color)]`. Or configure them in your Tailwind theme in `tailwind.config.js`."
+            },
+            {
+                q: "How do I handle CSS that uses media queries?",
+                a: "Tailwind handles responsive design with breakpoint prefixes: `sm:`, `md:`, `lg:`, `xl:`, `2xl:`. A CSS rule like `@media (min-width: 768px) { font-size: 1.25rem }` becomes `md:text-xl` in Tailwind."
+            }
+        ]
+    },
+
+    "css-to-tailwind-examples": {
+        slug: "css-to-tailwind-examples",
+        title: "CSS to Tailwind Examples — Real-World Conversions",
+        metaDescription:
+            "Practical CSS to Tailwind conversion examples for cards, buttons, navbars, forms, and more. See the exact Tailwind classes for common CSS patterns.",
+        metaKeywords: "css to tailwind examples, tailwind class examples, tailwind conversion examples, css tailwind cheatsheet, css to tailwind practical",
+        intro: "The fastest way to learn CSS-to-Tailwind conversion is through real examples. This guide shows complete conversions for the UI patterns developers write most often — cards, buttons, navbars, form inputs, and layout containers.",
+        sections: [
+            {
+                heading: "Card Component",
+                body: "CSS: `background: white; border-radius: 0.5rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1); padding: 1.5rem; border: 1px solid #e5e7eb;`. Tailwind: `bg-white rounded-lg shadow border border-gray-200 p-6`. The combination `bg-white rounded-lg shadow border border-gray-200 p-6` is one of the most common card patterns in Tailwind projects."
+            },
+            {
+                heading: "Primary Button",
+                body: "CSS: `background-color: #3b82f6; color: white; padding: 0.5rem 1rem; border-radius: 0.375rem; font-weight: 600; cursor: pointer; border: none;`. Tailwind: `bg-blue-500 text-white px-4 py-2 rounded-md font-semibold cursor-pointer border-0`. Add `hover:bg-blue-600` for a hover state — which in vanilla CSS would require a separate `:hover` rule."
+            },
+            {
+                heading: "Centered Layout Container",
+                body: "CSS: `max-width: 1280px; margin-left: auto; margin-right: auto; padding-left: 1.5rem; padding-right: 1.5rem;`. Tailwind: `max-w-7xl mx-auto px-6`. This is the standard page container pattern. For responsive padding, use `px-4 sm:px-6 lg:px-8` to increase padding at larger breakpoints."
+            },
+            {
+                heading: "Flexbox Navigation Bar",
+                body: "CSS: `display: flex; justify-content: space-between; align-items: center; padding: 1rem 1.5rem; background-color: white; border-bottom: 1px solid #e5e7eb;`. Tailwind: `flex justify-between items-center px-6 py-4 bg-white border-b border-gray-200`."
+            },
+            {
+                heading: "Form Input",
+                body: "CSS: `width: 100%; border: 1px solid #d1d5db; border-radius: 0.375rem; padding: 0.5rem 0.75rem; font-size: 0.875rem; outline: none;`. Tailwind: `w-full border border-gray-300 rounded-md px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500`. The `focus:` prefix in Tailwind replaces the CSS `:focus` pseudo-class."
+            },
+            {
+                heading: "Badge / Pill",
+                body: "CSS: `display: inline-flex; align-items: center; background-color: #dbeafe; color: #1d4ed8; font-size: 0.75rem; font-weight: 600; padding: 0.125rem 0.625rem; border-radius: 9999px;`. Tailwind: `inline-flex items-center bg-blue-100 text-blue-700 text-xs font-semibold px-2.5 py-0.5 rounded-full`."
+            },
+            {
+                heading: "Grid Layout",
+                body: "CSS: `display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem;`. Tailwind: `grid grid-cols-3 gap-6`. For responsive grids: `grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6` — one column on mobile, two on tablet, three on desktop."
+            },
+            {
+                heading: "Overlay / Modal Backdrop",
+                body: "CSS: `position: fixed; inset: 0; background-color: rgba(0, 0, 0, 0.5); display: flex; justify-content: center; align-items: center; z-index: 50;`. Tailwind: `fixed inset-0 bg-black/50 flex justify-center items-center z-50`. The `/50` opacity shorthand was introduced in Tailwind v3."
+            }
+        ],
+        cta: { label: "Convert CSS to Tailwind →", toolRoute: "/css-tailwind" },
+        relatedSlugs: ["css-to-tailwind-converter", "how-to-convert-css-to-tailwind", "common-css-to-tailwind-patterns", "tailwind-responsive-design"],
+        faq: [
+            {
+                q: "How do I handle hover states in Tailwind?",
+                a: "Use the `hover:` prefix: `hover:bg-blue-600`, `hover:text-white`, `hover:shadow-lg`. This replaces CSS `:hover` rules. Tailwind generates the hover styles automatically."
+            },
+            {
+                q: "What replaces CSS :focus styles in Tailwind?",
+                a: "The `focus:` prefix: `focus:ring-2 focus:ring-blue-500 focus:border-blue-500`. For keyboard focus only, use `focus-visible:`."
+            },
+            {
+                q: "How do I do CSS transitions in Tailwind?",
+                a: "Use `transition`, `transition-colors`, `transition-all`, or `transition-transform` for the transition property, combined with `duration-200` or `duration-300` for timing, and `ease-in-out` for easing."
+            },
+            {
+                q: "Can I mix Tailwind classes with custom CSS?",
+                a: "Yes. You can use Tailwind utilities alongside a custom CSS class, or use Tailwind's `@apply` directive to apply utilities inside a CSS rule. Most teams gradually migrate to Tailwind while keeping some existing CSS."
+            }
+        ]
+    },
+
+    "common-css-to-tailwind-patterns": {
+        slug: "common-css-to-tailwind-patterns",
+        title: "Common CSS-to-Tailwind Patterns — Quick Reference",
+        metaDescription:
+            "A quick-reference guide to the most common CSS patterns and their Tailwind equivalents. Covers pseudo-classes, transitions, dark mode, arbitrary values, and more.",
+        metaKeywords: "css tailwind patterns, tailwind cheatsheet, tailwind pseudo classes, tailwind dark mode, tailwind transitions, arbitrary values tailwind",
+        intro: "Beyond basic property mapping, Tailwind has patterns for pseudo-classes, responsive breakpoints, dark mode, transitions, and custom values. This quick-reference covers the patterns that come up repeatedly when migrating CSS to Tailwind.",
+        sections: [
+            {
+                heading: "Pseudo-Class Patterns",
+                list: [
+                    "`:hover` → `hover:` prefix — `hover:bg-blue-600`",
+                    "`:focus` → `focus:` prefix — `focus:ring-2`",
+                    "`:focus-visible` → `focus-visible:` prefix — `focus-visible:outline-none`",
+                    "`:active` → `active:` prefix — `active:scale-95`",
+                    "`:disabled` → `disabled:` prefix — `disabled:opacity-50`",
+                    "`:first-child` → `first:` prefix — `first:border-t-0`",
+                    "`:last-child` → `last:` prefix — `last:border-b-0`",
+                    "`:odd` / `:even` → `odd:` / `even:` — `even:bg-gray-50`",
+                    "`:placeholder` → `placeholder:` — `placeholder:text-gray-400`"
+                ]
+            },
+            {
+                heading: "Group and Peer Patterns",
+                body: "CSS can style a child when a parent is hovered: `parent:hover .child { color: blue }`. Tailwind handles this with the `group` and `group-hover:` pattern. Add `group` to the parent element and `group-hover:text-blue-500` to the child. The `peer` pattern is similar but works for sibling elements — mark one element as `peer` and style the next sibling with `peer-hover:`, `peer-checked:`, etc."
+            },
+            {
+                heading: "Transition and Animation",
+                list: [
+                    "`transition: all 150ms ease-in-out` → `transition-all duration-150 ease-in-out`",
+                    "`transition: color 200ms` → `transition-colors duration-200`",
+                    "`transition: transform 300ms` → `transition-transform duration-300`",
+                    "`transform: scale(1.05)` → `scale-105`",
+                    "`transform: translateY(-4px)` → `-translate-y-1`",
+                    "`transform: rotate(45deg)` → `rotate-45`",
+                    "Combine: `hover:scale-105 transition-transform duration-200`"
+                ]
+            },
+            {
+                heading: "Dark Mode",
+                body: "CSS dark mode uses a media query: `@media (prefers-color-scheme: dark)`. Tailwind uses the `dark:` prefix: `bg-white dark:bg-gray-900`, `text-gray-900 dark:text-white`. With `darkMode: 'class'` in your Tailwind config, dark mode is toggled by adding the `dark` class to the `<html>` element — useful for user-controlled theme switching. With `darkMode: 'media'` (the default), it follows the system preference."
+            },
+            {
+                heading: "Position and Z-Index",
+                list: [
+                    "`position: relative` → `relative`",
+                    "`position: absolute` → `absolute`",
+                    "`position: fixed` → `fixed`",
+                    "`position: sticky` → `sticky`",
+                    "`top: 0` → `top-0`",
+                    "`right: 0` → `right-0`",
+                    "`inset: 0` (all sides 0) → `inset-0`",
+                    "`z-index: 10` → `z-10`",
+                    "`z-index: 50` → `z-50`"
+                ]
+            },
+            {
+                heading: "Overflow and Visibility",
+                list: [
+                    "`overflow: hidden` → `overflow-hidden`",
+                    "`overflow: auto` → `overflow-auto`",
+                    "`overflow-x: auto; overflow-y: hidden` → `overflow-x-auto overflow-y-hidden`",
+                    "`text-overflow: ellipsis; overflow: hidden; white-space: nowrap` → `truncate`",
+                    "`visibility: hidden` → `invisible` (takes up space)",
+                    "`display: none` → `hidden` (removes from layout)",
+                    "`opacity: 0` → `opacity-0`",
+                    "`pointer-events: none` → `pointer-events-none`"
+                ]
+            },
+            {
+                heading: "Arbitrary Values and CSS Variables",
+                body: "For values outside Tailwind's default scale, use square bracket notation: `w-[347px]`, `text-[#1a2b3c]`, `bg-[rgba(0,0,0,0.4)]`, `mt-[13px]`. CSS variables work too: `text-[var(--brand-color)]`, `bg-[var(--surface)]`. This pattern works for any Tailwind utility — spacing, sizing, colors, typography."
+            },
+            {
+                heading: "Applying Tailwind in CSS with @apply",
+                body: "When you can't use utility classes directly (third-party component styles, generated markup), use `@apply` in a CSS file: `.btn { @apply px-4 py-2 bg-blue-500 text-white rounded-md font-semibold; }`. `@apply` extracts the CSS from Tailwind's generated output at build time. Use it sparingly — overusing `@apply` recreates the same specificity and maintenance problems that Tailwind's utility approach is designed to avoid."
+            }
+        ],
+        cta: { label: "Convert CSS to Tailwind →", toolRoute: "/css-tailwind" },
+        relatedSlugs: ["css-to-tailwind-converter", "how-to-convert-css-to-tailwind", "css-to-tailwind-examples", "tailwind-responsive-design"],
+        faq: [
+            {
+                q: "How do I handle CSS :nth-child in Tailwind?",
+                a: "Tailwind has `first:`, `last:`, `odd:`, and `even:` variants. For arbitrary nth-child selectors, you need a custom CSS rule — Tailwind doesn't have arbitrary pseudo-class selectors."
+            },
+            {
+                q: "What is the Tailwind equivalent of CSS calc()?",
+                a: "Use arbitrary values with calc inside brackets: `w-[calc(100%-2rem)]`, `h-[calc(100vh-4rem)]`. Tailwind passes the value through as-is."
+            },
+            {
+                q: "How do I write CSS animations in Tailwind?",
+                a: "Tailwind includes `animate-spin`, `animate-ping`, `animate-bounce`, and `animate-pulse` out of the box. For custom animations, define them in `tailwind.config.js` under `theme.extend.keyframes` and `theme.extend.animation`, then use the class in your markup."
+            },
+            {
+                q: "Is @apply bad practice?",
+                a: "Not inherently, but it should be used sparingly. Overusing @apply recreates the CSS specificity and naming problems that Tailwind's utility approach avoids. Use it for third-party component overrides or generated markup where you can't add utility classes directly."
+            }
+        ]
+    },
+
+    "tailwind-responsive-design": {
+        slug: "tailwind-responsive-design",
+        title: "Tailwind Responsive Design — Breakpoints and Mobile-First Layout",
+        metaDescription:
+            "Learn how Tailwind's responsive breakpoint system works. Covers mobile-first design, breakpoint prefixes, responsive typography, grids, flexbox, and hiding elements.",
+        metaKeywords: "tailwind responsive design, tailwind breakpoints, tailwind mobile first, tailwind sm md lg xl, tailwind responsive grid",
+        intro: "Tailwind's responsive system replaces CSS media queries with breakpoint prefixes on utility classes. It's mobile-first — a class without a prefix applies at all sizes, and prefixed classes apply from that breakpoint upward. Understanding this model is the key to writing clean responsive layouts without a single media query.",
+        sections: [
+            {
+                heading: "Default Breakpoints",
+                list: [
+                    "`sm:` — min-width: 640px (small screens and up)",
+                    "`md:` — min-width: 768px (medium screens and up)",
+                    "`lg:` — min-width: 1024px (large screens and up)",
+                    "`xl:` — min-width: 1280px (extra large screens and up)",
+                    "`2xl:` — min-width: 1536px (2x extra large and up)"
+                ]
+            },
+            {
+                heading: "Mobile-First Means No-Prefix = Smallest Screen",
+                body: "A class without a prefix applies to all screen sizes. A prefixed class overrides at that breakpoint and above. So `text-sm md:text-base lg:text-lg` means: small text on mobile, base on tablet, large on desktop. You don't need `sm:text-sm` — the unprefixed `text-sm` already covers everything below `md:`."
+            },
+            {
+                heading: "Responsive Typography",
+                list: [
+                    "`text-sm md:text-base lg:text-lg` — scale font size with screen",
+                    "`text-center md:text-left` — centered on mobile, left-aligned on tablet+",
+                    "`font-normal md:font-semibold` — change weight at breakpoint",
+                    "`hidden md:block` — hide on mobile, show on tablet+"
+                ]
+            },
+            {
+                heading: "Responsive Grid",
+                body: "The most common responsive pattern: `grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6`. This renders one column on mobile, two columns from 640px, and three from 1024px. Compare this to the equivalent CSS: three separate `@media` rules and a `grid-template-columns` property in each. Tailwind collapses all of that into a single class string on the element."
+            },
+            {
+                heading: "Responsive Flexbox",
+                list: [
+                    "`flex-col md:flex-row` — stack vertically on mobile, row on desktop",
+                    "`items-start md:items-center` — change alignment at breakpoint",
+                    "`gap-4 lg:gap-8` — larger gaps on wide screens",
+                    "`flex-wrap xl:flex-nowrap` — prevent wrapping on very wide screens"
+                ]
+            },
+            {
+                heading: "Responsive Spacing",
+                list: [
+                    "`p-4 md:p-6 lg:p-8` — increase padding on larger screens",
+                    "`px-4 sm:px-6 lg:px-8` — standard responsive container padding",
+                    "`mt-8 lg:mt-16` — larger top margin on desktop",
+                    "`max-w-sm md:max-w-2xl lg:max-w-4xl` — wider container on larger screens"
+                ]
+            },
+            {
+                heading: "Show and Hide Elements",
+                list: [
+                    "`hidden md:block` — hidden on mobile, visible from tablet+",
+                    "`block md:hidden` — visible on mobile, hidden from tablet+",
+                    "`flex md:hidden` — flex on mobile, hidden on tablet+",
+                    "`hidden lg:flex` — hidden until desktop, then flex"
+                ]
+            },
+            {
+                heading: "Converting CSS Media Queries to Tailwind",
+                body: "CSS media query: `@media (min-width: 768px) { .card { flex-direction: row; padding: 2rem; } }`. Tailwind equivalent: add `md:flex-row md:p-8` to the element's class list. Each CSS property inside the media query becomes a prefixed utility on the element. No separate CSS file or rule needed — all responsive logic lives inline on the element."
+            }
+        ],
+        cta: { label: "Convert CSS to Tailwind →", toolRoute: "/css-tailwind" },
+        relatedSlugs: ["css-to-tailwind-converter", "how-to-convert-css-to-tailwind", "css-to-tailwind-examples", "common-css-to-tailwind-patterns"],
+        faq: [
+            {
+                q: "Is Tailwind mobile-first or desktop-first?",
+                a: "Mobile-first. Unprefixed classes apply to all screen sizes. Breakpoint prefixes like `md:` apply from that breakpoint upward. Design for mobile first, then add prefixed classes to adjust for larger screens."
+            },
+            {
+                q: "How do I target only a specific screen size range in Tailwind?",
+                a: "By default, Tailwind breakpoints are min-width (apply at that size and above). To target a range, use the `max-` variant: `md:max-lg:text-center` applies only between md and lg. You can also add custom breakpoints in `tailwind.config.js`."
+            },
+            {
+                q: "Can I add custom breakpoints to Tailwind?",
+                a: "Yes. Define them in `tailwind.config.js` under `theme.extend.screens`: `screens: { '3xl': '1920px' }`. Then use the `3xl:` prefix in your classes."
+            },
+            {
+                q: "What is the equivalent of CSS @media (max-width) in Tailwind?",
+                a: "Tailwind v3.2+ includes `max-` variants: `max-md:text-sm` applies below the md breakpoint. In older Tailwind, you'd work around this by designing mobile-first — apply the mobile style unprefixed and override at larger breakpoints."
+            },
+            {
+                q: "Does responsive design in Tailwind affect performance?",
+                a: "No. Tailwind generates a single CSS file with all the responsive utilities. The browser only applies the classes that match the current viewport. Unused classes are purged at build time, so the output file is small regardless of how many responsive classes you use."
+            }
+        ]
+    },
+
+    "how-to-convert-html-to-jsx": {
+        slug: "how-to-convert-html-to-jsx",
+        title: "How to Convert HTML to JSX — Complete Developer Guide",
+        metaDescription:
+            "Learn every rule for converting HTML to valid JSX. Covers className, event handlers, self-closing tags, inline styles, boolean attributes, and common pitfalls.",
+        metaKeywords: "html to jsx, convert html to jsx, html jsx conversion, jsx from html, html to react component",
+        intro: "Converting HTML to JSX looks straightforward until you hit the subtle differences — class becomes className, onclick becomes onClick, and style takes an object instead of a string. This guide covers every transformation you need to turn raw HTML into valid JSX ready to paste into a React or Next.js component.",
+        sections: [
+            {
+                heading: "class → className",
+                body: "HTML uses `class` to assign CSS classes. In JSX, `class` is a reserved JavaScript keyword, so React uses `className` instead. Every `class=\"...\"` in your HTML becomes `className=\"...\"` in JSX. This is the most common conversion error and the one ESLint catches immediately."
+            },
+            {
+                heading: "for → htmlFor",
+                body: "Similarly, the HTML `for` attribute on `<label>` elements conflicts with JavaScript's `for` loop keyword. In JSX, use `htmlFor` instead. Example: `<label for=\"email\">` becomes `<label htmlFor=\"email\">`."
+            },
+            {
+                heading: "Event Handlers",
+                body: "HTML event attributes use lowercase strings: `onclick`, `onchange`, `onsubmit`. JSX uses camelCase and takes a function reference, not a string. `onclick=\"handleClick()\"` becomes `onClick={handleClick}`. Notice no quotes and no parentheses — you pass the function itself, not a call to it. If you need to pass arguments, use an arrow function: `onClick={() => handleClick(id)}`."
+            },
+            {
+                heading: "Self-Closing Tags",
+                body: "HTML allows void elements like `<br>`, `<img>`, and `<input>` to be left unclosed. JSX requires every element to be explicitly closed. Add a slash before the closing bracket: `<br>` → `<br />`, `<img src=\"...\">` → `<img src=\"...\" />`, `<input type=\"text\">` → `<input type=\"text\" />`."
+            },
+            {
+                heading: "Inline Styles",
+                body: "HTML inline styles are strings: `style=\"color: red; font-size: 16px\"`. JSX inline styles are JavaScript objects with camelCase property names: `style={{ color: 'red', fontSize: '16px' }}`. Note the double braces — the outer braces are JSX expression syntax, the inner braces are the object literal. Pixel values can omit the `px` unit: `fontSize: 16` works the same as `fontSize: '16px'`."
+            },
+            {
+                heading: "Boolean Attributes",
+                body: "In HTML, boolean attributes are written as bare words: `<input disabled>` or `<input disabled=\"disabled\">`. In JSX, pass the boolean value explicitly: `<input disabled={true} />` or simply `<input disabled />` (a bare attribute in JSX defaults to `true`). Avoid `disabled=\"true\"` — that passes a string, not a boolean, and may cause unexpected behavior."
+            },
+            {
+                heading: "HTML Comments",
+                body: "HTML comments (`<!-- comment -->`) are not valid inside JSX. To write a comment inside JSX markup, use a JavaScript expression with a block comment: `{/* this is a comment */}`. Regular `// line comments` work in the JavaScript parts of your component but not inside JSX markup."
+            },
+            {
+                heading: "Single Root Element / Fragments",
+                body: "JSX expressions must have a single root element. If your HTML snippet has multiple sibling elements at the top level, wrap them in a `<div>` or use a Fragment: `<>...</>` or `<React.Fragment>...</React.Fragment>`. Fragments don't add an extra DOM node, making them preferable when you don't need a wrapper element."
+            }
+        ],
+        cta: { label: "Convert HTML to JSX →", toolRoute: "/html-jsx" },
+        relatedSlugs: ["html-jsx", "html-vs-jsx", "common-html-to-jsx-errors", "jsx-syntax-explained"],
+        faq: [
+            {
+                q: "What is the most common mistake when converting HTML to JSX?",
+                a: "Forgetting to change `class` to `className`. It's the most frequent error and usually the first thing ESLint flags."
+            },
+            {
+                q: "Do I need to change all HTML attributes in JSX?",
+                a: "Most attributes stay the same. The main changes are: `class` → `className`, `for` → `htmlFor`, event handlers from lowercase strings to camelCase function references, and inline `style` from a string to an object."
+            },
+            {
+                q: "Why does JSX use onClick instead of onclick?",
+                a: "JSX is JavaScript syntax. JavaScript conventions use camelCase for identifiers. React chose camelCase event names to stay consistent with JavaScript naming conventions."
+            },
+            {
+                q: "Can I use a tool to convert HTML to JSX automatically?",
+                a: "Yes. DevDeck's HTML → JSX Converter handles all these transformations automatically — paste your HTML and get valid JSX back instantly."
+            },
+            {
+                q: "Does the HTML → JSX converter handle nested elements?",
+                a: "Yes. The converter recursively processes all child elements, applying every rule — className, event handlers, self-closing tags, style objects — at every nesting level."
+            }
+        ]
+    },
+
+    "html-vs-jsx": {
+        slug: "html-vs-jsx",
+        title: "HTML vs JSX — Key Differences Every React Developer Should Know",
+        metaDescription:
+            "HTML and JSX look similar but have important differences. Learn the exact rules that change when you move from HTML to JSX in React and Next.js.",
+        metaKeywords: "html vs jsx, jsx vs html, difference html jsx, jsx syntax differences, html jsx react",
+        intro: "JSX looks like HTML, but it's actually a JavaScript syntax extension. The two share the same tag names and most attribute names, but the differences matter when you're building React components. Understanding where they diverge prevents runtime errors and confusing ESLint warnings.",
+        sections: [
+            {
+                heading: "What JSX Actually Is",
+                body: "JSX is not HTML. It's a syntax extension to JavaScript — a way to write tree-like markup inside JavaScript code. Babel (or the Next.js compiler) transforms JSX into `React.createElement()` calls before it runs in the browser. The browser never sees JSX; it sees JavaScript. This is why JSX follows JavaScript rules in places where HTML is more permissive."
+            },
+            {
+                heading: "Attribute Name Differences",
+                list: [
+                    "`class` → `className` (class is a reserved JS keyword)",
+                    "`for` → `htmlFor` (for is a reserved JS keyword)",
+                    "`tabindex` → `tabIndex` (camelCase DOM property name)",
+                    "`readonly` → `readOnly`",
+                    "`maxlength` → `maxLength`",
+                    "`colspan` → `colSpan`",
+                    "`rowspan` → `rowSpan`",
+                    "`crossorigin` → `crossOrigin`",
+                    "Custom `data-*` and `aria-*` attributes stay as-is — they're hyphenated in both HTML and JSX"
+                ]
+            },
+            {
+                heading: "Expression Syntax",
+                body: "HTML is static markup — values must be string literals. JSX lets you embed any JavaScript expression using curly braces `{}`. This is one of the biggest practical differences: `<h1>{user.name}</h1>`, `<img src={avatarUrl} />`, `<button disabled={isLoading}>Submit</button>`. Curly braces tell JSX to evaluate the contents as JavaScript."
+            },
+            {
+                heading: "Self-Closing Elements",
+                body: "In HTML5, void elements like `<br>`, `<hr>`, `<img>`, `<input>`, `<link>`, and `<meta>` are self-closing by spec — you don't need a closing tag. JSX requires all elements to be explicitly closed. Non-void elements need a matching closing tag: `<div></div>`. Void elements need a self-closing slash: `<br />`."
+            },
+            {
+                heading: "Inline Styles",
+                body: "HTML style attributes are strings: `style=\"color: red; font-size: 16px\"`. JSX style attributes are JavaScript objects: `style={{ color: 'red', fontSize: '16px' }}`. All multi-word CSS property names become camelCase in JSX (`backgroundColor`, `borderRadius`, `fontWeight`). Values are strings or numbers — pixel values can be numbers without the `px` suffix."
+            },
+            {
+                heading: "Event Handling",
+                body: "HTML events are attributes with string values pointing to global function names: `onclick=\"doSomething()\"`. JSX events are camelCase props that accept function references: `onClick={doSomething}`. You never pass strings to event handlers in JSX. Inline handlers use arrow functions: `onClick={() => doSomething(id)}`. This lets React handle event delegation efficiently under the hood."
+            },
+            {
+                heading: "Conditional Rendering",
+                body: "HTML has no built-in conditional rendering — you either include an element or you don't. JSX can conditionally render using JavaScript: `{isLoggedIn && <Dashboard />}` or ternary expressions: `{isLoggedIn ? <Dashboard /> : <Login />}`. This is one of JSX's biggest advantages over plain HTML templates."
+            },
+            {
+                heading: "Root Element Requirement",
+                body: "In HTML, a document body can have multiple sibling elements with no wrapper. In JSX, a component's return value must be a single root element. Wrapping in `<div>` works but adds a DOM node. React Fragments (`<>...</>`) let you return multiple siblings without a wrapper DOM element."
+            }
+        ],
+        cta: { label: "Convert HTML to JSX →", toolRoute: "/html-jsx" },
+        relatedSlugs: ["html-jsx", "how-to-convert-html-to-jsx", "jsx-syntax-explained", "common-html-to-jsx-errors"],
+        faq: [
+            {
+                q: "Is JSX a superset of HTML?",
+                a: "No. JSX is a JavaScript syntax extension that resembles HTML. They share tag names and most attribute names, but JSX follows JavaScript rules in places where HTML is more permissive. JSX is compiled to JavaScript — HTML is not."
+            },
+            {
+                q: "Can I use HTML directly inside a React component?",
+                a: "Not directly. React components return JSX, not HTML. The JSX gets compiled to JavaScript before the browser renders it. The output is HTML in the DOM, but what you write in your component files is JSX."
+            },
+            {
+                q: "Why does JSX use camelCase for event names?",
+                a: "JSX is JavaScript, and JavaScript identifiers use camelCase by convention. React adopted camelCase event names to stay consistent with JavaScript naming rather than HTML's lowercase attribute style."
+            },
+            {
+                q: "What happens if I write class instead of className in JSX?",
+                a: "React will render the element and show a warning in the console. The class attribute will be ignored in most cases, meaning your CSS classes won't apply. ESLint with the React plugin will flag this as an error."
+            }
+        ]
+    },
+
+    "common-html-to-jsx-errors": {
+        slug: "common-html-to-jsx-errors",
+        title: "Common HTML-to-JSX Conversion Errors and How to Fix Them",
+        metaDescription:
+            "The most frequent errors when converting HTML to JSX — class vs className, unclosed tags, style strings, and more — with exact fixes for each.",
+        metaKeywords: "html to jsx errors, jsx conversion errors, jsx class classname error, jsx self closing tag error, jsx inline style error",
+        intro: "Pasting HTML into a React component almost always produces errors. The differences between HTML and JSX are small but strict — JSX is compiled JavaScript, not a browser-parsed markup language. Here are the most common errors you'll encounter and exactly how to fix them.",
+        sections: [
+            {
+                heading: "Error: Unknown prop `class` on a DOM element",
+                body: "`class` is a JavaScript reserved keyword. JSX uses `className` for CSS class assignments. Every `class=\"...\"` in your HTML must become `className=\"...\"` in JSX. This is the single most common HTML-to-JSX error. ESLint's React plugin flags it immediately with: `Invalid DOM property 'class'. Did you mean 'className'?`"
+            },
+            {
+                heading: "Error: Adjacent JSX elements must be wrapped in an enclosing tag",
+                body: "JSX returns must have a single root element. If your HTML has multiple siblings at the top level, wrapping them in a `<div>` works but adds an extra DOM node. Use a Fragment instead: wrap with `<>` and `</>`. Fragments render no DOM element. If you need to pass a key prop (in a list), use `<React.Fragment key={id}>` instead of the shorthand `<>`."
+            },
+            {
+                heading: "Error: Self-closing tag for void element",
+                body: "Void HTML elements (`<br>`, `<hr>`, `<img>`, `<input>`, `<link>`, `<meta>`) must be explicitly closed in JSX: `<br />`, `<img src=\"...\" />`, `<input type=\"text\" />`. Missing the closing slash causes a parser error. Non-void elements like `<div>` and `<span>` need a matching closing tag."
+            },
+            {
+                heading: "Error: The `style` prop expects a mapping from style properties to values",
+                body: "HTML inline styles are strings: `style=\"color: red\"`. JSX style props are JavaScript objects: `style={{ color: 'red' }}`. Passing a string to `style` in JSX throws: `The style prop expects a mapping from style properties to values, not a string`. Multi-word CSS properties use camelCase: `font-size` → `fontSize`, `background-color` → `backgroundColor`."
+            },
+            {
+                heading: "Error: `for` is not a valid prop — use `htmlFor`",
+                body: "`for` is a JavaScript reserved keyword (used in `for` loops). Label elements that associate with inputs use `htmlFor` in JSX: `<label htmlFor=\"email\">Email</label>`. Using `for` instead of `htmlFor` causes a warning and the label association won't work correctly."
+            },
+            {
+                heading: "Error: Event handler passed as a string",
+                body: "HTML uses string values for event handlers: `onclick=\"handleClick()\"`. JSX takes function references: `onClick={handleClick}`. Passing a string like `onClick=\"handleClick()\"` is silently ignored in modern React and fires a warning. Always pass a function reference or arrow function."
+            },
+            {
+                heading: "Error: Unterminated JSX contents / unexpected token",
+                body: "HTML comments (`<!-- ... -->`) are not valid JSX syntax. Inside JSX markup, use `{/* comment */}` for comments. An HTML comment left in JSX markup causes a parse error. Also watch for unescaped `<` and `>` characters in text content — if you need a literal `<` in JSX text, use the HTML entity `&lt;` or wrap it in a string expression: `{'<'}`."
+            },
+            {
+                heading: "Warning: Each child in a list should have a unique key prop",
+                body: "When rendering arrays of elements in JSX (typically with `.map()`), each element needs a unique `key` prop: `items.map(item => <li key={item.id}>{item.name}</li>)`. Keys help React efficiently update the DOM when the list changes. Avoid using array index as the key if items can be reordered or removed."
+            }
+        ],
+        cta: { label: "Convert HTML to JSX Automatically →", toolRoute: "/html-jsx" },
+        relatedSlugs: ["html-jsx", "how-to-convert-html-to-jsx", "html-vs-jsx", "jsx-syntax-explained"],
+        faq: [
+            {
+                q: "Why does JSX require className instead of class?",
+                a: "Because `class` is a reserved keyword in JavaScript. JSX is a JavaScript extension and must avoid reserved keywords in expressions. React chose `className` to match the DOM property name used in JavaScript."
+            },
+            {
+                q: "What does 'Adjacent JSX elements must be wrapped' mean?",
+                a: "JSX can only return one root element from a component or expression. If you have two sibling elements, wrap them in a Fragment (`<>...</>`) or a `<div>`. Fragments add no DOM node and are usually preferable."
+            },
+            {
+                q: "Can I use a tool to automatically fix HTML-to-JSX errors?",
+                a: "Yes. DevDeck's HTML → JSX Converter applies all transformations automatically — className, event handlers, self-closing tags, style objects, and more. Paste your HTML and get valid JSX instantly."
+            },
+            {
+                q: "Are HTML-to-JSX errors caught at compile time or runtime?",
+                a: "Most are caught at compile time by the JSX parser or by ESLint. Some, like passing a string to the style prop, produce runtime warnings in the browser console. Using ESLint with the eslint-plugin-react catches most issues before the code runs."
+            }
+        ]
+    },
+
+    "jsx-syntax-explained": {
+        slug: "jsx-syntax-explained",
+        title: "JSX Syntax Explained — A Practical Guide for Developers",
+        metaDescription:
+            "Understand JSX syntax from the ground up. Covers expressions, props, children, fragments, conditional rendering, lists, and how JSX compiles to JavaScript.",
+        metaKeywords: "jsx syntax, jsx explained, jsx guide, jsx expressions, jsx props, jsx children, how jsx works",
+        intro: "JSX is the syntax extension that lets you write markup inside JavaScript. It looks like HTML but compiles to JavaScript function calls. Understanding how JSX works — not just the rules, but why they exist — makes you a faster React developer.",
+        sections: [
+            {
+                heading: "How JSX Compiles",
+                body: "When Babel or the Next.js compiler sees JSX, it transforms it into `React.createElement()` calls. `<h1 className=\"title\">Hello</h1>` becomes `React.createElement('h1', { className: 'title' }, 'Hello')`. Modern React (17+) uses a new JSX transform that doesn't require importing React explicitly. Understanding this compilation explains why JSX follows JavaScript rules — it has to produce valid JavaScript."
+            },
+            {
+                heading: "Embedding JavaScript Expressions",
+                body: "Curly braces `{}` let you embed any JavaScript expression inside JSX. Variables, function calls, arithmetic, ternaries — anything that evaluates to a value. `<p>{user.name}</p>`, `<img src={getAvatarUrl(userId)} />`, `<span>{price * quantity}</span>`. Statements (if, for, while) are not expressions and can't go inside `{}` — use ternaries or move logic above the return."
+            },
+            {
+                heading: "Props",
+                body: "JSX props are passed like HTML attributes but follow JavaScript syntax. String literals use quotes: `<Button variant=\"primary\" />`. Expressions use curly braces: `<Button disabled={isLoading} count={items.length} />`. Boolean props default to true: `<Input required />` is the same as `<Input required={true} />`. You can spread an object as props: `<Component {...props} />`."
+            },
+            {
+                heading: "Children",
+                body: "Everything between an element's opening and closing tags is its children. Children can be strings, other JSX elements, or JavaScript expressions. `<Button>Click me</Button>` — string child. `<Card><Header /><Body /></Card>` — element children. `<ul>{items.map(i => <li key={i.id}>{i.name}</li>)}</ul>` — expression children. The children can also be passed explicitly as a prop: `<Component children={<span>text</span>} />`."
+            },
+            {
+                heading: "Conditional Rendering",
+                body: "Use short-circuit evaluation for show/hide: `{isLoggedIn && <Dashboard />}`. Use ternary for if/else: `{isLoggedIn ? <Dashboard /> : <Login />}`. For complex conditions, extract the logic above the return statement into a variable: `const content = isLoggedIn ? <Dashboard /> : <Login />`, then use `{content}` in JSX. Avoid deeply nested ternaries — they're hard to read and maintain."
+            },
+            {
+                heading: "Rendering Lists",
+                body: "Arrays of JSX elements can be rendered directly. Typically generated with `.map()`: `{items.map(item => <Item key={item.id} {...item} />)}`. Each element needs a unique `key` prop so React can track identity across re-renders. Keys should be stable, unique IDs from your data — not array indexes if the list can be reordered."
+            },
+            {
+                heading: "Fragments",
+                body: "Components must return a single root element. When you don't want an extra wrapper `<div>` in the DOM, use a Fragment: `<>...</>` or `<React.Fragment>...</React.Fragment>`. The shorthand `<>` doesn't accept props. If you need to pass a `key` prop (in a list), use `<React.Fragment key={id}>`. Fragments are especially useful inside table rows, where adding a `<div>` would produce invalid HTML."
+            },
+            {
+                heading: "JSX Is Not HTML — Key Rules to Remember",
+                list: [
+                    "Use `className` not `class`",
+                    "Use `htmlFor` not `for`",
+                    "All tags must be closed — `<br />` not `<br>`",
+                    "Style is an object — `{{ fontSize: 16 }}` not a string",
+                    "Event handlers are camelCase functions — `onClick={fn}` not `onclick=\"fn()\"`",
+                    "Comments inside JSX use `{/* */}` not `<!-- -->`",
+                    "One root element per expression — wrap siblings in a Fragment"
+                ]
+            }
+        ],
+        cta: { label: "Convert HTML to JSX →", toolRoute: "/html-jsx" },
+        relatedSlugs: ["html-jsx", "html-vs-jsx", "how-to-convert-html-to-jsx", "common-html-to-jsx-errors"],
+        faq: [
+            {
+                q: "Do I need to import React to use JSX?",
+                a: "Not with React 17+ and the new JSX transform. Older React projects required `import React from 'react'` in every file using JSX because JSX compiled to `React.createElement()` calls. The new transform handles this automatically."
+            },
+            {
+                q: "Can I write JSX without a build step?",
+                a: "Not recommended for production. Babel or the Next.js compiler is required to transform JSX to JavaScript. In very simple cases, you can use a CDN script for Babel to transpile JSX in the browser, but this is only suitable for demos."
+            },
+            {
+                q: "Why can't I use if statements inside JSX?",
+                a: "JSX expressions (inside `{}`) must be expressions that evaluate to a value. `if` statements are not expressions — they don't produce a value. Use ternary (`condition ? a : b`) or short-circuit (`condition && element`) for conditional logic inside JSX markup."
+            },
+            {
+                q: "What is the difference between JSX and TSX?",
+                a: "TSX is JSX with TypeScript. The rules are the same, but TSX files can include TypeScript type annotations on props and variables. React components in TypeScript projects use `.tsx` file extensions."
+            },
+            {
+                q: "Is JSX specific to React?",
+                a: "JSX originated with React but other libraries use it too — Preact, Solid.js, and others support JSX with their own compilers. The syntax is the same; the compilation target differs depending on the library."
+            }
+        ]
+    },
+
+    "base64-vs-binary-images": {
+        slug: "base64-vs-binary-images",
+        title: "Base64 vs Binary Images — Which Should You Use?",
+        metaDescription:
+            "Compare Base64-encoded images with external binary image files. Understand the size overhead, caching behavior, HTTP requests, and when each approach is the right choice.",
+        metaKeywords: "base64 vs binary image, base64 image performance, base64 overhead, inline image vs external image, data uri vs image file",
+        intro: "Should you embed an image as Base64 or serve it as a regular file? The answer depends on image size, how many pages use it, and your performance priorities. This guide covers the key differences so you can make the right call.",
+        sections: [
+            {
+                heading: "The Core Trade-off",
+                body: "Base64 encodes binary image bytes as ASCII text, increasing file size by ~33%. In exchange, the image is embedded directly in your HTML or CSS — no separate HTTP request. Whether that trade is worth it depends entirely on the image's size and how often it's reused across pages."
+            },
+            {
+                heading: "File Size Comparison",
+                list: [
+                    "A 1KB PNG icon → ~1.37KB as Base64 (37% larger)",
+                    "A 10KB JPG thumbnail → ~13.7KB as Base64",
+                    "A 100KB photo → ~137KB as Base64",
+                    "A 500KB hero image → ~685KB as Base64 — almost certainly the wrong choice"
+                ]
+            },
+            {
+                heading: "HTTP Requests",
+                body: "Each external image file requires a separate HTTP request. HTTP/2 multiplexes requests over a single connection, making individual request overhead much smaller than it was under HTTP/1.1. The old rule of thumb — 'inline everything to save requests' — matters less on modern HTTP/2 servers. On HTTP/1.1 connections (still common in some environments) saving a request has more impact."
+            },
+            {
+                heading: "Browser Caching",
+                body: "External image files are cached by the browser and reused across page loads and across pages. A Base64-encoded image embedded in HTML or CSS cannot be cached independently — it's parsed fresh with every document load. For a logo that appears on every page, an external file cached once is far more efficient than a data URI repeated in every HTML response."
+            },
+            {
+                heading: "When Base64 Wins",
+                list: [
+                    "Small icons under 2–3KB — the request overhead is significant relative to the file size",
+                    "Images used on only one page and never cached independently anyway",
+                    "Email templates — many email clients block external images; Base64 ensures reliable delivery",
+                    "Single-file HTML deliverables with no external dependencies",
+                    "Favicons or loading spinners that must appear before any external resources load"
+                ]
+            },
+            {
+                heading: "When Binary/External Wins",
+                list: [
+                    "Images larger than 5KB — the caching benefit outweighs the request cost",
+                    "Images shared across multiple pages — cached once, reused everywhere",
+                    "Images served from a CDN — CDNs apply compression and edge caching that data URIs can't match",
+                    "Performance-critical pages — large data URIs block HTML parsing",
+                    "Images that change independently from the page content — external files can be versioned and cache-busted separately"
+                ]
+            },
+            {
+                heading: "SVG Is a Special Case",
+                body: "SVG is already a text format. You can embed SVG directly in HTML using the `<svg>` tag without Base64 encoding at all — and this is usually preferable to Base64-encoding it. Inline SVG can be styled with CSS, animated, and manipulated with JavaScript. If you Base64-encode an SVG, you lose all of that. Reserve Base64 for raster formats (PNG, JPG, WebP) or SVGs that must be embedded in a CSS `url()` value."
+            },
+            {
+                heading: "Practical Recommendation",
+                list: [
+                    "Use external image files as the default",
+                    "Consider Base64 only for icons under 2KB that appear on every page load",
+                    "Always use external images for anything over 5KB",
+                    "Use inline SVG (not Base64 SVG) for vector icons in HTML",
+                    "For email templates, Base64 is often the right call for small images"
+                ]
+            }
+        ],
+        cta: { label: "Convert Images to Base64 →", toolRoute: "/base64-image" },
+        relatedSlugs: ["base64-image-converter", "base64-data-urls-explained", "what-is-base64-encoding", "image-resizer"],
+        faq: [
+            {
+                q: "Does Base64 make images load faster?",
+                a: "Not usually. It saves one HTTP request but increases document size by 33% and prevents browser caching. For most images, external files served from a CDN load faster than Base64."
+            },
+            {
+                q: "How much larger is a Base64 image compared to the original?",
+                a: "Approximately 33% larger. Base64 represents every 3 bytes of binary data as 4 ASCII characters."
+            },
+            {
+                q: "Can I use Base64 for large hero images?",
+                a: "You shouldn't. A 500KB hero image becomes ~685KB as Base64, bloats your HTML, prevents caching, and slows initial page rendering. Use an external image file or a CDN-served format like WebP."
+            },
+            {
+                q: "Is Base64 still useful with HTTP/2?",
+                a: "Less so. HTTP/2 multiplexing makes individual request overhead much smaller. The main remaining use cases for Base64 images are email templates, very small icons, and single-file HTML documents."
+            },
+            {
+                q: "Should I Base64-encode SVG images?",
+                a: "Generally no. SVG is already text — embed it directly with an `<svg>` tag in HTML or use it as a regular `.svg` file. Inline SVG supports CSS styling and JavaScript interaction; Base64-encoded SVG loses those capabilities."
+            }
+        ]
     }
 };
 
@@ -1947,10 +3509,26 @@ export default blogData;
 
 // Ordered list for the blog index page
 export const blogList = [
+    blogData["what-is-a-rest-api"],
+    blogData["http-methods-explained"],
+    blogData["how-to-test-api-endpoints"],
     blogData["api-request-builder"],
+    blogData["how-to-format-json"],
+    blogData["how-to-validate-json"],
+    blogData["json-syntax-guide"],
+    blogData["common-json-errors"],
+    blogData["json-vs-json5"],
+    blogData["how-to-convert-css-to-tailwind"],
+    blogData["css-to-tailwind-examples"],
+    blogData["common-css-to-tailwind-patterns"],
+    blogData["tailwind-responsive-design"],
     blogData["css-to-tailwind-converter"],
     blogData["json-viewer"],
     blogData["jwt-decoder"],
+    blogData["what-is-base64-encoding"],
+    blogData["how-to-decode-base64-image"],
+    blogData["base64-data-urls-explained"],
+    blogData["base64-vs-binary-images"],
     blogData["base64-text-encoder"],
     blogData["base64-image-converter"],
     blogData["hash-generator"],
@@ -1972,6 +3550,10 @@ export const blogList = [
     blogData["color-converter"],
     blogData["aspect-ratio-calculator"],
     blogData["smart-formatter"],
+    blogData["html-vs-jsx"],
+    blogData["how-to-convert-html-to-jsx"],
+    blogData["common-html-to-jsx-errors"],
+    blogData["jsx-syntax-explained"],
     blogData["html-jsx"],
     blogData["encoder-decoder"],
     blogData["command-playground"],
